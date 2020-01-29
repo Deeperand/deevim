@@ -75,14 +75,6 @@ snippet "B([A-Za-z0-9]{1,3})" "check_key(r'B([A-Za-z0-9]{1,3})', dic_bold)" ire
 **`!p snip.rv = dic_bold[match.group(1)]`** $1
 endsnippet
 
-# snippet bm "More Details" i
-# **More Details:** $1
-# endsnippet
-
-# snippet br "Reference" i
-# **Reference:** $1
-# endsnippet
-
 # i: italic
 snippet i "italic" i
 *$1*
@@ -144,6 +136,11 @@ endsnippet
 snippet dt "diary (thought)" i
 ### Thought
 #### $1
+endsnippet
+
+# n: notation
+snippet nc "checkmark" i
+\\checkmark
 endsnippet
 
 # u: underline
