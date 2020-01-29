@@ -1,0 +1,15 @@
+# mac os
+.DS_Store
+
+# plugs
+/plugged
+
+# vim-plug
+/autoload/plug.vim
+/autoload/plug.vim.old
+
+# other might useless
+/set
+
+# auto-generate by vim
+/.netrwhist

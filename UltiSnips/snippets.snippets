@@ -1,0 +1,15 @@
+snippet dfsp "define a snippet" bA
+snippet ${1:prefix} "${2:describe}" ${3:option}
+${4:content}
+`echo endsnippet`
+endsnippet
+
+snippet gre "describe" bA
+snippet \`$1 "$2" iA
+\\\\$3
+`echo endsnippet`
+endsnippet
+
+snippet ddf "creat an item of a dic" A
+r'$1' : r'$2',
+endsnippet

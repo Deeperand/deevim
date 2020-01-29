@@ -1,0 +1,152 @@
+global !p
+def check_key(rx, dic, groupnum = 1, charnum = 6): # Check if the string match the rx expression; if match, check if the string is the key of the dic. Here suppose the length of the pattern is less than 4.
+	string = vim.eval(r"strpart(getline('.'), 0, col('.') - 1)") # get the string from the head of the line to the position of the cursor
+	length = len(string)
+	if length >= charnum:
+		string = string[-charnum:]
+	match = re.search(rx + r'$', string)
+	if match:
+		return match.group(groupnum) in dic
+	else:
+		return 0
+
+dic_head_title = {
+	r'1' : r'#',
+	r'2' : r'##',
+	r'3' : r'###',
+	r'4' : r'####',
+	r'5' : r'#####',
+	r'6' : r'######',
+}
+
+dic_bold = {
+	r'd' : r'Descrption',
+	r'e' : r'Example',
+	r'm' : r'More Details',
+	r'n' : r'Notation',
+	r'r' : r'Reference',
+	r's' : r'Solving',
+}
+dic_course = {
+	r's' : r'Statistic Physics',
+	r'c' : r'Computational Physics',
+	r'e' : r'English',
+	r'g' : r'General Relativity',
+	r'q' : r'Quantum Mechanics',
+	r'qf' : r'Quantum Filed Theory',
+	r'o' : r"Oxford Learner's Grammar",
+	r'a' : r'Astrophysics',
+	r'v' : r'Vim Config',
+}
+
+dic_word_property = {
+	r'a' : r'adj.',
+	r'av' : r'adv.',
+	r'c' : r'conj.',
+	r'v' : r'v.',
+	r'vi' : r'vi.',
+	r'vt' : r'vt.',
+	r'n' : r'n.',
+}
+endglobal
+
+# h: head
+snippet "h([0-9]{1,3})" "check_key(r'h([0-9]{1,3})', dic_head_title)" ire
+`!p snip.rv = dic_head_title[match.group(1)]` $1
+endsnippet
+
+# a: angle
+priority 1
+snippet a "angle bracket" i
+\\<$1\\>
+endsnippet
+
+# b: bold, blog
+snippet b "bold" i
+**$1**
+endsnippet
+
+priority 2
+snippet "b([A-Za-z0-9]{1,3})" "check_key(r'b([A-Za-z0-9]{1,3})', dic_bold)" ire
+**`!p snip.rv = dic_bold[match.group(1)]` :** $1
+endsnippet
+
+snippet "B([A-Za-z0-9]{1,3})" "check_key(r'B([A-Za-z0-9]{1,3})', dic_bold)" ire
+**`!p snip.rv = dic_bold[match.group(1)]`** $1
+endsnippet
+
+# snippet bm "More Details" i
+# **More Details:** $1
+# endsnippet
+
+# snippet br "Reference" i
+# **Reference:** $1
+# endsnippet
+
+# i: italic
+snippet i "italic" i
+*$1*
+endsnippet
+
+priority 1
+# m: math
+snippet m "inline maht" i
+\$$1\$
+endsnippet
+
+snippet M "display math" i
+\$\$ $1 \$\$
+endsnippet
+
+# c: code, course
+snippet c "inline code" i
+\`$1\`
+endsnippet
+
+snippet C "display code" i
+\`\`\`$1
+$2
+\`\`\`
+endsnippet
+
+priority 2
+snippet "c([a-z]{1,3})" "check_key(r'c([a-z]{1,3})', dic_course)" ire
+*`!p snip.rv = dic_course[match.group(1)]`:*
+endsnippet
+
+snippet "C([a-z]{1,3})" "check_key(r'C([a-z]{1,3})', dic_course)" ire
+*`!p snip.rv = dic_course[match.group(1)]`*
+endsnippet
+
+priority 2
+snippet "w([a-z]{1,3})" "check_key(r'w([a-z]{1,3})', dic_word_property)" ire
+\\<`!p snip.rv = dic_word_property[match.group(1)]`\\>
+endsnippet
+
+snippet today "date of today" i
+`date +%A,\ %B\ %d,\ %Y`
+endsnippet
+
+# d: diary
+snippet ds "diary (schedule)" i
+## $1
+### Schedule
+#### Morning
+1. $2
+
+#### Afternoon
+1. $3
+
+#### Night
+1. $4
+endsnippet
+
+snippet dt "diary (thought)" i
+### Thought
+#### $1
+endsnippet
+
+# u: underline
+snippet u "underline" i
+<u>$1</u>
+endsnippet

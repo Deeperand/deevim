@@ -1,0 +1,821 @@
+global !p
+def check_key(rx, dic, groupnum = 1, charnum = 6): # Check if the string match the rx expression; if match, check if the string is the key of the dic. Here suppose the length of the pattern is less than 4.
+	string = vim.eval(r"strpart(getline('.'), 0, col('.') - 1)") # get the string from the head of the line to the position of the cursor
+	length = len(string)
+	if length >= charnum:
+		string = string[-charnum:]
+	match = re.search(rx + r'$', string)
+	if match:
+		return match.group(groupnum) in dic
+	else:
+		return 0
+def script_judge(string):
+	if string == r'u':
+		return r'^'
+	elif string == r'd':
+		return r'_'
+
+texMathZones = ['texMathZone'+x for x in ['\/','`a']]
+texIgnoreMathZones = ['texMathText']
+texMathZoneIds = vim.eval('map('+str(texMathZones)+", 'hlID(v:val)')")
+texIgnoreMathZoneIds = vim.eval('map('+str(texIgnoreMathZones)+", 'hlID(v:val)')")
+ignore = texIgnoreMathZoneIds[0]
+def math():
+	synstackids = vim.eval("synstack(line('.'), col('.') - (col('.')>=2 ? 1 : 0))")
+	try:
+		first = next(i for i in reversed(synstackids) if i in texIgnoreMathZoneIds or i in texMathZoneIds)
+		return first != ignore
+	except StopIteration:
+		return False
+
+# start with "`"
+dic_symbol_a = {
+	# greek letter
+	r'a' : r'\alpha',
+	r'b' : r'\beta',
+	r'g' : r'\gamma',
+	r'd' : r'\delta',
+	r'e' : r'\epsilon',
+	r'z' : r'\zeta',
+	r'w' : r'\eta',
+	r'q' : r'\theta',
+	r'i' : r'\iota',
+	r'k' : r'\kappa',
+	r'l' : r'\lambda',
+	r'm' : r'\mu',
+	r'n' : r'\nu',
+	r'x' : r'\xi',
+	r'p' : r'\pi',
+	r'r' : r'\rho',
+	r's' : r'\sigma',
+	r't' : r'\tau',
+	r'u' : r'\ulpsilon',
+	r'f' : r'\phi',
+	r'c' : r'\chi',
+	r'y' : r'\psi',
+	r'o' : r'\omega',
+	r'vD' : r'\varDelta',
+	r've' : r'\varepsilon',
+	r'vf' : r'\varphi',
+	r'vF' : r'\varPhi',
+	r'vG' : r'\varGamma',
+	r'vL' : r'\varLambda',
+	r'vQ' : r'\varTheta',
+	r'vS' : r'\varSigma',
+	r'vP' : r'\varPhi',
+	r'vO' : r'\varOmega',
+	r'vX' : r'\varXi',
+	r'vY' : r'\varPhi',
+	r'vp' : r'\uppi',
+	r'h' : r'\hbar',
+	r'G' : r'\Gamma',
+	r'D' : r'\Delta',
+	r'E' : r'\Epsilon',
+	r'Z' : r'\Zeta',
+	r'W' : r'\Eta',
+	r'Q' : r'\Theta',
+	r'I' : r'\Iota',
+	r'K' : r'\Kappa',
+	r'L' : r'\Lambda',
+	r'M' : r'\Mu',
+	r'N' : r'\Nu',
+	r'X' : r'\Xi',
+	r'P' : r'\Pi',
+	r'S' : r'\Sigma',
+	r'T' : r'\Tau',
+	r'U' : r'\Ulpsilon',
+	r'F' : r'\Phi',
+	r'Y' : r'\Psi',
+	r'O' : r'\Omega',
+
+	# common used symbol
+	r'0' : r'\circ',
+	r'8' : r'\infty',
+	r'7' : r'\propto',
+	r'6' : r'\partial',
+	r'.' : r'\cdot',
+	r'+' : r'\dag',
+	r'*' : r'\bigstar',
+
+	# arrow and equiv
+	r'->' : r'\rightarrow',
+	r'<-' : r'\leftarrow',
+	r'=>' : r'\Rightarrow',
+	r'<=' : r'\Leftarrow',
+	r'<<' : r'\leftrightarrow',
+	r'<>' : r'\Leftrightarrow',
+	r'==' : r'\equiv',
+}
+
+# start with "@"
+dic_symbol_b = {
+	r'a' : r'\forall',
+	r'b' : r'\because',
+	r't' : r'\therefore',
+	r'e' : r'\exists',
+	r'v' : r'\nabla',
+	r'd' : r'\mathrm{d}',
+	r'R1' : r'\mathbb{R}',
+	r'R2' : r'\mathbb{R}^2',
+	r'R3' : r'\mathbb{R}^3',
+	r'Rn' : r'\mathbb{R}^n',
+
+	# arrow and equiv
+	r'->' : r'\longrightarrow',
+	r'<-' : r'\longleftarrow',
+	r'=>' : r'\implies',
+	r'<=' : r'\impliedby',
+	r'<<' : r'\longleftrightarrow',
+	r'<>' : r'\iff',
+	r'==' : r'\approx',
+
+	# other symbols
+	r'*' : r'\times',
+	}
+
+# start with "#"
+dic_symbol_c = {
+	r'a' : r'\angle',
+	r'd' : r'\,\mathrm{d}',
+	r't' : r'\item', # means "term"
+	}
+
+# start with "~"
+dic_symbol_d = {
+	r'd' : r'\Dbar',
+
+	# arrow and equiv
+	r'->' : r'\uparrow',
+	r'<-' : r'\downarrow',
+	r'=>' : r'\Uparrow',
+	r'<=' : r'\Downarrow',
+	r'<<' : r'\updownarrow',
+	r'<>' : r'\Updownarrow',
+	r'==' : r'\cong',
+}
+
+# start with "!"
+dic_symbol_e = {
+	r'|' : r'\Big|',
+}
+
+dic_big_notation = {
+		r'i0' : r'\oint',
+		r'i1' : r'\int',
+		r'i2' : r'\iint',
+		r'i3' : r'iiint',
+		r's' : r'\sum',
+		r'p' : r'\prod',
+		r'u' : r'bigcup',
+		r'n' : r'bigcap'
+}
+
+dic_env = {
+	r'c' : r'center',
+	r'd' : r'document',
+	r'e' : r'enumerate',
+	r'i' : r'itemize',
+	r'tb' : r'tabbing',
+	r'ta' : r'tabular',
+	r'lt' : r'longtable',
+	r'fl' : r'fleqn',
+
+# has option noumally
+	r'ls' : r'lstlisting',
+	r't' : r'tikzpicture',
+	r'fi' : r'figure',
+
+# theorem-like
+	r'cl' : r'Claim',
+	r'ce' : r'Concept',
+	r'df' : r'Definition',
+	r'f' : r'Formula',
+	r'l' : r'Law',
+	r'th' : r'Theorem',
+	r'ex' : r'Example',
+	r'p' : r'Property',
+	r's' : r'Solve',
+}
+
+dic_par_l = {
+	r')' : r'\left(',
+	r']' : r'\left[',
+	r'}' : r'\left\{',
+	r'>' : r'\left<',
+	r'<|' : r'\left<',
+	r'|>' : r'\left|',
+}
+
+dic_par_r = {
+	r')' : r'\right)',
+	r']' : r'\right]',
+	r'}' : r'\right\}',
+	r'>' : r'\right>',
+	r'<|' : r'\right|',
+	r'|>' : r'\right>',
+}
+
+dic_suffix = {
+	r'HA' : r'\hat',
+	r'VE' : r'\vec',
+	r'DO' : r'\dot',
+	r'DS' : r'\ddot', # 'S' means 'second'
+	r'TI' : r'\tilde',
+	r'BA' : r'\bar',
+	r'LI' : r'\overline',
+	r'RM' : r'\mathrm',
+	r'SC' : r'\mathscr',
+	r'BF' : r'\bm',
+	r'BB' : r'\mathbb',
+	r'BM' : r'\mathbbm',
+	r'DD' : r'_',
+	r'UU' : r'^'
+}
+
+dic_hierachy = {
+	r'p' : r'\part',
+	r'c' : r'\chapter',
+	r's' : r'\section',
+	r'ss' : r'\subsection',
+	r's2' : r'\subsubsection',
+	r'h' : r'\subparagraph'
+}
+
+dic_label = {
+	r'e' : r'eq',
+}
+
+dic_math_notation = {
+	r'lo' : r'\log',
+	r'lg' : r'\lg',
+	r'ln' : r'\ln',
+	r's' : r'\sin',
+	r'c' : r'\cos',
+	r'as' : r'\arcsin',
+	r't' : r'\tan',
+	r'at' : r'\arctan',
+	r'ct' : r'\cot',
+	r'sh' : r'\sinh',
+	r'ch' : r'\cosh',
+	r'th' : r'\tanh',
+	r'oh' : r'\coth',
+	r'se' : r'\sec',
+	r'cs' : r'\csc',
+	r'ar' : r'\arg',
+	r'ke' : r'\ker',
+	r'di' : r'\dim',
+	r'ho' : r'\hom',
+	r'e' : r'\MaE',
+	r'ex' : r'\exp',
+	r'de' : r'\deg',
+	r'sg' : r'\mathrm{sgn}',
+	r'si' : r'\mathrm{sinc}',
+	r'r' : r'\mathrm{rect}',
+	r'tr' : r'\mathrm{tri}',
+	r'ga' : r'\mathrm{Gaus}',
+	r'st' : r'\mathrm{step}',
+	r'ci' : r'\mathrm{circ}',
+	r'co' : r'\mathrm{comb}',
+	r'f' : r'\mathscr{F}', # feriour transfer
+	r'F' : r'\mathscr{F}\!', # feriour transfer
+	r'l' : r'\mathscr{L}', # linear notation
+	r'L' : r'\mathscr{L}\!', # linear notation
+	r'p' : r'\MaPI',
+}
+
+dic_math_env = {
+	r'a' : r'align',
+	r'c' : r'cases',
+	r'd' : r'dcases',
+	r'e' : r'equation',
+	r'g' : r'gather',
+	r's' : r'split',
+	r'ad' : r'aligned',
+}
+
+dic_math_font = {
+	r'bb' : r'\mathbb',
+	r'bm' : r'\mathbbm',
+	r'b' : r'\bm',
+	r'r' : r'\mathrm',
+	r'sc' : r'\mathsc',
+	r'v' : r'\vec',
+	r'do' : r'\dot',
+	r'ti' : r'\tilde',
+	r'ba' : r'\bar',
+	r'li' : r'\overline',
+	r'dd' : r'\ddot',
+	r'h' : r'\hat',
+	r't' : r'\text',
+}
+
+dic_matrix = {
+	r'm' : r'matrix',
+	r'b' : r'bmatrix',
+	r'B' : r'Bmatrix',
+	r'v' : r'vmatrix',
+	r'V' : r'Vmatrix',
+	r'p' : r'pmatrix',
+}
+
+dic_font = {
+	r'c' : r'\Code',
+	r'b' : r'\textbf',
+	r'it' : r'\textit',
+	r'f' : r'\footnote',
+	r'p' : r'\texttt', # printer font
+}
+
+dic_frac = {
+	r'6' : r'\partial',
+	r'd' : r'\mathrm{d}',
+}
+
+dic_longarrow = {
+	r'->' : r'\xlongrightarrow',
+	r'<-' : r'\xlongleftarrow',
+	r'=>' : r'\xLongrightarrow',
+	r'<=' : r'\xLongleftarrow',
+	r'==' : r'\xlongequal',
+}
+
+dic_space = {
+r'h' : r'\hspace*{2em}',
+r'v' : r'\vspace*{1em}',
+r'q' : r'\quad',
+r'c' : r',\ ',
+}
+
+endglobal
+
+priority 2
+# `: greek letter, common used symbol and command
+snippet "`([a-zA-Z0-9.,;+\-*<>=|]{1,3})" "check_key(r'`([a-zA-Z0-9.,;+\-*<>=|]{1,3})', dic_symbol_a)" iAre
+`!p snip.rv = dic_symbol_a[match.group(1)]`
+endsnippet
+
+snippet `2 "sqrt" iA
+\\sqrt{$1}$0
+endsnippet
+
+# @
+snippet "@([a-zA-Z0-9.,;+\-*<>=]{1,3})" "check_key(r'@([a-zA-Z0-9.,;+\-*<>=]{1,3})', dic_symbol_b)" iAre
+`!p snip.rv = dic_symbol_b[match.group(1)]`
+endsnippet
+
+snippet "@f([a-zA-Z0-9])" "check_key(r'@f([a-zA-Z0-9])', dic_frac)" iAre
+\\dfrac{`!p snip.rv = dic_frac[match.group(1)]` $1}{`!p snip.rv = dic_frac[match.group(1)]` $2}$0
+endsnippet
+
+# #
+snippet "#([a-zA-Z0-9.,;+\-*<>=]{1,3})" "check_key(r'#([a-zA-Z0-9.,;+\-*<>=]{1,3})', dic_symbol_c)" iAre
+`!p snip.rv = dic_symbol_c[match.group(1)]`
+endsnippet
+
+## longarrow
+snippet "#(->|<-|=>|<=|==)" "long arrow" iAr
+`!p snip.rv = dic_longarrow[match.group(1)]`[$1]{$2}$0
+endsnippet
+
+# ~
+snippet "~([a-zA-Z0-9.,;+\-*<>=]{1,3})" "check_key(r'~([a-zA-Z0-9.,;+\-*<>=]{1,3})', dic_symbol_d)" iAre
+`!p snip.rv = dic_symbol_d[match.group(1)]`
+endsnippet
+
+# !
+snippet "!([a-zA-Z0-9.,;+\-*<>=|]{1,3})" "check_key(r'!([a-zA-Z0-9.,;+\-*<>=|]{1,3})', dic_symbol_e)" iAre
+`!p snip.rv = dic_symbol_e[match.group(1)]`
+endsnippet
+
+snippet !} "bracket" iA
+\\{ $1 \\}
+endsnippet
+
+# other
+snippet ... "dots" iA
+\\dots
+endsnippet
+
+snippet ^^ "superscript" iA
+^{$1}$0
+endsnippet
+
+snippet __ "subscript" iA
+_{$1}$0
+endsnippet
+
+snippet || "abs" iA
+\\left| $1 \\right|
+endsnippet
+
+priority 2
+snippet // "displaystyle friction" iA
+\\dfrac{$1}{$2}$0
+endsnippet
+
+snippet / "split level fractions" i
+\\sfrac{$1}{$2}
+endsnippet
+
+snippet % "fraction" i
+\\frac{$1}{$2}
+endsnippet
+
+priority 1
+snippet <> "angle bracket" iA
+\\langle $1 \\rangle
+endsnippet
+
+snippet <| "bra" iA
+\\langle $1 |
+endsnippet
+
+snippet |> "ket" iA
+| $1 \\rangle
+endsnippet
+
+# parenthesis and long string
+snippet "`(\)|\]|\}|>|\|)" "check_key(r'`(\)|\]|\}|>|\|)', dic_par_r)" iAre
+`!p snip.rv = dic_par_l[match.group(1)]` $1 `!p snip.rv = dic_par_r[match.group(1)]`$0
+endsnippet
+
+snippet "@(\)|\]|\}|>|\|)" "check_key(r'`(\)|\]|\}|>|\|)', dic_par_r)" iAre
+`!p snip.rv = dic_par_l[match.group(1)]` $1 `!p snip.rv = dic_par_r[match.group(1)]`_{$2}$0
+endsnippet
+
+snippet "#(\)|\]|\}|>|\|)" "check_key(r'`(\)|\]|\}|>|\|)', dic_par_r)" iAre
+`!p snip.rv = dic_par_l[match.group(1)]` $1 `!p snip.rv = dic_par_r[match.group(1)]`^{$2}$0
+endsnippet
+
+snippet "~(\)|\]|\}|>|\|)" "check_key(r'`(\)|\]|\}|>|\|)', dic_par_r)" iAre
+`!p snip.rv = dic_par_l[match.group(1)]` $1 `!p snip.rv = dic_par_r[match.group(1)]`_{$2}^{$3}$0
+endsnippet
+
+# big notation
+snippet "@(i0|i1|i2|i3|s|p|u|n)" "big notation" iAr
+`!p snip.rv = dic_big_notation[match.group(1)]`_{$1}$0
+endsnippet
+
+snippet "#(i0|i1|i2|i3|s|p|u|n)" "big notation" iAr
+`!p snip.rv = dic_big_notation[match.group(1)]`^{$1}$0
+endsnippet
+
+snippet "~(i0|i1|i2|i3|s|p|u|n)" "big notation" iAr
+`!p snip.rv = dic_big_notation[match.group(1)]`_{$1}^{$2}$0
+endsnippet
+
+snippet "!(i0|i1|i2|i3|s|p|u|n)" "big notation" iAr
+`!p snip.rv = dic_big_notation[match.group(1)]`$0
+endsnippet
+
+# b: beamer
+snippet b "new frame"
+\begin{frame}
+	$1
+\end{frame}
+endsnippet
+
+# e: enviroment
+snippet e "begin{} / end{}"
+\begin{$1}
+	$2
+\end{$1}$0
+endsnippet
+
+snippet E "enviroment with option" 
+\begin{$1}[$2]
+	$3
+\end{$1}$0
+endsnippet
+
+priority 2
+snippet "e([a-zA-Z]{1,3})" "check_key(r'e([a-zA-Z]{1,3})', dic_env)" re
+\begin{`!p snip.rv = dic_env[match.group(1)]`}
+	$1
+\end{`!p snip.rv = dic_env[match.group(1)]`}$0
+endsnippet
+
+snippet "E([a-zA-Z]{1,3})" "check_key(r'E([a-zA-Z]{1,3})', dic_env)" re
+\begin{`!p snip.rv = dic_env[match.group(1)]`}[$1]
+	$2
+\end{`!p snip.rv = dic_env[match.group(1)]`}$0
+endsnippet
+
+snippet "EE([a-zA-Z]{1,3})" "check_key(r'EE([a-zA-Z]{1,3})', dic_env)" re
+\begin{`!p snip.rv = dic_env[match.group(1)]`}{$1}
+	$2
+\end{`!p snip.rv = dic_env[match.group(1)]`}$0
+endsnippet
+
+# f: font
+priority 2
+snippet "f([a-zA-Z]{1,3})" "check_key(r'f([a-zA-Z]{1,3})', dic_font)" rei
+`!p snip.rv = dic_font[match.group(1)]`{$1}$0
+endsnippet
+
+snippet fB "black font with interval fine adjustment" i
+\,\textbf{$1}\,
+endsnippet
+
+snippet fd "double quotation" i
+\`\`{}$1''
+endsnippet
+
+snippet fs "single quotation" i
+\`{}$1'
+endsnippet
+
+# h: hierarchy
+snippet h "pargraph"
+\\paragraph{$1}$0
+endsnippet
+
+snippet "\bh([a-zA-Z]{1,3})" "check_key(r'\bh([a-zA-Z]{1,3})', dic_hierachy)" ire
+`!p snip.rv = dic_hierachy[match.group(1)]`{$1}$0
+endsnippet
+
+snippet "\bh([a-zA-Z]{1,3})\*" "check_key(r'\bh([a-zA-Z]{1,3})\*', dic_hierachy)" irAe
+`!p snip.rv = dic_hierachy[match.group(1)]`*{$1}$0
+endsnippet
+
+# l: label
+priority 1
+snippet l "label" i
+\\label{$1}
+endsnippet
+
+snippet "l([a-zA-Z]{1,3})" "check_key(r'l([a-zA-Z]{1,3})', dic_label)" ire
+\\label{`!p snip.rv = dic_label[match.group(1)]`: $1}
+endsnippet
+
+# m: math
+## special
+priority 1
+snippet m "mathmode (inline)" i
+\$ $1 \$$0
+endsnippet
+
+# snippet M "mathmode" i
+# \\[ $1 \\]$0
+# endsnippet
+snippet M "math (display style)" i
+\\begin{equation}
+	$1
+\\end{equation}
+endsnippet
+
+priority 2
+snippet mf "framed display-style quation" i
+\\FDEq{ $1 }
+endsnippet
+
+snippet mdp "displaystyle" i
+\\displaystyle
+endsnippet
+
+snippet mi "math inster text" i
+\\intertext[${1:0em}]{$2}
+endsnippet
+
+snippet mca "cases + aligned" i
+\\left\\{ \\begin{aligned}
+	$1
+\\end{aligned} \\right.
+endsnippet
+
+## math font
+snippet "m([a-zA-Z]{1,3})" "check_key(r'm([a-zA-Z]{1,3})', dic_math_font)" ire
+`!p snip.rv = dic_math_font[match.group(1)]`{$1}$0
+endsnippet
+
+## standard env
+snippet "\bm([a-zA-Z]{1,3})" "check_key(r'\bm([a-zA-Z]{1,3})', dic_math_env)" re
+\begin{`!p snip.rv = dic_math_env[match.group(1)]`}
+	$1
+\end{`!p snip.rv = dic_math_env[match.group(1)]`}$0
+endsnippet
+
+## env with star
+snippet "\bm([a-zA-Z]{1,3})\*" "check_key(r'\bm([a-zA-Z]{1,3})\*', dic_math_env)" reA
+\begin{`!p snip.rv = dic_math_env[match.group(1)]`*}
+	$1
+\end{`!p snip.rv = dic_math_env[match.group(1)]`*}$0
+endsnippet
+
+# M: matrix
+snippet "\bM([a-zA-Z]{1,3})" "check_key(r'\bM([a-zA-Z]{1,3})', dic_matrix)" re
+\begin{`!p snip.rv = dic_matrix[match.group(1)]`}
+	$1
+\end{`!p snip.rv = dic_matrix[match.group(1)]`}$0
+endsnippet
+
+# n: notation
+snippet nli "limit" i
+\\lim_{$1 \\rightarrow $2}
+endsnippet
+
+snippet "n([a-zA-Z]{1,3})" "check_key(r'n([a-zA-Z]{1,3})', dic_math_notation)" ire
+`!p snip.rv = dic_math_notation[match.group(1)]`$0
+endsnippet
+
+snippet "n([a-zA-Z]{1,3})(\)|\]|\}|>)" "check_key(r'n([a-zA-Z]{1,3})(\)|\]|\}|>)', dic_math_notation)" irAe
+`!p snip.rv = dic_math_notation[match.group(1)]``!p snip.rv = dic_par_l[match.group(2)]` $1 `!p snip.rv = dic_par_r[match.group(2)]`$0
+endsnippet
+
+# p: program
+snippet pf "fortran" i
+language = {[90]Fortran}, gobble = ${1:8}
+endsnippet
+
+# r: ref
+snippet r "ref" i
+\\ref{$1}
+endsnippet
+
+snippet re "ref_equation" i
+\\eqref{eq: $1}
+endsnippet
+
+snippet rc "cite" i
+\\cite{$1}
+endsnippet
+
+# s: script, special, space
+snippet "s([a-z]{1,3})" "check_key(r's([a-z]{1,3})', dic_space)" re
+`!p snip.rv = dic_space[match.group(1)]`$0
+endsnippet
+
+snippet "s(u|d)" "first-order" r
+$1`!p snip.rv = script_judge(match.group(1))`{$2}
+endsnippet
+
+snippet "s(u|d)(u|d)" "second-order" r
+$1`!p snip.rv = script_judge(match.group(1))`{$2}`!p snip.rv = script_judge(match.group(2))`{$3}
+endsnippet
+
+snippet "s(u|d)(u|d)(u|d)" "third-order" r
+$1`!p snip.rv = script_judge(match.group(1))`{$2}`!p snip.rv = script_judge(match.group(2))`{$3}`!p snip.rv = script_judge(match.group(3))`{$4}
+endsnippet
+
+snippet "s(u|d)(u|d)(u|d)(u|d)" "forth-order" r
+$1`!p snip.rv = script_judge(match.group(1))`{$2}`!p snip.rv = script_judge(match.group(2))`{$3}`!p snip.rv = script_judge(match.group(3))`{$4}`!p snip.rv = script_judge(match.group(4))`{$4}
+endsnippet
+
+snippet slr "left, right" i
+\\left$1 $3 \\right$2
+endsnippet
+
+snippet sr "rule" i
+\\rule[$1]{$2}{$3}
+endsnippet
+
+# t: tensor
+snippet "t(u|d)" "vector" r
+\\tensor{{$1}}{`!p snip.rv = script_judge(match.group(1))`{$2}}
+endsnippet
+
+snippet "t(u|d)(u|d)" "second-order tensor" r
+\\tensor{{$1}}{`!p snip.rv = script_judge(match.group(1))`{$2}`!p snip.rv = script_judge(match.group(2))`{$3}}
+endsnippet
+
+snippet "t(u|d)(u|d)(u|d)" "third-order tensor" r
+\\tensor{{$1}}{`!p snip.rv = script_judge(match.group(1))`{$2}`!p snip.rv = script_judge(match.group(2))`{$3}`!p snip.rv = script_judge(match.group(3))`{$4}}
+endsnippet
+
+snippet "t(u|d)(u|d)(u|d)(u|d)" "forth-order tensor" r
+\\tensor{{$1}}{`!p snip.rv = script_judge(match.group(1))`{$2}`!p snip.rv = script_judge(match.group(2))`{$3}`!p snip.rv = script_judge(match.group(3))`{$5}`!p snip.rv = script_judge(match.group(4))`{$6}}
+endsnippet
+
+# rx
+snippet "([a-zA-Z\\])(\d+)" "subscript" ir
+`!p snip.rv = match.group(1)`_{`!p snip.rv = match.group(2)`}$0
+endsnippet
+
+priority 1
+snippet "([\\a-zA-Z0-9{}\[\]()+-_^]+)/" "auto friction" irA
+\\dfrac{`!p snip.rv = match.group(1)`}{$1}$0
+endsnippet
+
+# proliferation
+snippet @@2 "double type 1"
+$2 $1 $3 $1 $4
+endsnippet
+
+snippet @@3 "treble type 1"
+$2 $1 $3 $1 $4 $1 $5
+endsnippet
+
+snippet @@4 "quadruple type 1"
+$2 $1 $3 $1 $4 $1 $5 $1 $6
+endsnippet
+
+snippet "([a-zA-Z0-9\\{}&_]+)@@2" "double type 2" rA
+$1 `!p snip.rv = match.group(1)` $2 `!p snip.rv = match.group(1)` $3
+endsnippet
+
+snippet "([a-zA-Z0-9\\{}&_]+)@@3" "treble type 2" rA
+$1 `!p snip.rv = match.group(1)` $2 `!p snip.rv = match.group(1)` $3 `!p snip.rv = match.group(1)` $4
+endsnippet
+
+snippet "([a-zA-Z0-9\\{}&_]+)@@4" "quadruple type 1" rA
+$1 `!p snip.rv = match.group(1)` $2 `!p snip.rv = match.group(1)` $3 `!p snip.rv = match.group(1)` $4 `!p snip.rv = match.group(1)` $5
+endsnippet
+
+snippet **2 "double type 4"
+$1 $2 $1 $3
+endsnippet
+
+snippet **3 "treble type 4"
+$1 $2 $1 $3 $1 $4
+endsnippet
+
+snippet **4 "quadruple type 4"
+$1 $2 $1 $3 $1 $4 $1 $5
+endsnippet
+
+snippet "([a-zA-Z0-9\\{}&'_]+)\*\*2" "double type 3" rA
+`!p snip.rv = match.group(1)`$1 `!p snip.rv = match.group(1)`$2
+endsnippet
+
+snippet "([a-zA-Z0-9\\{}&'_]+)\*\*3" "treble type 3" rA
+`!p snip.rv = match.group(1)`$1 `!p snip.rv = match.group(1)`$2 `!p snip.rv = match.group(1)`$3
+endsnippet
+
+snippet "([a-zA-Z0-9\\{}&'_]+)\*\*4" "quadruple type 3" rA
+`!p snip.rv = match.group(1)`$1 `!p snip.rv = match.group(1)`$2 `!p snip.rv = match.group(1)`$3 `!p snip.rv = match.group(1)` $4
+endsnippet
+
+# suffix (use capital both)
+snippet "([0-9a-zA-Z\*\\]+)([A-Z]{2})" "check_key(r'([0-9a-zA-Z\*\\]+)([A-Z]{2})', dic_suffix, groupnum = 2, charnum = 15)" Are
+`!p snip.rv = dic_suffix[match.group(2)]`{`!p snip.rv = match.group(1)`}
+endsnippet
+
+# date
+snippet today "date of today" i
+`date +%A,\ %B\ %d,\ %Y`
+endsnippet
+
+# begin of a document
+snippet bg-pre "preamble" i
+\\input{/Users/he/Documents/LaTeX/Notebooks/notebook_customize.tex}
+endsnippet
+
+snippet bg-b "beamer" i
+\documentclass{beamer}
+\usepackage{xeCJK}
+\usepackage{tikz}
+\usetheme{Madrid}
+
+\title{$1}
+\author{$2}
+\date{}
+\begim{document}
+$3
+\end{document}
+endsnippet
+
+
+snippet bg-hw "homework" i
+\\documentclass[UTF8]{ctexart}
+
+\\input{/Users/he/Documents/LaTeX/Notebooks/notebook_customize.tex}
+
+\\title{\\bfseries ${1:subject name}\\\\ \\Large ${2:week}}
+\\author{\\slshape 物理1班\\quad 何剑锋\\quad 20172801}
+\\date{}
+
+\newcounter{Prob}
+\setcounter{Prob}{0}
+\newcommand\Prob{\stepcounter{Prob}\arabic{Prob}.\ }
+
+\\begin{document}
+\\maketitle
+$3
+
+\\end{document}
+endsnippet
+
+snippet bg-nb "notebook" i
+\\documentclass[UTF8, oneside]{ctexbook}
+
+\\input{/Users/he/Documents/LaTeX/Notebooks/notebook_customize.tex}
+
+\\title{\fontsize{60}{10}\selectfont \bfseries $1}
+\\author{\zihao{1} \slshape 何剑锋}
+\\date{}
+
+\\begin{document}
+\\maketitle % title page
+\\tableofcontents % content
+\subincludefrom{Note/}{$2}
+\\end{document}
+endsnippet
+
+snippet bg-ch "chapter" i
+\\setcounter{section}{0}
+\\setcounter{subsetion}{0}
+\\setcounter{subsubsection}{0}
+\\setcounter{paragraph}{0}
+\\setcounter{subparagraph}{0}
+endsnippet
+
