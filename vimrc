@@ -23,7 +23,7 @@
 
     " highlight set
         set incsearch                   " Hightlight while searching with / or ?.
-        set hlsearch                    " Keep matches highlightes.
+        set nohlsearch                    " disable matches highlightes by default
         set synmaxcol=2000             " Only hightlight the limited column
 
     " edrawing
@@ -37,10 +37,11 @@
     " use gui color
         set termguicolors
 
-    set number                      " let line number visuable
-    set cursorline                  " Finde the current line quickly.
-    set wrapscan                    " Searches warp around end-if-file
-    set report=0                   " Alwayse report changed lines.
+    set spell      " optn spell check by default
+    set number     " let line number visuable
+    set cursorline " Finde the current line quickly.
+    set wrapscan   " Searches warp around end-if-file
+    set report=0   " Alwayse report changed lines.
 
     " font (for gui)
     " 中文测试
