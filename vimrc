@@ -298,6 +298,24 @@
 
 " --------------------------------------------------------------------------------
 
+" fugitive
+    nnoremap <leader>gs <ESC>:Gstatus<CR>
+    let g:which_key_map_Leader.g = {'name' : '{git}',}
+    let g:which_key_map_Leader.g.s = ':Gstatus'
+
+" asyncrun
+    nnoremap <leader>ar <ESC>:AsyncRun<space>
+    nnoremap <leader>aR <ESC>:AsyncRun!<space>
+    nnoremap <leader>as <ESC>:AsyncStop<CR>
+    let g:which_key_map_Leader.a = {
+        \ 'name' : '{asyncrun}',
+        \ 'r' : ':AsyncRun',
+        \ 'R' : ':AsyncRun!',
+        \ 's' : ':AsyncStop',
+        \ }
+
+" --------------------------------------------------------------------------------
+
 " text object related (just list the text object which weren't included in the default text object)
     " textogj-entire
         let which_key_map_a['e'] = 'entire file'
