@@ -14,9 +14,33 @@
     let g:vim_markdown_fenced_languages = ['c++=cpp', 'viml=vim', 'bash=sh', 'ini=dosini','LaTeX=tex']
 
 " markdown-preview.nvim
-    nmap <buffer> <Localleader>ll <Plug>MarkdownPreview
-    nmap <buffer> <Localleader>ls <Plug>MarkdownPreviewStop
-    nmap <buffer> <Localleader>lt <ESC>:Toc<CR>
+    " start preview
+        nmap <buffer> <localleader>ll <Plug>MarkdownPreview
+    " stop preview
+        nmap <buffer> <localleader>ls <Plug>MarkdownPreviewStop
+    " open toc
+        nmap <buffer> <localleader>lt <ESC>:Toc<CR>
+    " switch if enable sync scroll
+        function g:Switch_option(x)
+            if a:x==1
+                return 0
+            elseif a:x==0
+                return 1
+            endif
+        endfunction
+        nnoremap <buffer><expr> <localleader>lc execute('let g:mkdp_preview_options["disable_sync_scroll"] = g:Switch_option(g:mkdp_preview_options["disable_sync_scroll"])')
+    " table format
+        nnoremap <buffer> <localleader>la <ESC>:TableFormat<CR>
+
+    " shortcut manage
+        let g:which_key_map_Local_Leader.l = {'name' : '{for specific type}',}
+        let g:which_key_map_Local_Leader.l['.TYPE.'] = 'markdown'
+        let g:which_key_map_Local_Leader.l.a = 'table format'
+        let g:which_key_map_Local_Leader.l.c = 'switch sync scroll state'
+        let g:which_key_map_Local_Leader.l.l = 'preview markdown file'
+        let g:which_key_map_Local_Leader.l.s = 'stop preview markdown file'
+        let g:which_key_map_Local_Leader.l.t = 'open markdown TOC'
+
     let g:mkdp_auto_close = 0 " don't auto-close the window
     let g:mkdp_browser = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' " set browser as Chrome
 
@@ -30,4 +54,4 @@
     " open syntax
         nnoremap <buffer> <F3> <ESC>:e ~/.vim/after/syntax/markdown.vim<CR>
     " let change line easier
-        inoremap <buffer> <S-CR> <Space><Space><CR>
+        inoremap <buffer> <M-CR> <Space><Space><CR>
