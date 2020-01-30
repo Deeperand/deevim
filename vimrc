@@ -37,7 +37,6 @@
     " use gui color
         set termguicolors
 
-    set spell      " optn spell check by default
     set number     " let line number visuable
     set cursorline " Finde the current line quickly.
     set wrapscan   " Searches warp around end-if-file
