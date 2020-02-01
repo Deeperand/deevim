@@ -14,3 +14,4 @@
 # auto-generate by vim
 /.netrwhist
 /sessions/default.vim
+*.swp
