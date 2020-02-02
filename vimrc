@@ -104,10 +104,19 @@
                         Plug 'kristijanhusak/defx-icons'
                     " git support
                         Plug 'kristijanhusak/defx-git'
+                " git enhancment
+                    " git wrapper
+                        Plug 'tpope/vim-fugitive'
+                    " Show a diff using Vim its sign column
+                        if has('nvim') || has('patch-8.0.902')
+                            Plug 'mhinz/vim-signify'
+                        else
+                            Plug 'mhinz/vim-signify', { 'branch': 'legacy' }
+                        endif
                 " shortcut management
                     Plug 'liuchengxu/vim-which-key'
                 " search
-                    Plug 'Yggdroot/LeaderF', { 'do': '.\install.sh' }
+                    Plug 'Yggdroot/LeaderF', { 'do': './install.sh' }
                 " power status line
                     Plug 'vim-airline/vim-airline'
                     Plug 'vim-airline/vim-airline-themes'
@@ -139,10 +148,6 @@
                     Plug 'ludovicchabant/vim-gutentags'
                 " run shell commands in background
                     Plug 'skywind3000/asyncrun.vim'
-                " git wrapper
-                    Plug 'tpope/vim-fugitive'
-                " Show a diff using Vim its sign column
-                    Plug 'mhinz/vim-signify'
                 " text object
                     " create your own
                         Plug 'kana/vim-textobj-user'
@@ -180,6 +185,8 @@
             nnoremap <Leader>pU <ESC>:PlugUpgrade<CR>
         " check status of plug
             nnoremap <Leader>ps <ESC>:PlugStatus<CR>
+
+" --------------------------------------------------------------------------------
 
 " theme related (this should be put at the first, otherwise some fine tuning of other plugin shouldn't word)
     " set theme
@@ -244,9 +251,9 @@
         " main page
             let g:which_key_map = {
                 \ 'l': [':WhichKey "\\"', '{leader}'],
-                \ 'a': [':WhichKey "a"', '{text object V1}'],
+                \ 'a': [':WhichKey "a"', '{text object "a"}'],
                 \ 'g': [':WhichKey "g"', '{go to}'],
-                \ 'i': [':WhichKey "i"', '{text object V2}'],
+                \ 'i': [':WhichKey "i"', '{text object "i"}'],
                 \ 'z': [':WhichKey "z"', '{fold}'],
                 \ 'S': [':WhichKey! g:which_key_map_Surround', '{vim-surround}'],
                 \ 'T': [':WhichKey! g:vim_default_textobj', '{default text object}'],
@@ -298,10 +305,50 @@
 
 " --------------------------------------------------------------------------------
 
-" fugitive
-    nnoremap <leader>gs <ESC>:Gstatus<CR>
-    let g:which_key_map_Leader.g = {'name' : '{git}',}
-    let g:which_key_map_Leader.g.s = ':Gstatus'
+" git related
+    " build dictionary for git shortcut
+        let g:which_key_map_Leader.g = {'name' : '{git}',}
+    " use terminal
+        if has('nvim')
+            " check log with terminal
+                nnoremap <leader>gl <ESC>:terminal cd '%:p:h'; git log --graph<CR>
+                let g:which_key_map_Leader.g.l = 'git log graph (term)'
+        endif
+    " fugitive
+        " compare with last commit of current file ('d' means diff)
+            nnoremap <leader>gd <ESC>:Gdiff<CR>
+            let g:which_key_map_Leader.g.d = 'compare with last commit'
+        " add current file to stage
+            nnoremap <leader>ga <ESC>:Git add %
+            let g:which_key_map_Leader.g.a = 'add current file to stage'
+        " check git log with parameter '--graph' in a brief way ('g' means 'log') (加上右移 'h' 是因为有时会需要键入命令才能打开 log 窗口, 加入一个无害的指令可以避免手动进行此步)
+            nnoremap <leader>gg <ESC>:Git log --graph --pretty=format:'%Cred%h%Creset - %Cgreen(%ad)%C(yellow)%d%Creset %s %C(bold blue)<%an>%Creset' --abbrev-commit --date=local<CR>h
+            let g:which_key_map_Leader.g.g = 'git log graph (brief)'
+    " signify
+        nnoremap <leader>gs <ESC>:Gstatus<CR>
+        let g:which_key_map_Leader.g.s = ':Gstatus'
+        " icon
+            let g:signify_sign_change = '~'
+        " fold unchanged content ('f' means 'fold' or 'diff')
+            nnoremap <leader>gf <ESC>:SignifyFold<CR>
+            let g:which_key_map_Leader.g.f = 'fold unchang in new tab'
+        " highlight diff
+            nnoremap <leader>gh <ESC>:SignifyToggleHighlight<CR>
+            let g:which_key_map_Leader.g.h = 'toggle highlight change'
+        " hunk text object ('ic' operates on all lines of the current hunk. 'ac' does the same, but also removes all trailing empty lines.)
+            omap ic <plug>(signify-motion-inner-pending)
+            xmap ic <plug>(signify-motion-inner-visual)
+            omap ac <plug>(signify-motion-outer-pending)
+            xmap ac <plug>(signify-motion-outer-visual)
+            let g:which_key_map_i.c = 'change hunk'
+            let g:which_key_map_a.c = 'change hunk'
+        " key map
+            let g:which_key_map_LeftSqureBracket.c = 'previous change'
+            let g:which_key_map_RightSqureBracket.c = 'next change'
+            let g:which_key_map_LeftSqureBracket.C = 'first change'
+            let g:which_key_map_RightSqureBracket.C = 'last change'
+
+" --------------------------------------------------------------------------------
 
 " asyncrun
     nnoremap <leader>ar <ESC>:AsyncRun<space>
@@ -1107,6 +1154,8 @@
 " general key mapping
     " local leader (local leader is used in plug such as 'vimtex')
         let g:maplocalleader = ','
+    " double press localleader to back find (to achice its original function)
+        nnoremap <localleader><localleader> ,
     " move
         noremap j gj
         noremap k gk
@@ -1158,15 +1207,40 @@
         nnoremap <LocalLeader>fm <ESC>:set foldmethod=manual<CR>
         nnoremap <LocalLeader>fs <ESC>:set foldmethod=syntax<CR>
 
-        " map manage 
-            let g:which_key_map_Local_Leader.f = {'name': '{fold method}', }
-            let g:which_key_map_Local_Leader.f.d = 'diff'
-            let g:which_key_map_Local_Leader.f.e = 'expr'
-            let g:which_key_map_Local_Leader.f.i = 'indent'
-            let g:which_key_map_Local_Leader.f.k = 'marker'
-            let g:which_key_map_Local_Leader.f.m = 'manual'
-            let g:which_key_map_Local_Leader.f.s = 'syntax'
+    " map manage 
+        let g:which_key_map_Local_Leader.f = {'name': '{fold method}', }
+        let g:which_key_map_Local_Leader.f.d = 'diff'
+        let g:which_key_map_Local_Leader.f.e = 'expr'
+        let g:which_key_map_Local_Leader.f.i = 'indent'
+        let g:which_key_map_Local_Leader.f.k = 'marker'
+        let g:which_key_map_Local_Leader.f.m = 'manual'
+        let g:which_key_map_Local_Leader.f.s = 'syntax'
 
+    " terminal related (need nvim)
+        if has('nvim')
+            " run command in terminal at current file path
+                nnoremap <localleader>t <ESC>:terminal cd '%:p:h'; 
+                let g:which_key_map_Local_Leader.t = 'run at terminal'
+            " key map in terminal mod
+                " To map <Esc> to exit terminal-mode
+                    tnoremap <Esc> <C-\><C-n>
+                " To use `Shift+Meta+{h,j,k,l}` to navigate windows from any mode
+                    " terminal mode
+                        tnoremap <M-S-h> <C-\><C-N><C-w>h
+                        tnoremap <M-S-j> <C-\><C-N><C-w>j
+                        tnoremap <M-S-k> <C-\><C-N><C-w>k
+                        tnoremap <M-S-l> <C-\><C-N><C-w>l
+                    " insert mod
+                        inoremap <M-S-h> <C-\><C-N><C-w>h
+                        inoremap <M-S-j> <C-\><C-N><C-w>j
+                        inoremap <M-S-k> <C-\><C-N><C-w>k
+                        inoremap <M-S-l> <C-\><C-N><C-w>l
+                    " normal mode
+                        nnoremap <M-S-h> <C-w>h
+                        nnoremap <M-S-j> <C-w>j
+                        nnoremap <M-S-k> <C-w>k
+                        nnoremap <M-S-l> <C-w>l
+       endif
 
 " --------------------------------------------------------------------------------
 
