@@ -319,7 +319,7 @@
             nnoremap <leader>gd <ESC>:Gdiff<CR>
             let g:which_key_map_Leader.g.d = 'compare with last commit'
         " add current file to stage
-            nnoremap <leader>ga <ESC>:Git add %
+            nnoremap <leader>ga <ESC>:Git add %<CR>
             let g:which_key_map_Leader.g.a = 'add current file to stage'
         " check git log with parameter '--graph' in a brief way ('g' means 'log') (加上右移 'h' 是因为有时会需要键入命令才能打开 log 窗口, 加入一个无害的指令可以避免手动进行此步)
             nnoremap <leader>gg <ESC>:Git log --graph --pretty=format:'%Cred%h%Creset - %Cgreen(%ad)%C(yellow)%d%Creset %s %C(bold blue)<%an>%Creset' --abbrev-commit --date=local<CR>h
@@ -1166,6 +1166,8 @@
     " faster move
         noremap <C-j> 5j
         noremap <C-k> 5k
+        noremap <C-h> 5h
+        noremap <C-l> 5l
     " check the global setting
         nnoremap <Leader>C <ESC>:e ~/.vim/vimrc<CR>
         let g:which_key_map_Leader.C = 'open vimrc'
