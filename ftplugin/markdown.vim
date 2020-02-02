@@ -13,6 +13,13 @@
     let g:vim_markdown_auto_insert_bullets = 1 " Automatically inserting bulletpoints can lead to problems when wrapping text (see issue #232 for details), so it can be disabled
     let g:vim_markdown_fenced_languages = ['c++=cpp', 'viml=vim', 'bash=sh', 'ini=dosini','LaTeX=tex']
 
+    " remap how to go to current header to avoid the conflict with 'fugitive' and 'signify'
+        nmap <buffer> gh <Plug>Markdown_MoveToCurHeader
+        let g:which_key_map_g.h = 'T [md] goto current header'
+    " remap how to go to upper header
+        nmap <buffer> gu <Plug>Markdown_MoveToParentHeader
+        let g:which_key_map_g.u = 'T [md] goto upper header'
+
 " markdown-preview.nvim
     " start preview
         nmap <buffer> <localleader>ll <Plug>MarkdownPreview
@@ -32,14 +39,13 @@
     " table format
         nnoremap <buffer> <localleader>la <ESC>:TableFormat<CR>
 
-    " shortcut manage
+    " shortcut manage ('T' means 'type specific')
         let g:which_key_map_Local_Leader.l = {'name' : '{for specific type}',}
-        let g:which_key_map_Local_Leader.l['.TYPE.'] = 'markdown'
-        let g:which_key_map_Local_Leader.l.a = 'table format'
-        let g:which_key_map_Local_Leader.l.c = 'switch sync scroll state'
-        let g:which_key_map_Local_Leader.l.l = 'preview markdown file'
-        let g:which_key_map_Local_Leader.l.s = 'stop preview markdown file'
-        let g:which_key_map_Local_Leader.l.t = 'open markdown TOC'
+        let g:which_key_map_Local_Leader.l.a = 'T [md] table format'
+        let g:which_key_map_Local_Leader.l.c = 'T [md] switch sync scroll state'
+        let g:which_key_map_Local_Leader.l.l = 'T [md] preview markdown file'
+        let g:which_key_map_Local_Leader.l.s = 'T [md] stop preview markdown file'
+        let g:which_key_map_Local_Leader.l.t = 'T [md] open markdown TOC'
 
     let g:mkdp_auto_close = 0 " don't auto-close the window
     let g:mkdp_browser = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' " set browser as Chrome
