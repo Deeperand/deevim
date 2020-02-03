@@ -37,7 +37,7 @@
         endfunction
         nnoremap <buffer><expr> <localleader>lc execute('let g:mkdp_preview_options["disable_sync_scroll"] = g:Switch_option(g:mkdp_preview_options["disable_sync_scroll"])')
     " table format
-        nnoremap <buffer> <localleader>la <ESC>:TableFormat<CR>
+        nnoremap <buffer> <localleader>la <ESC>:TableFormat<CR><ESC>
 
     " shortcut manage ('T' means 'type specific')
         let g:which_key_map_Local_Leader.l = {'name' : '{for specific type}',}
