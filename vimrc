@@ -878,7 +878,7 @@
         " Lf_hl_popup_window is the wincolor of content window
             highlight Lf_hl_popup_window guifg=#6c6b65 guibg=#fffde8
         " the color of the cursorline
-            highlight Lf_hl_cursorline guifg=#9849ff guibg=NONE gui=bold 
+            highlight def Lf_hl_cursorline guifg=#9849ff guibg=NONE gui=NONE
 
     " key map
         " history command ('c' means 'command')
