@@ -15,7 +15,7 @@ let g:tex_fold_enabled = 1 " latex fold set
 " special setting of the type of the file
     nnoremap <buffer> <F2> <ESC>:e ~/.vim/ftplugin/tex.vim<CR>
 " change line
-    inoremap <buffer> <S-CR> \\<CR>
+    inoremap <buffer> <M-CR> \\<CR>
 " close the enviroment
     imap <F2> <plug>(vimtex-delim-close)
 " only cancel the code, the inverse search of LaTeX with MacVim can work well
