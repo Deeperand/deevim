@@ -85,7 +85,9 @@
                     Plug 'rudrab/vimf90', {'for':'fortran'}
                 " c/c++
                     " enhanced highlight
-                        Plug 'octol/vim-cpp-enhanced-highlight', {'for':'c'}
+                        Plug 'octol/vim-cpp-enhanced-highlight', {'for':'cpp'}
+                " json
+                    Plug 'elzr/vim-json'
 
             " used generally
                 " file tree browse
@@ -351,15 +353,22 @@
 " --------------------------------------------------------------------------------
 
 " asyncrun
-    nnoremap <leader>ar <ESC>:AsyncRun<space>
-    nnoremap <leader>aR <ESC>:AsyncRun!<space>
-    nnoremap <leader>as <ESC>:AsyncStop<CR>
-    let g:which_key_map_Leader.a = {
-        \ 'name' : '{asyncrun}',
-        \ 'r' : ':AsyncRun',
-        \ 'R' : ':AsyncRun!',
-        \ 's' : ':AsyncStop',
-        \ }
+    " auto open quickfix window with hight 15 (or other hight)
+        let g:asyncrun_open = 10
+    " open/close quickfix window
+        nnoremap <F10> :call asyncrun#quickfix_toggle(10)<CR>
+    " keymap
+        nnoremap <leader>ac <ESC>:AsyncRun cd $VIM_FILEDIR;<space>
+        nnoremap <leader>ar <ESC>:AsyncRun<space>
+        nnoremap <leader>aR <ESC>:AsyncRun!<space>
+        nnoremap <leader>as <ESC>:AsyncStop<CR>
+        let g:which_key_map_Leader.a = {
+            \ 'name' : '{asyncrun}',
+            \ 'r' : ':AsyncRun',
+            \ 'R' : ':AsyncRun!',
+            \ 's' : ':AsyncStop',
+            \ 'c' : 'AsyncRun at current dir',
+            \ }
 
 " --------------------------------------------------------------------------------
 
@@ -562,14 +571,6 @@
         if !isdirectory(s:vim_tags)
             silent! call mkdir(s:vim_tags, 'p')
         endif
-
-" --------------------------------------------------------------------------------
-
-" asyncrun
-    " auto open quickfix window with hight 15 (or other hight)
-        let g:asyncrun_open = 15
-    " open/close quickfix window
-        nnoremap <F10> :call asyncrun#quickfix_toggle(15)<CR>
 
 " --------------------------------------------------------------------------------
 
@@ -847,8 +848,7 @@
 
 
     " key map
-        inoremap <C-M-b> <ESC>:Defx `expand('%:p:h')` <CR>
-        noremap <C-M-b> :Defx `expand('%:p:h')`<CR>
+        noremap <C-M-b> :Defx `expand('%:p:h')` -search=`expand('%:p')`<CR>
 
 " --------------------------------------------------------------------------------
 
@@ -930,26 +930,32 @@
         let g:ale_change_sign_column_color = 1 " set different highlights for the sign column itself
         let g:ale_sign_highlight_linenrs = 1 " allowed highlight of line number
         let g:ale_lint_on_text_changed = 'normal' " 'normal' check buffers if text changed (both normal and insert)
+        let g:ale_hover_to_preview = 1
 
     " error, warning and info
         let ale_sign_error = '✗'
         highlight ALEError gui=undercurl guisp=#ff0000 guibg=#87d7ff
         highlight ALEErrorSign guifg=#ff0000
-        " seems useless for vim, but the help said noevim was supported    highlight ALEErrorSignLineNr guifg=#ff0000
+        " seems useless for vim, but the help said noevim was supported    
         let ale_sign_warning = '⚡'
         highlight ALEWarning gui=undercurl guisp=#5f87ff guibg=#ffd787
         highlight ALEWarningSign guifg=#ff8700
-        " seems useless for vim, but the help said noevim was supported    highlight ALEWarningSignLineNr guibg=#ffaf00
+        " seems useless for vim, but the help said noevim was supported    
         let ale_sign_info = '?'
         highlight ALEInfo gui=bold guifg=#00d700
         highlight ALEInfoSign gui=undercurl guisp=#ff8700 guibg=#5fff5f
-        " seems useless for vim, but the help said noevim was supported    highlight ALEInfoSignLineNr guifg=#00d700
+
+        " highlight of column ralated column number (seems useless for vim, but the help said noevim was supported)
+            " highlight ALEErrorSignLineNr guifg=#ff0000
+            " highlight ALEWarningSignLineNr guibg=#ffaf00
+            " highlight ALEInfoSignLineNr guifg=#00d700
 
     " key map
-        " previous
-            nmap <silent> <M-k> <Plug>(ale_previous_wrap)
-        " next
-            nmap <silent> <M-j> <Plug>(ale_next_wrap)
+        " nevigate between diagnostic
+            nmap <silent> <M-p> <Plug>(ale_previous_wrap)
+            nmap <silent> <M-n> <Plug>(ale_next_wrap)
+            " let g:which_key_map_LeftSqureBracket.g = 'ale: previous diagnostic'
+            " let g:which_key_map_RightSqureBracket.g = 'ale: next diagnostic'
         " toggle and detail
             nnoremap <Leader>et :ALEToggle<CR>
             nnoremap <Leader>ed :ALEDetail<CR>
@@ -961,10 +967,11 @@
 
     " linter choose
         let g:ale_linters = {
-        \   'cpp': ['clang', 'gcc'],
-        \   'c': ['clang', 'gcc'],
-        \   'python': ['pylint'],
-        \   'fortran' : ['gfortran']
+        \ 'cpp': [''],
+        \ 'c': [''],
+        \ 'python': ['pylint'],
+        \ 'fortran' : ['gfortran'],
+        \ 'tex' : [''],
         \}
 
 " --------------------------------------------------------------------------------
@@ -1040,11 +1047,9 @@
             let g:which_key_map_g['name'] = 'go to'
             call extend(g:which_key_map_g, g:which_key_map_coc_goto)
 
-        " Use `[g` and `]g` to navigate diagnostics
-            nmap <silent> [g <Plug>(coc-diagnostic-prev)
-            nmap <silent> ]g <Plug>(coc-diagnostic-next)
-            let g:which_key_map_LeftSqureBracket.g = 'coc: previous diagnostic'
-            let g:which_key_map_RightSqureBracket.g = 'coc: next diagnostic'
+        " navigate diagnostics
+            nmap <silent> <M-k> <Plug>(coc-diagnostic-prev)
+            nmap <silent> <M-j> <Plug>(coc-diagnostic-next)
 
         " Use <TAB> for select selections ranges, needs server support, like: coc-tsserver, coc-python
         " since the map is in the normal mode, it won't infect the expand of snippet
