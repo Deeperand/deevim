@@ -82,13 +82,16 @@ snippet i "italic" i
 endsnippet
 
 priority 1
+
 # m: math
 snippet m "inline maht" i
 \$$1\$
 endsnippet
 
 snippet M "display math" i
-\$\$ $1 \$\$
+\$\$
+$1
+\$\$
 endsnippet
 
 # c: code, course
@@ -121,7 +124,7 @@ snippet today "date of today" i
 endsnippet
 
 # t: template
-snippet tds "diary (schedule)" i
+snippet ts "schedule" i
 ## $1
 ### Schedule
 #### Morning
@@ -137,19 +140,6 @@ endsnippet
 snippet tdt "diary (thought)" i
 ### Thought
 #### $1
-endsnippet
-
-snippet tlg "template of log" i
-## $1
-### Schedule
-#### Morning
-- $2
-
-#### Afternoon
-- $3
-
-#### Night
-- $4
 endsnippet
 
 # n: notation
