@@ -163,11 +163,11 @@ dic_big_notation = {
 		r'i0' : r'\oint',
 		r'i1' : r'\int',
 		r'i2' : r'\iint',
-		r'i3' : r'iiint',
+		r'i3' : r'\iiint',
 		r's' : r'\sum',
 		r'p' : r'\prod',
-		r'u' : r'bigcup',
-		r'n' : r'bigcap'
+		r'u' : r'\bigcup',
+		r'n' : r'\bigcap'
 }
 
 dic_env = {
@@ -178,6 +178,7 @@ dic_env = {
 	r'tb' : r'tabbing',
 	r'ta' : r'tabular',
 	r'lt' : r'longtable',
+	r'f' : r'float',
 	r'fl' : r'fleqn',
 
 # has option noumally
@@ -189,7 +190,7 @@ dic_env = {
 	r'cl' : r'Claim',
 	r'ce' : r'Concept',
 	r'df' : r'Definition',
-	r'f' : r'Formula',
+	r'fo' : r'Formula',
 	r'l' : r'Law',
 	r'th' : r'Theorem',
 	r'ex' : r'Example',
@@ -324,6 +325,7 @@ dic_font = {
 	r'it' : r'\textit',
 	r'f' : r'\footnote',
 	r'p' : r'\texttt', # printer font
+	r'w' : r'\CJKunderwave',
 }
 
 dic_frac = {
@@ -337,6 +339,18 @@ dic_longarrow = {
 	r'=>' : r'\xLongrightarrow',
 	r'<=' : r'\xLongleftarrow',
 	r'==' : r'\xlongequal',
+}
+
+dic_power = {
+	r'0' : r'0',
+	r'1' : r'1',
+	r'2' : r'2',
+	r'3' : r'3',
+	r'4' : r'4',
+	r'5' : r'-1',
+	r'6' : r'-2',
+	r'7' : r'-3',
+	r'8' : r'-4',
 }
 
 dic_space = {
@@ -475,6 +489,31 @@ snippet b "new frame"
 \end{frame}
 endsnippet
 
+# c: code
+priority 1
+snippet c "code in-line" i
+\Code{$1}
+endsnippet
+
+snippet C "code block" i
+\begin{lstlisting}[$1]
+	$2
+\end{lstlisting}
+endsnippet
+
+priority 2
+snippet cf "code block: fortran" i
+\begin{lstlisting}[language = {[90]Fortran}, gobble = ${1:8}]
+	$2
+\end{lstlisting}
+endsnippet
+
+snippet cc "code block: C language" i
+\begin{lstlisting}[language = {C}, gobble = ${1:8}]
+	$2
+\end{lstlisting}
+endsnippet
+
 # e: enviroment
 snippet e "begin{} / end{}"
 \begin{$1}
@@ -552,7 +591,7 @@ endsnippet
 ## special
 priority 1
 snippet m "mathmode (inline)" i
-\$ $1 \$$0
+\$$1\$$0
 endsnippet
 
 # snippet M "mathmode" i
@@ -622,9 +661,14 @@ snippet "n([a-zA-Z]{1,3})(\)|\]|\}|>)" "check_key(r'n([a-zA-Z]{1,3})(\)|\]|\}|>)
 `!p snip.rv = dic_math_notation[match.group(1)]``!p snip.rv = dic_par_l[match.group(2)]` $1 `!p snip.rv = dic_par_r[match.group(2)]`$0
 endsnippet
 
-# p: program
+# p: program, power
 snippet pf "fortran" i
 language = {[90]Fortran}, gobble = ${1:8}
+endsnippet
+
+priority 2
+snippet "pp([0-9])" "power" "check_key(r'pp([0-9])', dic_power)"  rei
+^{`!p snip.rv = dic_power[match.group(1)]`}
 endsnippet
 
 # r: ref
@@ -686,7 +730,8 @@ snippet "t(u|d)(u|d)(u|d)(u|d)" "forth-order tensor" r
 \\tensor{{$1}}{`!p snip.rv = script_judge(match.group(1))`{$2}`!p snip.rv = script_judge(match.group(2))`{$3}`!p snip.rv = script_judge(match.group(3))`{$5}`!p snip.rv = script_judge(match.group(4))`{$6}}
 endsnippet
 
-# rx
+# RE
+priority 1
 snippet "([a-zA-Z\\])(\d+)" "subscript" ir
 `!p snip.rv = match.group(1)`_{`!p snip.rv = match.group(2)`}$0
 endsnippet
@@ -800,14 +845,14 @@ snippet bg-nb "notebook" i
 
 \\input{/Users/he/Documents/LaTeX/Notebooks/notebook_customize.tex}
 
-\\title{\fontsize{60}{10}\selectfont \bfseries $1}
-\\author{\zihao{1} \slshape 何剑锋}
+\\title{\fontsize{50}{10}\selectfont \Zapfino $1}
+\\author{\fontsize{15}{4} \Zapfino Jianfeng He}
 \\date{}
 
 \\begin{document}
 \\maketitle % title page
 \\tableofcontents % content
-\subincludefrom{Note/}{$2}
+\subincludefrom{}{note/$2}
 \\end{document}
 endsnippet
 
