@@ -354,10 +354,22 @@ dic_power = {
 }
 
 dic_space = {
-r'h' : r'\hspace*{2em}',
-r'v' : r'\vspace*{1em}',
-r'q' : r'\quad',
-r'c' : r',\ ',
+	r'h' : r'\hspace*{2em}',
+	r'v' : r'\vspace*{1em}',
+	r'q' : r'\quad',
+	r'c' : r',\ ',
+}
+
+dic_code_block = {
+	r'b' : r'bash',
+	r'c' : r'C',
+	r'cp' : r'C++',
+	r'f' : r'[90]Fortran',
+	r'h' : r'HTML',
+	r'm' : r'Mathematica',
+	r'py' : r'Python',
+	r'pe' : r'Perl',
+	r't' : r'[LaTeX]TeX',
 }
 
 endglobal
@@ -502,20 +514,8 @@ snippet C "code block" i
 endsnippet
 
 priority 2
-snippet cf "code block: fortran" i
-\begin{lstlisting}[language = {[90]Fortran}, gobble = ${1:8}]
-	$2
-\end{lstlisting}
-endsnippet
-
-snippet cc "code block: C language" i
-\begin{lstlisting}[language = {C}, gobble = ${1:8}]
-	$2
-\end{lstlisting}
-endsnippet
-
-snippet cp "code block: Python language" i
-\begin{lstlisting}[language = {Python}, gobble = ${1:8}]
+snippet "c([a-zA-Z]{1,3})" "check_key(r'c([a-zA-Z]{1,3})', dic_code_block)" ire
+\begin{lstlisting}[language = {`!p snip.rv = dic_code_block[match.group(1)]`}, gobble = ${1:8}]
 	$2
 \end{lstlisting}
 endsnippet
@@ -667,11 +667,7 @@ snippet "n([a-zA-Z]{1,3})(\)|\]|\}|>)" "check_key(r'n([a-zA-Z]{1,3})(\)|\]|\}|>)
 `!p snip.rv = dic_math_notation[match.group(1)]``!p snip.rv = dic_par_l[match.group(2)]` $1 `!p snip.rv = dic_par_r[match.group(2)]`$0
 endsnippet
 
-# p: program, power
-snippet pf "fortran" i
-language = {[90]Fortran}, gobble = ${1:8}
-endsnippet
-
+# p: power
 priority 2
 snippet "pp([0-9])" "power" "check_key(r'pp([0-9])', dic_power)"  rei
 ^{`!p snip.rv = dic_power[match.group(1)]`}
