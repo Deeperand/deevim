@@ -511,6 +511,10 @@ snippet cb "code with box" i
 \CodeB{$1}
 endsnippet
 
+snippet ca "code in-line, box version" i
+\CodeA{$1}
+endsnippet
+
 snippet C "code block" i
 \begin{lstlisting}[gobble = ${1:8}]
 	$2
@@ -717,6 +721,11 @@ endsnippet
 
 snippet sr "rule" i
 \\rule[$1]{$2}{$3}
+endsnippet
+
+snippet s\ "change line with \hline" i
+\\\\ \\hline
+$1
 endsnippet
 
 # t: tensor
