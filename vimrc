@@ -1,16 +1,24 @@
+let g:blade_vim_config_dir = expand("~/Documents/my_config/Blade-Vim")
+
 " normal setting
     " most simple setting
         filetype plugin indent on       " Load plugins accroding to detected filetype.
         syntax on                       " Enable syntax highlighting
 
     " indent
-        set autoindent                  " Indent according to previous line
-        set smartindent
-        set shiftround                  " indents to next multiple of 'shiftwidth'
-        set expandtab                   " Use spaces instead of tebs.
-        set shiftwidth=4
-        set tabstop=4
-        set softtabstop=4               " Tab key indents by 4 spaces.
+        " set smartindent
+        " Indent according to previous line
+            set autoindent
+        " Round indent to multiple of 'shiftwidth'.  Applies to > and < commands.
+            set shiftround
+        " Use spaces instead of tebs.
+            set expandtab
+        " Number of spaces to use for each step of (auto)indent.  Used for 'cindent', >>, <<, etc.
+            set shiftwidth=4
+        " Number of spaces that a <Tab> in the file counts for.
+            set tabstop=4
+        " Tab key indents by 4 spaces.
+            set softtabstop=4
 
     set backspace =indent,eol,start " Make backspace work as you would expect
     set hidden                      " Switch between buffers without having to sove first
@@ -49,9 +57,22 @@
     " coding
         set encoding=utf-8
         set termencoding=utf-8
-        set fileencodings=ucs-bom,utf-8,cp936,gb18030,big5,euc-jp,euc-kr,latin1
+        set fileencodings=utf-8,gb18030,ucs-bom,cp936,,big5,euc-jp,euc-kr,latin1
 
     set textwidth=0 " forbid auto change line
+
+    " set how to judge whether the key was pressed at the same time, if use tmux, the time should be longer
+    if $TMUX != ''
+        set ttimeoutlen=20
+    elseif &ttimeoutlen > 60 || &ttimeoutlen <= 0
+        set ttimeoutlen=60
+    endif
+
+    " history command
+        set history=500
+
+    " alwayse use mouse
+        set mouse=a
 
     " only cancel the code, the inverse search of LaTeX with MacVim can work well
     " if empty(v:servername) && exists('*remote_startserver')
@@ -76,13 +97,11 @@
 
             " language specific
                 " LaTeX
-                    Plug 'lervag/vimtex', {'for':'tex'}
+                    Plug 'lervag/vimtex', {'for':['tex', 'temptex']}
                 " markdown
                     Plug 'plasticboy/vim-markdown', {'for':'markdown'}
                     Plug 'iamcco/mathjax-support-for-mkdp', {'for':'markdown'}
                     Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app & yarn install', 'for': ['markdown', 'vim-plug'] }
-                " fortran
-                    Plug 'rudrab/vimf90', {'for':'fortran'}
                 " c/c++
                     " enhanced highlight
                         Plug 'octol/vim-cpp-enhanced-highlight', {'for':'cpp'}
@@ -102,8 +121,7 @@
                             Plug 'roxma/vim-hug-neovim-rpc'
                         endif
                     " icon supoort
-                        Plug 'ryanoasis/vim-devicons'
-                        Plug 'kristijanhusak/defx-icons'
+                        Plug 'Deeperand/defx-icons'
                     " git support
                         Plug 'kristijanhusak/defx-git'
                 " git enhancment
@@ -166,6 +184,8 @@
                     if has('mac')
                         Plug 'lyokha/vim-xkbswitch',{'for':''}
                     endif
+                " tmux status bar
+                    Plug 'edkolev/tmuxline.vim',{'for':''}
 
             " Theme
                 Plug 'rakr/vim-one'
@@ -211,7 +231,7 @@
             highlight IncSearch guibg=#FFDBB0 guifg=#ff5f00 gui=bold
         " text color of pup menu
             highlight Pmenu guibg=#e0eef7 guifg=#686e72
-            highlight PmenuSel guibg=#b9c7d2 guifg=#5d6172 gui=bold 
+            highlight PmenuSel guibg=#b9c7d2 guifg=#5d6172 gui=bold
         " color of pup namu's scroll bar and thumb
             highlight PmenuSbar guibg=#dae3f6
             highlight PmenuThumb guibg=#6c727b
@@ -223,6 +243,51 @@
 
 " --------------------------------------------------------------------------------
 
+" airline
+    " use powerline font symbol
+        let g:airline_powerline_fonts = 1
+    " the introduction was long, check `:h airline` for more detiles
+        let g:airline_exclude_preview = 1
+    " cache the changes to the highlighting groups, should therefore be faster
+        let g:airline_highlighting_cache = 0
+
+  " built-in extensions
+    " quickfix
+        " configure the title text for quickfix buffers
+            let g:airline#extensions#quickfix#quickfix_text = 'Quickfix'
+        " configure the title text for location list buffers
+            let g:airline#extensions#quickfix#location_text = 'Location'
+
+    " word count (seems lunched by default?)
+        " enable the extension
+            let g:airline#extensions#wordcount#enabled = 1
+        " defines how to display the wordcount statistics for the default formatter:
+            let g:airline#extensions#wordcount#formatter#default#fmt = '%s words'
+            let g:airline#extensions#wordcount#formatter#default#fmt_short = '%sW'
+
+    " tab bar
+        " enable tab style
+            let g:airline#extensions#tabline#enabled = 1
+        " if you want to show the current active buffer like this: buffer <buffer> buffer, then let this variable one
+            let g:airline#extensions#tabline#alt_sep = 1
+        " sep of tab bar (default is as same as status bar, but use this you can let it has some different behavior)
+            " let g:airline#extensions#tabline#left_sep = ' '
+            " let g:airline#extensions#tabline#left_alt_sep = '|'
+        " enable/disable displaying buffers with a single tab. (若设置为 1, 则当只有一个 tab 时, 右侧的缓冲区文件提示将代替左侧的 tab 进行显示, 但显示的方式仍然与正常的 tab 类似, 只是最右侧没有 'tab' 字符提示)
+            let g:airline#extensions#tabline#show_buffers = 1
+        " enable/disable displaying open splits per tab at left
+            let g:airline#extensions#tabline#show_splits = 1
+        " enable/disable display preview window buffer in the tabline.
+            let g:airline#extensions#tabline#exclude_preview = 1
+        " configure how numbers are displayed in tab mode. 0: # of split; 1: tab number; 2 split and tab number
+            let g:airline#extensions#tabline#tab_nr_type = 0
+        " specify a different formatter for displaying the numbers, check documentation for detiles
+            " let g:airline#extensions#tabline#tabnr_formatter = 'tabnr' " default?
+        " style of tab style
+            let g:airline#extensions#tabline#formatter = 'unique_tail' " with 'unique_tail', just the name of file will be displayed and no path information unless exist two or more files with the same name
+
+
+" --------------------------------------------------------------------------------
 " which key map
     " let g:mapleader = ","
     " appearance (set the appearance at '~/.vim/syntax/which_key.vim')
@@ -308,12 +373,15 @@
 " --------------------------------------------------------------------------------
 
 " git related
+    " cooperate with airline
+        let g:airline#extensions#fugitiveline#enabled = 1
+
     " build dictionary for git shortcut
         let g:which_key_map_Leader.g = {'name' : '{git}',}
     " use terminal
         if has('nvim')
             " check log with terminal
-                nnoremap <leader>gl <ESC>:terminal cd '%:p:h'; git log --graph<CR>
+                nnoremap <leader>gl <ESC>:split \| terminal cd '%:p:h'; git log --graph<CR>
                 let g:which_key_map_Leader.g.l = 'git log graph (term)'
         endif
     " fugitive
@@ -324,7 +392,7 @@
             nnoremap <leader>ga <ESC>:Git add %<CR>
             let g:which_key_map_Leader.g.a = 'add current file to stage'
         " check git log with parameter '--graph' in a brief way ('g' means 'log') (加上右移 'h' 是因为有时会需要键入命令才能打开 log 窗口, 加入一个无害的指令可以避免手动进行此步)
-            nnoremap <leader>gg <ESC>:Git log --graph --pretty=format:'%Cred%h%Creset - %Cgreen(%ad)%C(yellow)%d%Creset %s %C(bold blue)<%an>%Creset' --abbrev-commit --date=local<CR>h
+            nnoremap <silent> <leader>gg <ESC>:Git log --graph --pretty=format:'%Cred%h%Creset - %Cgreen(%ad)%C(yellow)%d%Creset %s %C(bold blue)<%an>%Creset' --abbrev-commit --date=local<CR>h
             let g:which_key_map_Leader.g.g = 'git log graph (brief)'
     " signify
         nnoremap <leader>gs <ESC>:Gstatus<CR>
@@ -558,6 +626,8 @@
 " --------------------------------------------------------------------------------
 
 " gutentags
+    " coorperate with airline
+        let g:airline#extensions#grepper#enabled = 1
     " name of the tags file
         set tags=./.tags;,.tags
     " gutentags 搜索工程目录的标志，碰到这些文件/目录名就停止向上一级目录递归
@@ -612,7 +682,7 @@
 
     " key map manage
         let g:which_key_map_Leader.t = {
-            \ 'name': '{tabular}', 
+            \ 'name': '{tabular}',
             \ '&': 'segment by &',
             \ '|': 'segment by |',
             \ '#': 'segment by #',
@@ -625,7 +695,7 @@
             \ 'a': 'input pattern',
             \ }
         let g:which_key_map_Leader.T = {
-            \ 'name': '{tabular center}', 
+            \ 'name': '{tabular center}',
             \ '&': 'segment by &',
             \ '|': 'segment by |',
             \ '#': 'segment by #',
@@ -666,7 +736,8 @@
     " forbid auto-delete pair parenthesis
         inoremap <BS> <BS>
     " jump out form a delimiter
-        imap <M-Tab> <Plug>delimitMateS-Tab
+        " imap <M-Tab> <Plug>delimitMateS-Tab
+        inoremap <M-tab> <right>
 
 " --------------------------------------------------------------------------------
 
@@ -684,8 +755,8 @@
     " Split way of edic snippets file
         let g:UltiSnipsEditSplit ="vertical"
     " snippets file dirctory
-        let g:UltiSnipsSnippetDirectories = [$HOME.'/.vim/UltiSnips']
-        let g:UltiSnipsSnippetDir = [$HOME.'/.vim/UltiSnips']
+        let g:UltiSnipsSnippetDirectories = [g:blade_vim_config_dir.'/UltiSnips']
+        let g:UltiSnipsSnippetDir = [g:blade_vim_config_dir.'/UltiSnips']
     " check the snippet setting
         nnoremap <C-M-s> <C-u>:UltiSnipsEdit<CR>
 
@@ -848,7 +919,7 @@
 
 
     " key map
-        noremap <C-M-b> :Defx `expand('%:p:h')` -search=`expand('%:p')`<CR>
+        noremap <silent> <C-M-b> :Defx `expand('%:p:h')` -search=`expand('%:p')`<CR>
 
 " --------------------------------------------------------------------------------
 
@@ -861,13 +932,22 @@
 " --------------------------------------------------------------------------------
 
 " LeaderF
-    " unknown function
-        let g:Lf_ShowHidden = 1
+    " default mode
+        let g:LfDefaultMode='Fuzzy'
+    " show hiden content
+        " let g:Lf_ShowHidden = 1
+    " remeber last search
+        let Lf_RememberLastSearch=0
+
+    " the max number of recent file search
+        let g:Lf_MruMacFiles=300
+
+        let Lf_MaxCount=3000000
 
     " chache related
         let g:Lf_UseCache = 1    " After Vin starts, it will refresh the cache at the first time LeaderF starts (first times after lunching will be slower)
         let g:Lf_UseMemoryCache = 1     " Always refresh LeaderF if it was lunched (alwayse be solwer)
-        let g:LfNeedCacheTime = 0 " wait time before use cache
+        " let g:LfNeedCacheTime = 1 " wait time before use cache
 
     " diaplay style
         let g:Lf_WindowPosition = 'popup' " Popup Mode is to open LeaderF in a popup, To enable popup mode
@@ -894,10 +974,10 @@
             nnoremap <Leader>sm <ESC>:LeaderfFunction<CR>
         " search function in all listed buffers
             nnoremap <Leader>sM <ESC>:LeaderfFunctionAll<CR>
-        " recent opened file in current working directory ('r' means 'recent')
-            nnoremap <Leader>sr <ESC>:LeaderfMruCwd<CR>
-        " recent opened file
-            nnoremap <Leader>sR <ESC>:LeaderfMru<CR>
+        " recent opened file ('r' means 'recent')
+            nnoremap <Leader>sr <ESC>:LeaderfMru<CR>
+        " recent opened file in current working directory
+            nnoremap <Leader>sR <ESC>:LeaderfMruCwd<CR>
         " history search ('s' means 'search')
             nnoremap <Leader>ss <ESC>:LeaderfHistorySearch<CR>
         " search tags in current buffer
@@ -924,6 +1004,20 @@
 " --------------------------------------------------------------------------------
 
 " ALE related
+    " coherent with airline
+        " enable/disable ale integration
+            let g:airline#extensions#ale#enabled = 1
+        " ale error_symbol
+            let airline#extensions#ale#error_symbol = 'E:'
+        " ale warning
+            let airline#extensions#ale#warning_symbol = 'W:'
+        " ale show_line_numbers
+            let airline#extensions#ale#show_line_numbers = 1
+        " ale open_lnum_symbol
+            let airline#extensions#ale#open_lnum_symbol = '(L'
+        " ale close_lnum_symbol
+            let airline#extensions#ale#close_lnum_symbol = ')'
+
     " Set this. Airline will handle the rest.
         let g:airline#extensions#ale#enabled = 1 " let airline work well with ALE
         let g:ale_sign_column_always = 1 "始终开启标志列
@@ -936,11 +1030,11 @@
         let ale_sign_error = '✗'
         highlight ALEError gui=undercurl guisp=#ff0000 guibg=#87d7ff
         highlight ALEErrorSign guifg=#ff0000
-        " seems useless for vim, but the help said noevim was supported    
+        " seems useless for vim, but the help said noevim was supported
         let ale_sign_warning = '⚡'
         highlight ALEWarning gui=undercurl guisp=#5f87ff guibg=#ffd787
         highlight ALEWarningSign guifg=#ff8700
-        " seems useless for vim, but the help said noevim was supported    
+        " seems useless for vim, but the help said noevim was supported
         let ale_sign_info = '?'
         highlight ALEInfo gui=bold guifg=#00d700
         highlight ALEInfoSign gui=undercurl guisp=#ff8700 guibg=#5fff5f
@@ -970,7 +1064,6 @@
         \ 'cpp': [''],
         \ 'c': [''],
         \ 'python': ['pylint'],
-        \ 'fortran' : ['gfortran'],
         \ 'tex' : [''],
         \}
 
@@ -994,6 +1087,8 @@
         highlight CocHighlightText guibg=#cfe3ff
 
     " use with 'vim-airline'
+        " enable/disable coc integration
+            let g:airline#extensions#coc#enabled = 1
         " Change error symbol:
             let airline#extensions#coc#error_symbol = 'Error:'
         " Change warning symbol:
@@ -1090,14 +1185,16 @@
                 hi CocCursorRange guibg=#d1c3ff guifg=#595273 gui=bold
             " key map
                 " add current character cursor to multi-cursors
-                    nmap <M-LeftMouse>  <Plug>(coc-cursors-position)
                     nmap <Leader><Leader> <Plug>(coc-cursors-position)
+                    nmap <M-MiddleMouse> <leftmouse><Plug>(coc-cursors-position)
+
                     let g:which_key_map_Leader['\'] = 'add multicursor'
+
                 " add current visual selected range to cursors
                     xmap <silent> <Leader><Leader> <Plug>(coc-cursors-range)
+
                 " add current word range to cursors
                     " add current words ('m' means 'multi')
-                        nmap <M-RightMouse> <Plug>(coc-cursors-word)
                         nmap <Leader>m <Plug>(coc-cursors-word)
                         let g:which_key_map_Leader.m = 'add current words to multicursor'
                     " add and jump to next same words (since the behavior like normal command 'n', so use key 'n')
@@ -1106,10 +1203,12 @@
                     " add and jump to previous same words
                         nmap <Leader>N <Plug>(coc-cursors-word)#
                         let g:which_key_map_Leader.N = 'add word to multicursor and jump previous'
+
                 " add all the same ('a' mean 'all')
                     nnoremap <Leader>Ma :CocCommand document.renameCurrentWord<CR>
                     let g:which_key_map_Leader.M = {'name': '{multicursor}',}
                     let g:which_key_map_Leader.M.a = 'add all same words to multicursor'
+
                 " use operator for add range to cursors. Use normal command like `<leader>xi(` ('t' means 'text object')
                     nmap <leader>Mt <Plug>(coc-cursors-operator)
                     let g:which_key_map_Leader.M.t = 'add textobj to multicursor'
@@ -1156,11 +1255,34 @@
 
 " --------------------------------------------------------------------------------
 
+" general command
+    " full angle to half angle
+        let g:full_angle_to_half_angle = {
+            \ '，': ', ',
+            \ '。': '. ',
+            \ '（': ' (',
+            \ '）': ') ',
+            \ '？': '? ',
+            \ '：': ': ',
+            \ '；': '; ',
+            \ '！': '! ',
+            \ '“': '"',
+            \ '”': '"',
+            \ '「': ' "',
+            \ '」': '" ',
+            \ '‘': "'",
+            \ '’': "'",
+            \ }
+
+        command! -range=% FulltoHalf <line1>,<line2>substitute/\v(，|。|（|）|？|！|：|；|“|”|‘|’|「|」)/\=g:full_angle_to_half_angle[submatch(1)]/g
+
 " general key mapping
     " local leader (local leader is used in plug such as 'vimtex')
         let g:maplocalleader = ','
+
     " double press localleader to back find (to achice its original function)
         nnoremap <localleader><localleader> ,
+
     " move
         noremap j gj
         noremap k gk
@@ -1168,29 +1290,77 @@
         noremap gk k
         let g:which_key_map_g.j = 'next actual line'
         let g:which_key_map_g.k = 'previous actual line'
+
     " faster move
         noremap <C-j> 5j
         noremap <C-k> 5k
         noremap <C-h> 5h
         noremap <C-l> 5l
-    " check the global setting
-        nnoremap <Leader>C <ESC>:e ~/.vim/vimrc<CR>
+
+    " jump to last char without '\n' char or with '\n' char
+        xnoremap $ $<left>
+        xnoremap g$ $
+
+    " faster substitute ('r' means 'replace')
+        " substitute current line (pattern is form last search)
+            nnoremap <leader>r V:s/<C-r>//
+        " substitute current line (input pattern by keybord)
+            nnoremap <leader>R V:s/
+        " substitute selected (pattern is form last search)
+            xnoremap <leader>r :s/<C-r>//
+        " substitute selected (input pattern)
+            xnoremap <leader>R :s/
+
+        " keymap manage
+            let g:which_key_map_Leader.r = 'replace (with default pattern)'
+            let g:which_key_map_Leader.R = 'replace (without default pattern)'
+
+
+    " input original string to clipboard, can avoid the influence of auto-expand snippet ("'" or '"' means this shortcut is related to register '"')
+        inoremap <M-'> <ESC>:let @" = '<left>'
+        nnoremap <M-'> <ESC>:let @" = '<left>'
+        inoremap <M-"> <ESC>:let @" = "<left>"
+        nnoremap <M-"> <ESC>:let @" = "<left>"
+
+    " enhanced search with '*' (can search selected content now)
+        xnoremap * :<C-u>call <SID>VSetSearch('/')<CR>/<C-R>=@/<CR><CR>
+        xnoremap # :<C-u>call <SID>VSetSearch('?')<CR>?<C-R>=@/<CR><CR>
+
+        function! s:VSetSearch(cmdtype)
+            let temp = @s
+            norm! gv"sy
+            let @/ = '\V' . substitute(escape(@s, a:cmdtype.'\'), '\n', '\\n', 'g')
+            let @s = temp
+        endfunction
+
+    " repeat the last substitute operation, also with same flag
+        nnoremap & :&&<CR>
+        xnoremap & :&&<CR>
+
+    " check vimrc
+        nnoremap <silent> <Leader>C <ESC>:execute("edit".g:blade_vim_config_dir."/vimrc")<CR>
         let g:which_key_map_Leader.C = 'open vimrc'
-    " open current file at new tab
-        nnoremap <C-M-t> <ESC>:tabnew<SPACE>%<CR>
-    " go to next/previous buffer file
-        nnoremap <C-M-k> <ESC>:bp<CR>
-        nnoremap <C-M-j> <ESC>:bn<CR>
-    " go to next/previous tab
-        nnoremap <C-M-h> <ESC>:tabp<CR>
-        nnoremap <C-M-l> <ESC>:tabn<CR>
-    " change spitted window
-        nnoremap <S-M-h> <ESC><C-w>h
-        nnoremap <S-M-l> <ESC><C-w>l
-        nnoremap <S-M-k> <ESC><C-w>k
-        nnoremap <S-M-j> <ESC><C-w>j
+
+    " check ftplugin file respective
+        nnoremap <silent> <F2> <ESC>:vsplit \| call execute("edit ".g:blade_vim_config_dir."/ftplugin/".&filetype.".vim")<CR>
+
     " create new file at the current path of the current buffer
-        nnoremap <C-M-n> <ESC>:e %:p:h/
+        nnoremap <C-M-n> <ESC>:edit %:p:h/
+
+    " tab and window
+        " open current file at new tab
+            nnoremap <C-M-t> <ESC>:tabnew<SPACE>%<CR>
+        " go to next/previous buffer file
+            nnoremap <C-M-k> <ESC>:bprevious<CR>
+            nnoremap <C-M-j> <ESC>:bnext<CR>
+        " go to next/previous tab
+            nnoremap <C-M-h> <ESC>:tabp<CR>
+            nnoremap <C-M-l> <ESC>:tabn<CR>
+        " change spitted window
+            nnoremap <S-M-h> <ESC><C-w>h
+            nnoremap <S-M-l> <ESC><C-w>l
+            nnoremap <S-M-j> <ESC><C-w>j
+            nnoremap <S-M-k> <ESC><C-w>k
 
     " close or quit
         " close the current file in buffer (which means 'buffer wipe out')
@@ -1206,29 +1376,53 @@
             nnoremap <Leader>W <ESC>:tabclose<CR>
             let g:which_key_map_Leader.W = 'close tab'
 
-    " choose fold method
-        nnoremap <LocalLeader>fd <ESC>:set foldmethod=diff<CR>
-        nnoremap <LocalLeader>fe <ESC>:set foldmethod=expr<CR>
-        nnoremap <LocalLeader>fi <ESC>:set foldmethod=indent<CR>
-        nnoremap <LocalLeader>fk <ESC>:set foldmethod=marker<CR>
-        nnoremap <LocalLeader>fm <ESC>:set foldmethod=manual<CR>
-        nnoremap <LocalLeader>fs <ESC>:set foldmethod=syntax<CR>
+    " set options
+        let g:which_key_map_Local_Leader.s = {'name': '{set option}'}
+        " set syntax
+            nnoremap <localleader>ss <ESC>:setlocal syntax
+            let g:which_key_map_Local_Leader.s.s = 'set syntax'
 
-    " map manage 
-        let g:which_key_map_Local_Leader.f = {'name': '{fold method}', }
-        let g:which_key_map_Local_Leader.f.d = 'diff'
-        let g:which_key_map_Local_Leader.f.e = 'expr'
-        let g:which_key_map_Local_Leader.f.i = 'indent'
-        let g:which_key_map_Local_Leader.f.k = 'marker'
-        let g:which_key_map_Local_Leader.f.m = 'manual'
-        let g:which_key_map_Local_Leader.f.s = 'syntax'
+        " set file type
+            nnoremap <localleader>st <ESC>:setlocal filetype
+            let g:which_key_map_Local_Leader.s.t = 'set filetype'
+
+        " set indent length
+            nnoremap <silent> <localleader>si2 <ESC>:setlocal shiftwidth=2 tabstop=2 softtabstop=2<CR>:IndentLinesReset<CR>
+            nnoremap <silent> <localleader>si4 <ESC>:setlocal shiftwidth=4 tabstop=4 softtabstop=4<CR>:IndentLinesReset<CR>
+
+            let g:which_key_map_Local_Leader.s.i = {'name': '{set indent}'}
+            let g:which_key_map_Local_Leader.s.i.2 = '2 spaces as indent'
+            let g:which_key_map_Local_Leader.s.i.4 = '4 spaces as indent'
+
+        " choose fold method
+            nnoremap <localLeader>sfd <ESC>:setlocal foldmethod=diff<CR>
+            nnoremap <localLeader>sfe <ESC>:setlocal foldmethod=expr<CR>
+            nnoremap <localLeader>sfi <ESC>:setlocal foldmethod=indent<CR>
+            nnoremap <localLeader>sfk <ESC>:setlocal foldmethod=marker<CR>
+            nnoremap <localLeader>sfm <ESC>:setlocal foldmethod=manual<CR>
+            nnoremap <localLeader>sfs <ESC>:setlocal foldmethod=syntax<CR>
+
+            let g:which_key_map_Local_Leader.s.f = {'name': '{set fold method}', }
+            let g:which_key_map_Local_Leader.s.f.d = 'diff'
+            let g:which_key_map_Local_Leader.s.f.e = 'expr'
+            let g:which_key_map_Local_Leader.s.f.i = 'indent'
+            let g:which_key_map_Local_Leader.s.f.k = 'marker'
+            let g:which_key_map_Local_Leader.s.f.m = 'manual'
+            let g:which_key_map_Local_Leader.s.f.s = 'syntax'
 
     " terminal related (need nvim)
         if has('nvim')
-            " run command in terminal at current file path
-                nnoremap <localleader>t <ESC>:terminal cd '%:p:h'; 
+            " run command in terminal at current file path with a split window
+                nnoremap <localleader>t :split \| terminal cd '%:p:h';
                 let g:which_key_map_Local_Leader.t = 'run at terminal'
+
+            " statusline support
+                autocmd TermOpen * setlocal statusline=%{b:term_title}
+
             " key map in terminal mod
+                " exit terminal and kill the process
+                    autocmd TermOpen * nnoremap <buffer> gq <ESC>:bwipeout!<CR>
+                    autocmd TermOpen * nnoremap <buffer> <leader>q <ESC>:bwipeout!<CR>
                 " To map <Esc> to exit terminal-mode
                     tnoremap <Esc> <C-\><C-n>
                 " To use `Shift+Meta+{h,j,k,l}` to navigate windows from any mode
@@ -1255,3 +1449,9 @@
     filetype off
     set runtimepath+=/Applications/LilyPond.app/Contents/Resources/share/lilypond/current/vim/
     filetype on
+
+" ================================================================================
+
+" custom file type
+    autocmd BufNewFile,BufRead *.temptex setlocal filetype=temptex
+    autocmd BufNewFile,BufRead *.tmux setlocal filetype=tmux
