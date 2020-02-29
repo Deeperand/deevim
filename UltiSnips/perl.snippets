@@ -1,0 +1,22 @@
+# b: block
+snippet b "block" i
+{
+	$1
+}
+endsnippet
+
+# c: condition
+snippet c "loop condition" i
+($1$2; $1$3; $1$4)
+endsnippet
+
+# p: print
+snippet p "print" i
+print $1 . "\n";
+endsnippet
+
+snippet pa "print array" i
+foreach $i ($1){
+	print $i."\n";
+}
+endsnippet
