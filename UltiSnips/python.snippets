@@ -1,0 +1,24 @@
+# b: break point
+snippet b "break point" i
+raise Exception("break point")
+endsnippet
+
+# t: test
+snippet t "test" i
+# TEST
+TEST_NUM = TEST_NUM + 1
+print("# Test Number: " + str(TEST_NUM))
+$1
+endsnippet
+
+snippet tp "print output" i
+print("**Out Put** :" + "\n" + "\t" + str($1) + "\n")
+endsnippet
+
+snippet seg- "segment line with '-'" i
+# --------------------------------------------------------------------------------
+endsnippet
+
+snippet seg= "segment line with '='" i
+# ================================================================================
+endsnippet
