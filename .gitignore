@@ -15,3 +15,6 @@
 /.netrwhist
 /sessions/default.vim
 *.swp
+
+# ignore temporary directory
+temp/
