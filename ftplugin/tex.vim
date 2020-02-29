@@ -41,24 +41,15 @@
 " delimitMate
     let b:delimitMate_quotes = "\" '" " conceal the auto-complete of `
 
-
 " key map
-" special setting of the type of the file
-    nnoremap <buffer> <F2> <ESC>:vsplit \| execute("edit".g:blade_vim_config_dir."/ftplugin/tex.vim")<CR>
 " change line
     inoremap <buffer> <M-CR> \\<CR>
 " close the enviroment
-    imap <buffer> <F2> <plug>(vimtex-delim-close)
+    imap <buffer> <M-e> <plug>(vimtex-delim-close)
 " only cancel the code, the inverse search of LaTeX with MacVim can work well
-    if empty(v:servername) && exists('*remote_startserver')
-        call remote_startserver('VIM')
-    endif
-" open a temprary file. In the file, the snippet of LaTeX won't effect, and close it can output the content to copy register
-" only cancel the code, the inverse search of LaTeX with MacVim can work well
-" if empty(v:servername) && exists('*remote_startserver')
-"     call remote_startserver('VIM')
-" endif
-
+    " if empty(v:servername) && exists('*remote_startserver')
+    "     call remote_startserver('VIM')
+    " endif
 
 function! EditFigure(name) abort
     silent !mkdir '%:p:h/Figure'
@@ -105,4 +96,3 @@ endfunction
 vnoremap <buffer> <F3>t "zy<ESC>:call<SPACE>Print(@z)<CR>
 
 command! -nargs=1 Print call Print(<q-args>)
-
