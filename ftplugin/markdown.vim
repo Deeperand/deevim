@@ -19,6 +19,8 @@
     " remap how to go to upper header
         nmap <buffer> gu <Plug>Markdown_MoveToParentHeader
         let g:which_key_map_g.u = 'T [md] goto upper header'
+    " let '[c' work with `fugitive`
+        nmap <buffer> [c <plug>(signify-prev-hunk)
 
 " markdown-preview.nvim
     " start preview
@@ -55,9 +57,9 @@
         let g:markdown_folding = 1 " let markdown fold
     " set foldmethod=manual " fold-method
         let b:delimitMate_quotes = "\" '" " conceal the auto-complete of `
-    " open ftplugin
-        nnoremap <buffer> <F2> <ESC>:e ~/.vim/ftplugin/markdown.vim<CR>
     " open syntax
-        nnoremap <buffer> <F3> <ESC>:e ~/.vim/after/syntax/markdown.vim<CR>
+        nnoremap <buffer> <F3> <ESC>:vsplit \| execute("edit".g:blade_vim_config_dir."/after/syntax/markdown.vim")<CR>
     " let change line easier
         inoremap <buffer> <M-CR> <Space><Space><CR>
+    " open a temporary tex file to input equation ('m' meas 'mathematics')
+        nnoremap <buffer> <localleader>lm <C-w><C-s>:edit ~.vim/.temptex<CR>
