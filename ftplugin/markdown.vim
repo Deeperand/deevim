@@ -62,4 +62,4 @@
     " let change line easier
         inoremap <buffer> <M-CR> <Space><Space><CR>
     " open a temporary tex file to input equation ('m' meas 'mathematics')
-        nnoremap <buffer> <localleader>lm <C-w><C-s>:edit ~.vim/.temptex<CR>
+        nnoremap <buffer> <localleader>lm <C-w><C-s>:edit ~/.vim/.temptex<CR>
