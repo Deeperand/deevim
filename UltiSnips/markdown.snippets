@@ -30,10 +30,14 @@ dic_bold = {
 }
 dic_course = {
 	r's' : r'Statistic Physics',
+	r'sp' : r'Solid Plysics',
 	r'c' : r'Computational Physics',
+	r'cl' : r'C Language',
 	r'e' : r'English',
 	r'g' : r'General Relativity',
+	r'gt' : r'Group Theory',
 	r'q' : r'Quantum Mechanics',
+	r'qi' : r'Quantum Information',
 	r'qf' : r'Quantum Filed Theory',
 	r'o' : r"Oxford Learner's Grammar",
 	r'a' : r'Astrophysics',
@@ -121,6 +125,16 @@ endsnippet
 
 snippet today "date of today" i
 `date +%A,\ %B\ %d,\ %Y`
+endsnippet
+
+# d: delete
+snippet d "delete line" i
+~~$1~~
+endsnippet
+
+# p: punctuation
+snippet pn "name separator" option
+·
 endsnippet
 
 # t: template
