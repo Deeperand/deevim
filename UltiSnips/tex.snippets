@@ -682,6 +682,7 @@ snippet "pp([0-9])" "power" "check_key(r'pp([0-9])', dic_power)"  rei
 endsnippet
 
 # r: ref
+priority 1
 snippet r "ref" i
 \\ref{$1}
 endsnippet
@@ -719,6 +720,7 @@ snippet slr "left, right" i
 \\left$1 $3 \\right$2
 endsnippet
 
+priority 2
 snippet sr "rule" i
 \\rule[$1]{$2}{$3}
 endsnippet
