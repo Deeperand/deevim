@@ -1,5 +1,4 @@
 let g:blade_vim_config_dir = expand("~/Documents/my_config/Blade-Vim")
-
 " normal setting
     " most simple setting
         filetype plugin indent on       " Load plugins accroding to detected filetype.
@@ -45,19 +44,25 @@ let g:blade_vim_config_dir = expand("~/Documents/my_config/Blade-Vim")
     " use gui color
         set termguicolors
 
-    set number     " let line number visuable
-    set cursorline " Finde the current line quickly.
-    set wrapscan   " Searches warp around end-if-file
-    set report=0   " Alwayse report changed lines.
+    " let line number visuable
+        set number
+
+    " Finde the current line quickly.
+        set cursorline
+
+    " Searches warp around end-if-file
+        set wrapscan
+
+    " Alwayse report changed lines.
+        set report=0
 
     " font (for gui)
-    " 中文测试
         set guifont=Hack_Nerd_Font_Mono:h12,DroidSansMono_Nerd_Font_Mono:h12
 
     " coding
         set encoding=utf-8
-        set termencoding=utf-8
         set fileencodings=utf-8,gb18030,ucs-bom,cp936,,big5,euc-jp,euc-kr,latin1
+        let &termencoding=&encoding
 
     set textwidth=0 " forbid auto change line
 
@@ -74,16 +79,14 @@ let g:blade_vim_config_dir = expand("~/Documents/my_config/Blade-Vim")
     " alwayse use mouse
         set mouse=a
 
-    " only cancel the code, the inverse search of LaTeX with MacVim can work well
-    " if empty(v:servername) && exists('*remote_startserver')
-    "     call remote_startserver('VIM')
-    " endif
-
 " --------------------------------------------------------------------------------
 
 " for macvim
     if has('gui')
-        set macmeta " let meta key works well
+        " let meta key works well
+            set macmeta
+        " disable cursor blink
+            set guicursor+=a:blinkon0
     endif
 
 " ================================================================================ (80 个 '-')
