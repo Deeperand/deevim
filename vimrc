@@ -758,7 +758,7 @@ let g:blade_vim_config_dir = expand("~/Documents/my_config/Blade-Vim")
         let g:UltiSnipsSnippetDirectories = [g:blade_vim_config_dir.'/UltiSnips']
         let g:UltiSnipsSnippetDir = [g:blade_vim_config_dir.'/UltiSnips']
     " check the snippet setting
-        nnoremap <C-M-s> <C-u>:UltiSnipsEdit<CR>
+        nnoremap <C-M-s> :UltiSnipsEdit<CR>
 
 " --------------------------------------------------------------------------------
 
