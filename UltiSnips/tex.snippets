@@ -580,7 +580,11 @@ snippet fs "single quotation" i
 endsnippet
 
 # h: hierarchy
-snippet h "pargraph"
+snippet h "pargraph, change line"
+\\paragraph{$1 \\\\}$0
+endsnippet
+
+snippet H "pargraph, no change line"
 \\paragraph{$1}$0
 endsnippet
 
