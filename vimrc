@@ -189,6 +189,8 @@ let g:blade_vim_config_dir = expand("~/Documents/my_config/Blade-Vim")
                     endif
                 " tmux status bar
                     Plug 'edkolev/tmuxline.vim',{'for':''}
+                " quicker jump
+                    Plug 'justinmk/vim-sneak'
 
             " Theme
                 Plug 'rakr/vim-one'
@@ -289,8 +291,8 @@ let g:blade_vim_config_dir = expand("~/Documents/my_config/Blade-Vim")
         " style of tab style
             let g:airline#extensions#tabline#formatter = 'unique_tail' " with 'unique_tail', just the name of file will be displayed and no path information unless exist two or more files with the same name
 
-
 " --------------------------------------------------------------------------------
+
 " which key map
     " let g:mapleader = ","
     " appearance (set the appearance at '~/.vim/syntax/which_key.vim')
@@ -1281,10 +1283,10 @@ let g:blade_vim_config_dir = expand("~/Documents/my_config/Blade-Vim")
 
 " general key mapping
     " local leader (local leader is used in plug such as 'vimtex')
-        let g:maplocalleader = ','
+        let g:maplocalleader= "\<space>"
 
-    " double press localleader to back find (to achice its original function)
-        nnoremap <localleader><localleader> ,
+    " double press localleader to use its original function
+        nnoremap <localleader><localleader> <space>
 
     " move
         noremap j gj
