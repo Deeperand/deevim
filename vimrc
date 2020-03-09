@@ -318,7 +318,6 @@ let g:blade_vim_config_dir = expand("~/Documents/my_config/Blade-Vim")
         let g:which_key_map_z = {}
         let g:vim_default_textobj = {}
 
-
     " basic dic define (use '{}' to represent a group)
         " main page
             let g:which_key_map = {
@@ -335,7 +334,7 @@ let g:blade_vim_config_dir = expand("~/Documents/my_config/Blade-Vim")
                 \ '<': [':WhichKey "<"', "{paste; dcrease indent}"],
                 \ '>': [':WhichKey ">"', "{paste; increase indent}"],
                 \ '=': [':WhichKey "="', "{paste; keep indent}"],
-                \ ',': [':WhichKey ","', "{local leader}"],
+                \ "\<space>": [':WhichKey " "', "{local leader}"],
                 \ }
 
         " exact hint
