@@ -543,20 +543,20 @@ snippet E "enviroment with option"
 \end{$1}$0
 endsnippet
 
-priority 2
-snippet "e([a-zA-Z]{1,3})" "check_key(r'e([a-zA-Z]{1,3})', dic_env)" re
+priority 3
+snippet "\be([a-zA-Z]{1,3})" "check_key(r'\be([a-zA-Z]{1,3})', dic_env)" re
 \begin{`!p snip.rv = dic_env[match.group(1)]`}
 	$1
 \end{`!p snip.rv = dic_env[match.group(1)]`}$0
 endsnippet
 
-snippet "E([a-zA-Z]{1,3})" "check_key(r'E([a-zA-Z]{1,3})', dic_env)" re
+snippet "\bE([a-zA-Z]{1,3})" "check_key(r'\bE([a-zA-Z]{1,3})', dic_env)" re
 \begin{`!p snip.rv = dic_env[match.group(1)]`}[$1]
 	$2
 \end{`!p snip.rv = dic_env[match.group(1)]`}$0
 endsnippet
 
-snippet "EE([a-zA-Z]{1,3})" "check_key(r'EE([a-zA-Z]{1,3})', dic_env)" re
+snippet "\bEE([a-zA-Z]{1,3})" "check_key(r'\bEE([a-zA-Z]{1,3})', dic_env)" re
 \begin{`!p snip.rv = dic_env[match.group(1)]`}{$1}
 	$2
 \end{`!p snip.rv = dic_env[match.group(1)]`}$0
