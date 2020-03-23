@@ -244,6 +244,8 @@ dic_hierachy = {
 
 dic_label = {
 	r'e' : r'eq',
+	r'f' : r'fig',
+	r't' : r'tab',
 }
 
 dic_math_notation = {
@@ -693,8 +695,8 @@ snippet r "ref" i
 \\ref{$1}
 endsnippet
 
-snippet re "ref_equation" i
-\\eqref{eq: $1}
+snippet "r([a-zA-Z]{1,3})" "check_key(r'r([a-zA-Z]{1,3})', dic_label)" ire
+\\ref{`!p snip.rv = dic_label[match.group(1)]`: $1}
 endsnippet
 
 snippet rc "cite" i
