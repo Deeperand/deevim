@@ -846,9 +846,9 @@ endsnippet
 snippet bg-hw "homework" i
 \\documentclass[UTF8]{ctexart}
 
-\\input{/Users/he/Documents/LaTeX/Notebooks/notebook_customize.tex}
+\\input{${1:premble path}}
 
-\\title{\\bfseries ${1:subject name}\\\\ \\Large ${2:week}}
+\\title{\\bfseries ${2:subject name}\\\\ \\Large ${3:week}}
 \\author{\\slshape 物理1班\\quad 何剑锋\\quad 20172801}
 \\date{}
 
@@ -858,7 +858,7 @@ snippet bg-hw "homework" i
 
 \\begin{document}
 \\maketitle
-$3
+$4
 
 \\end{document}
 endsnippet
