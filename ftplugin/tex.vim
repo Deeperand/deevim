@@ -52,8 +52,8 @@
     " endif
 
 function! EditFigure(name) abort
-    silent !mkdir '%:p:h/Figure'
-    let l:filename = expand('%:p:h') . '/Figure/' . a:name . '.svg'
+    silent !mkdir '%:p:h/figure'
+    let l:filename = expand('%:p:h') . '/figure/' . a:name . '.svg'
     if empty(glob(l:filename))
         execute 'silent !cp -n /Users/he/Documents/LaTeX/empty.svg ' . "'" . l:filename . "'"
     endif
@@ -61,7 +61,7 @@ function! EditFigure(name) abort
 endfunction
 
 function! DeleteFigure(name) abort
-    let l:files = glob(expand('%:p:h').'/Figure/'.a:name.'*', 0, 1)
+    let l:files = glob(expand('%:p:h').'/figure/'.a:name.'*', 0, 1)
     if !empty(l:files)
         for l:file in l:files
             execute 'silent !mv '. "'" . l:file . "'" . ' ~/.Trash'
@@ -70,7 +70,7 @@ function! DeleteFigure(name) abort
 endfunction
 
 function! CompileFigure() abort
-    let l:svgfiles = glob(expand('%:p:h').'/Figure/*.svg', 0, 1)
+    let l:svgfiles = glob(expand('%:p:h').'/figure/*.svg', 0, 1)
     if !empty(l:svgfiles)
         for l:svgfile in l:svgfiles
             let l:pdffile = l:svgfile[:-5] . '.pdf'

@@ -1,4 +1,6 @@
 " other plug or setting
+    " cancel delete trivial spaces (to avoid the chaos of type setting)
+        nnoremap <buffer> <F12> <F12>
     " buile dictionary to store shortcut list
         let g:which_key_map_Local_Leader.l = {'name' : '{for specific type}',}
 
