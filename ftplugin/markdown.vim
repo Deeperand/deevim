@@ -86,6 +86,10 @@
         nmap <buffer> <localleader>ls <Plug>MarkdownPreviewStop
         let g:which_key_map_Local_Leader.l.s = 'T [md] stop preview markdown file'
 
+    " open with MWeb
+        nmap <buffer><silent> <localleader>lv :silent ! open -a MWeb "%:p"<CR>
+        let g:which_key_map_Local_Leader.l.v = 'T [md] open with MWeb'
+
     " open toc
         nmap <buffer> <localleader>lt <ESC>:Toc<CR>
         let g:which_key_map_Local_Leader.l.t = 'T [md] open markdown TOC'
