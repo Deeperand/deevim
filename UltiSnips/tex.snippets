@@ -832,10 +832,6 @@ snippet today "date of today" i
 endsnippet
 
 # begin of a document
-snippet bg-pre "preamble" i
-\\input{/Users/he/Documents/LaTeX/Notebooks/notebook_customize.tex}
-endsnippet
-
 snippet bg-b "beamer" i
 \documentclass{beamer}
 \usepackage{xeCJK}
@@ -848,43 +844,6 @@ snippet bg-b "beamer" i
 \begim{document}
 $3
 \end{document}
-endsnippet
-
-
-snippet bg-hw "homework" i
-\\documentclass[UTF8]{ctexart}
-
-\\input{${1:premble path}}
-
-\\title{\\bfseries ${2:subject name}\\\\ \\Large ${3:week}}
-\\author{\\slshape 物理1班\\quad 何剑锋\\quad 20172801}
-\\date{}
-
-\newcounter{Prob}
-\setcounter{Prob}{0}
-\newcommand\Prob{\stepcounter{Prob}\arabic{Prob}.\ }
-
-\\begin{document}
-\\maketitle
-$4
-
-\\end{document}
-endsnippet
-
-snippet bg-nb "notebook" i
-\\documentclass[UTF8, oneside, hyperref]{ctexbook}
-
-\\input{/Users/he/Documents/LaTeX/Notebooks/notebook_customize.tex}
-
-\\title{\fontsize{50}{10}\selectfont \Zapfino $1}
-\\author{\fontsize{15}{4} \Zapfino Jianfeng He}
-\\date{}
-
-\\begin{document}
-\\maketitle % title page
-\\tableofcontents % content
-\subincludefrom{}{note/$2}
-\\end{document}
 endsnippet
 
 snippet bg-ch "chapter" i
