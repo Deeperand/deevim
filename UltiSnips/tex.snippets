@@ -221,7 +221,7 @@ dic_suffix = {
 	r'VE' : r'\vec',
 	r'DO' : r'\dot',
 	r'DS' : r'\ddot', # 'S' means 'second'
-	r'TI' : r'\tilde',
+	r'TI' : r'\widetilde',
 	r'BA' : r'\bar',
 	r'LI' : r'\overline',
 	r'RM' : r'\mathrm',
@@ -305,7 +305,7 @@ dic_math_font = {
 	r'sc' : r'\mathsc',
 	r'v' : r'\vec',
 	r'do' : r'\dot',
-	r'ti' : r'\tilde',
+	r'ti' : r'\widetilde',
 	r'ba' : r'\bar',
 	r'li' : r'\overline',
 	r'dd' : r'\ddot',
@@ -712,6 +712,10 @@ endsnippet
 # s: script, special, space
 snippet "s([a-z]{1,3})" "check_key(r's([a-z]{1,3})', dic_space)" re
 `!p snip.rv = dic_space[match.group(1)]`$0
+endsnippet
+
+snippet sp "prescript" i
+\\prescript{${1:upper}}{${2:down}}{${3:body}}
 endsnippet
 
 snippet "s(u|d)" "first-order" r
