@@ -11,7 +11,50 @@ snippet f2 "font size 1" i
 <font size="2">$1</font>
 endsnippet
 
+priority 2
+snippet fsi "font size" i
+<font size = "$1">$2</font>
+endsnippet
+
+priority 3
+snippet fs "small" i
+<small>$1</small>
+endsnippet
+
+snippet fi "italic" i
+<i>$1</i>
+endsnippet
+
+snippet fl "Latin Modern" i
+<font face="Latin Modern Roman">$1</font>
+endsnippet
+
+# h: hierachy
+snippet h "paragraph" i
+<p>$1</p>
+endsnippet
+
+# m: math
+snippet m "math" i
+<font face = "Latin Modern Roman"><i>$1</i></font>
+endsnippet
+
 # s: space
+priority 1
 snippet s "space" i
 &nbsp
+endsnippet
+
+# t: tag
+snippet th "html" i
+<html>$1</html>
+endsnippet
+
+# other
+snippet __ "subscript" iA
+<sub><small>$1</small></sub>
+endsnippet
+
+snippet ^^ "supscript" iA
+<sup><small>$1</small></sup>
 endsnippet

@@ -1,15 +1,28 @@
+# b: block
+snippet b "bracket block" i
+{
+	$1
+}
+endsnippet
+
+# d: define
 snippet dfsp "define a snippet" bA
 snippet ${1:prefix} "${2:describe}" ${3:option}
 ${4:content}
 `echo endsnippet`
 endsnippet
 
-snippet gre "describe" bA
-snippet \`$1 "$2" iA
-\\\\$3
+snippet Dfsp "define with dic" A
+snippet "${1:pattarn}" "check_key(r'$1', ${2:dic})" $3re
+$4\`!p snip.rv = $2[match.group(1)]\`$5
 `echo endsnippet`
 endsnippet
 
-snippet ddf "creat an item of a dic" A
+snippet ddf "creat an item of a dic" Ai
 r'$1' : r'$2',
 endsnippet
+
+snippet dph "define place holder" Ai
+\${$1:$2}
+endsnippet
+
