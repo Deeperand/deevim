@@ -1,0 +1,43 @@
+# c: cd
+snippet c "cd to current directory" i
+cd(dirname(@__FILE__))
+endsnippet
+
+# i: if
+snippet if "if" i
+if $1
+	$2
+end
+endsnippet
+
+# f: function
+snippet f "function"
+function ${1:name}($2)
+	$3
+end
+endsnippet
+
+# l: loop
+snippet lf "for loop" i
+for $1
+	$2
+end
+endsnippet
+
+# p: print
+snippet p "print" i
+println($1)
+endsnippet
+
+# s: seg
+snippet s "segment (weak)"
+# --------------------$1--------------------
+endsnippet
+
+snippet ss "segment (mid)"
+# ********************$1********************
+endsnippet
+
+snippet S "segment (strong)"
+# =========================$1=========================
+endsnippet
