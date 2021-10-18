@@ -1,0 +1,48 @@
+# s: script, segment
+snippet st "script title" i
+#/usr/bin/env wolframscript
+endsnippet
+
+priority 2
+snippet S "strong segment" i
+(*=========================$1=========================*)
+endsnippet
+
+snippet ss "mid segment" i
+(*********************$1***********************)
+endsnippet
+
+snippet s "weak segment" i
+(*--------------------$1----------------------*)
+endsnippet
+
+snippet segi "input" i
+(*=========================INPUT=========================*)
+endsnippet
+
+snippet segp "process" i
+(*=========================PROCESS=========================*)
+endsnippet
+
+snippet sego "input" i
+(*=========================OUTPUT=========================*)
+endsnippet
+
+
+# p: print
+priority 1
+snippet p "print" i
+Print[ $1 ]
+endsnippet
+
+# i: index
+priority 1
+snippet i "index" i
+[[$1]]
+endsnippet
+
+# f: function
+priority 1
+snippet f "outer-most function" i
+$1[ $2 ]
+endsnippet
