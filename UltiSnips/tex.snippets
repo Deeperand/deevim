@@ -9,13 +9,14 @@ def check_key(rx, dic, groupnum = 1, charnum = 6): # Check if the string match t
 		return match.group(groupnum) in dic
 	else:
 		return 0
+
 def script_judge(string):
 	if string == r'u':
 		return r'^'
 	elif string == r'd':
 		return r'_'
 
-texMathZones = ['texMathZone'+x for x in ['\/','`a']]
+texMathZones = ['texMathZone' + x for x in ['A', 'AS', 'B', 'BS', 'C', 'CS', 'D', 'DS', 'E', 'ES', 'F', 'FS', 'G', 'GS', 'H', 'HS', 'I', 'IS', 'J', 'JS', 'K', 'KS', 'L', 'LS', 'DS', 'V', 'W', 'X', 'Y', 'Z', 'AmsA', 'AmsB', 'AmsC', 'AmsD', 'AmsE', 'AmsF', 'AmsG', 'AmsAS', 'AmsBS', 'AmsCS', 'AmsDS', 'AmsES', 'AmsFS', 'AmsGS' ]]
 texIgnoreMathZones = ['texMathText']
 texMathZoneIds = vim.eval('map('+str(texMathZones)+", 'hlID(v:val)')")
 texIgnoreMathZoneIds = vim.eval('map('+str(texIgnoreMathZones)+", 'hlID(v:val)')")
@@ -138,6 +139,7 @@ dic_symbol_c = {
 	r'a' : r'\angle',
 	r'd' : r'\MaD',
 	r't' : r'\item', # means "term"
+	r'*' : r'\otimes',
 	}
 
 # start with "~"
@@ -160,14 +162,14 @@ dic_symbol_e = {
 }
 
 dic_big_notation = {
-		r'i0' : r'\oint',
-		r'i1' : r'\int',
-		r'i2' : r'\iint',
-		r'i3' : r'\iiint',
-		r's' : r'\sum',
-		r'p' : r'\prod',
-		r'u' : r'\bigcup',
-		r'n' : r'\bigcap'
+	r'i0' : r'\oint',
+	r'i1' : r'\int',
+	r'i2' : r'\iint',
+	r'i3' : r'\iiint',
+	r's' : r'\sum',
+	r'p' : r'\prod',
+	r'u' : r'\bigcup',
+	r'n' : r'\bigcap'
 }
 
 dic_env = {
@@ -175,6 +177,7 @@ dic_env = {
 	r'd' : r'document',
 	r'e' : r'enumerate',
 	r'i' : r'itemize',
+	r'in' : r'Indent',
 	r'n' : r'Notation',
 	r'tb' : r'table',
 	r'ta' : r'tabular',
@@ -187,14 +190,17 @@ dic_env = {
 	r'fi' : r'figure',
 
 # theorem-like
+	r'a' : r'Answer',
 	r'cl' : r'Claim',
 	r'ce' : r'Concept',
 	r'df' : r'Definition',
 	r'fo' : r'Formula',
 	r'l' : r'Law',
+	r'le' : r'Lemma',
 	r'th' : r'Theorem',
 	r'ex' : r'Example',
 	r'p' : r'Property',
+	r'q' : r'Question',
 	r's' : r'Solve',
 }
 
@@ -217,7 +223,7 @@ dic_par_r = {
 }
 
 dic_suffix = {
-	r'HA' : r'\widehat',
+	r'HA' : r'\hat',
 	r'VE' : r'\vec',
 	r'DO' : r'\dot',
 	r'DS' : r'\ddot', # 'S' means 'second'
@@ -238,71 +244,76 @@ dic_hierachy = {
 	r'c' : r'\chapter',
 	r's' : r'\section',
 	r'ss' : r'\subsection',
+	r'sss' : r'\subsubsection',
 	r's2' : r'\subsubsection',
 	r'h' : r'\subparagraph'
 }
 
 dic_label = {
+	r'd' : r'df',
 	r'e' : r'eq',
 	r'f' : r'fig',
 	r't' : r'tab',
+	r's' : r'sec',
+	r't' : r'thm',
 }
 
 dic_math_notation = {
-	r'lo' : r'\log',
-	r'lg' : r'\lg',
-	r'ln' : r'\ln',
-	r's' : r'\sin',
-	r'c' : r'\cos',
-	r'as' : r'\arcsin',
-	r't' : r'\tan',
-	r'at' : r'\arctan',
-	r'ct' : r'\cot',
-	r'sh' : r'\sinh',
-	r'ch' : r'\cosh',
-	r'th' : r'\tanh',
-	r'oh' : r'\coth',
-	r'se' : r'\sec',
-	r'cs' : r'\csc',
-	r'ar' : r'\arg',
-	r'ke' : r'\ker',
-	r'di' : r'\dim',
-	r'ho' : r'\hom',
-	r'e' : r'\MaE',
-	r'ex' : r'\exp',
-	r'de' : r'\deg',
-	r'sg' : r'\mathrm{sgn}',
-	r'si' : r'\mathrm{sinc}',
-	r'r' : r'\mathrm{rect}',
-	r'tr' : r'\mathrm{tri}',
-	r'ga' : r'\mathrm{Gaus}',
-	r'st' : r'\mathrm{step}',
-	r'ci' : r'\mathrm{circ}',
-	r'co' : r'\mathrm{comb}',
-	r'f' : r'\mathscr{F}', # feriour transfer
-	r'F' : r'\mathscr{F}\!', # feriour transfer
-	r'l' : r'\mathscr{L}', # linear notation
-	r'L' : r'\mathscr{L}\!', # linear notation
-	r'p' : r'\MaPI',
+    r'lo' : r'\log',
+    r'lg' : r'\lg',
+    r'ln' : r'\ln',
+    r's' : r'\sin',
+    r'c' : r'\cos',
+    r'as' : r'\arcsin',
+    r't' : r'\tan',
+    r'at' : r'\arctan',
+    r'ct' : r'\cot',
+    r'sh' : r'\sinh',
+    r'ch' : r'\cosh',
+    r'th' : r'\tanh',
+    r'oh' : r'\coth',
+    r'se' : r'\sec',
+    r'cs' : r'\csc',
+    r'ar' : r'\arg',
+    r'ke' : r'\ker',
+    r'di' : r'\dim',
+    r'ho' : r'\hom',
+    r'e' : r'\MaE',
+    r'ex' : r'\exp',
+    r'de' : r'\deg',
+    r'sg' : r'\mathrm{sgn}',
+    r'si' : r'\mathrm{sinc}',
+    r'r' : r'\mathrm{rect}',
+    r'tr' : r'\mathrm{tri}',
+    r'ga' : r'\mathrm{Gaus}',
+    r'st' : r'\mathrm{step}',
+    r'ci' : r'\mathrm{circ}',
+    r'co' : r'\mathrm{comb}',
+    r'f' : r'\mathscr{F}', # feriour transfer
+    r'F' : r'\mathscr{F}\!', # feriour transfer
+    r'l' : r'\mathscr{L}', # linear notation
+    r'L' : r'\mathscr{L}\!', # linear notation
+    r'p' : r'\MaPI',
 }
 
 dic_math_env = {
-	r'a' : r'align',
-	r'c' : r'cases',
-	r'd' : r'dcases',
-	r'e' : r'equation',
-	r'g' : r'gather',
-	r's' : r'split',
-	r'ad' : r'aligned',
+    r'a' : r'align',
+    r'c' : r'cases',
+    r'd' : r'dcases',
+    r'e' : r'equation',
+    r'g' : r'gather',
+    r's' : r'split',
+    r'ad' : r'aligned',
 }
 
 dic_math_font = {
+	r'ca' : r'\mathcal',
 	r'bb' : r'\mathbb',
 	r'bm' : r'\mathbbm',
 	r'bs' : r'\boldsymbol',
 	r'b' : r'\bm',
 	r'r' : r'\mathrm',
-	r'sc' : r'\mathsc',
+	r'sc' : r'\mathscr',
 	r'v' : r'\vec',
 	r'do' : r'\dot',
 	r'ti' : r'\widetilde',
@@ -325,11 +336,21 @@ dic_matrix = {
 dic_font = {
 	r'b' : r'\textbf',
 	r'c' : r'\Code',
+	r'e' : r'\emph',
 	r'f' : r'\footnote',
 	r'i' : r'\textsl',
 	r'j' : r'\jlmText',
 	r'p' : r'\texttt', # printer font
 	r'w' : r'\CJKunderwave',
+}
+
+dic_font_color = {
+	r'r' : r'red',
+	r'g' : r'green',
+	r'b' : r'blue',
+	r'c' : r'cyan',
+	r'm' : r'magenta',
+	r'y' : r'yellow',
 }
 
 dic_frac = {
@@ -378,9 +399,10 @@ dic_code_block = {
 
 endglobal
 
-priority 2
 # `: greek letter, common used symbol and command
-snippet "`([a-zA-Z0-9.,;+\-*<>=|]{1,3})" "check_key(r'`([a-zA-Z0-9.,;+\-*<>=|]{1,3})', dic_symbol_a)" iAre
+priority 2
+context "math() and check_key(r'`([a-zA-Z0-9.,;+\-*<>=|]{1,3})', dic_symbol_a)"
+snippet "`([a-zA-Z0-9.,;+\-*<>=|]{1,3})" "" iAr
 `!p snip.rv = dic_symbol_a[match.group(1)]`
 endsnippet
 
@@ -389,7 +411,8 @@ snippet `2 "sqrt" iA
 endsnippet
 
 # @
-snippet "@([a-zA-Z0-9.,;+\-*<>=]{1,3})" "check_key(r'@([a-zA-Z0-9.,;+\-*<>=]{1,3})', dic_symbol_b)" iAre
+context "math() and check_key(r'@([a-zA-Z0-9.,;+\-*<>=]{1,3})', dic_symbol_b)"
+snippet "@([a-zA-Z0-9.,;+\-*<>=]{1,3})" "math symbol II" iAr
 `!p snip.rv = dic_symbol_b[match.group(1)]`
 endsnippet
 
@@ -398,6 +421,7 @@ snippet "@f([a-zA-Z0-9])" "check_key(r'@f([a-zA-Z0-9])', dic_frac)" iAre
 endsnippet
 
 # #
+# context "math() and check_key(r'#([a-zA-Z0-9.,;+\-*<>=]{1,3})', dic_symbol_b)"
 snippet "#([a-zA-Z0-9.,;+\-*<>=]{1,3})" "check_key(r'#([a-zA-Z0-9.,;+\-*<>=]{1,3})', dic_symbol_c)" iAre
 `!p snip.rv = dic_symbol_c[match.group(1)]`
 endsnippet
@@ -426,19 +450,23 @@ snippet ... "dots" iA
 \\dots
 endsnippet
 
+context "math()"
 snippet ^^ "superscript" iA
 ^{$1}$0
 endsnippet
 
+context "math()"
 snippet __ "subscript" iA
 _{$1}$0
 endsnippet
 
+context "math()"
 snippet || "abs" iA
 \\left| $1 \\right|
 endsnippet
 
-priority 2
+context "math()"
+priority 3
 snippet // "displaystyle friction" iA
 \\dfrac{$1}{$2}$0
 endsnippet
@@ -452,57 +480,96 @@ snippet % "fraction" i
 endsnippet
 
 priority 1
+context "math()"
 snippet <> "angle bracket" iA
-\\langle $1 \\rangle
+\\braket{$1}
 endsnippet
 
+context "math()"
 snippet <| "bra" iA
-\\langle $1 |
+\\bra{$1}
 endsnippet
 
+context "math()"
 snippet |> "ket" iA
-| $1 \\rangle
+\\ket{$1}
 endsnippet
 
 # parenthesis and long string
+priority 2
 snippet "`(\)|\]|\}|>|\|)" "check_key(r'`(\)|\]|\}|>|\|)', dic_par_r)" iAre
 `!p snip.rv = dic_par_l[match.group(1)]` $1 `!p snip.rv = dic_par_r[match.group(1)]`$0
 endsnippet
 
-snippet "@(\)|\]|\}|>|\|)" "check_key(r'`(\)|\]|\}|>|\|)', dic_par_r)" iAre
+priority 2
+snippet "@(\)|\]|\}|>|\|)" "check_key(r'@(\)|\]|\}|>|\|)', dic_par_r)" iAre
 `!p snip.rv = dic_par_l[match.group(1)]` $1 `!p snip.rv = dic_par_r[match.group(1)]`_{$2}$0
 endsnippet
 
-snippet "#(\)|\]|\}|>|\|)" "check_key(r'`(\)|\]|\}|>|\|)', dic_par_r)" iAre
+priority 2
+snippet "#(\)|\]|\}|>|\|)" "check_key(r'#(\)|\]|\}|>|\|)', dic_par_r)" iAre
 `!p snip.rv = dic_par_l[match.group(1)]` $1 `!p snip.rv = dic_par_r[match.group(1)]`^{$2}$0
 endsnippet
 
-snippet "~(\)|\]|\}|>|\|)" "check_key(r'`(\)|\]|\}|>|\|)', dic_par_r)" iAre
+priority 2
+snippet "~(\)|\]|\}|>|\|)" "check_key(r'~(\)|\]|\}|>|\|)', dic_par_r)" iAre
 `!p snip.rv = dic_par_l[match.group(1)]` $1 `!p snip.rv = dic_par_r[match.group(1)]`_{$2}^{$3}$0
 endsnippet
 
 # big notation
+context "math()"
 snippet "@(i0|i1|i2|i3|s|p|u|n)" "big notation" iAr
 `!p snip.rv = dic_big_notation[match.group(1)]`_{$1}$0
 endsnippet
 
+context "math()"
 snippet "#(i0|i1|i2|i3|s|p|u|n)" "big notation" iAr
 `!p snip.rv = dic_big_notation[match.group(1)]`^{$1}$0
 endsnippet
 
+context "math()"
 snippet "~(i0|i1|i2|i3|s|p|u|n)" "big notation" iAr
 `!p snip.rv = dic_big_notation[match.group(1)]`_{$1}^{$2}$0
 endsnippet
 
+context "math()"
 snippet "!(i0|i1|i2|i3|s|p|u|n)" "big notation" iAr
 `!p snip.rv = dic_big_notation[match.group(1)]`$0
 endsnippet
 
 # b: beamer
 snippet b "new frame"
-\begin{frame}
+\begin{frame}{$1}{$2}
+	$3
+\end{frame}
+endsnippet
+
+snippet B "new frame with title"
+\begin{frame}{\TitleSubSection}{\TitleSubSubSection}
 	$1
 \end{frame}
+endsnippet
+
+snippet bs "section title" i
+\TitleSubSection
+endsnippet
+
+snippet bb "block"
+\begin{block}{$1}
+	$2
+\end{block}
+endsnippet
+
+snippet ba "alertblock"
+\begin{alertblock}{$1}
+	$2
+\end{alertblock}
+endsnippet
+
+snippet bex "exampleblock"
+\begin{exampleblock}{$1}
+	$2
+\end{exampleblock}
 endsnippet
 
 # c: code
@@ -527,10 +594,15 @@ snippet C "code block" i
 endsnippet
 
 priority 2
-snippet "c([a-zA-Z]{1,3})" "check_key(r'c([a-zA-Z]{1,3})', dic_code_block)" ire
+snippet "c([a-zA-Z]{1,3})" "code block" "check_key(r'c([a-zA-Z]{1,3})', dic_code_block)" ire
 \begin{lstlisting}[language = {`!p snip.rv = dic_code_block[match.group(1)]`}, gobble = ${1:8}]
 	$2
 \end{lstlisting}
+endsnippet
+
+priority 3
+snippet "CC([a-zA-Z]{1,3})" "code block with external file" "check_key(r'CC([a-zA-Z]{1,3})', dic_code_block)" ire
+\\lstinputlisting[language = {`!p snip.rv = dic_code_block[match.group(1)]`}]{${1:file path}}
 endsnippet
 
 # e: enviroment
@@ -540,7 +612,7 @@ snippet e "begin{} / end{}"
 \end{$1}$0
 endsnippet
 
-snippet E "enviroment with option" 
+snippet E "enviroment with option"
 \begin{$1}[$2]
 	$3
 \end{$1}$0
@@ -583,6 +655,16 @@ snippet fs "single quotation" i
 \`{}$1'
 endsnippet
 
+# F: text color
+snippet F "color" i
+\textcolor{${1:color}}{${2:text}}
+endsnippet
+
+priority 2
+snippet "F([a-zA-Z]{1,3})" "check_key(r'F([a-zA-Z]{1,3})', dic_font_color)" rei
+\textcolor{`!p snip.rv = dic_font_color[match.group(1)]`}{$1}$0
+endsnippet
+
 # h: hierarchy
 snippet h "pargraph, change line"
 \\paragraph{$1 \\\\}$0
@@ -610,6 +692,10 @@ snippet "l([a-zA-Z]{1,3})" "check_key(r'l([a-zA-Z]{1,3})', dic_label)" ire
 \\label{`!p snip.rv = dic_label[match.group(1)]`: $1}
 endsnippet
 
+snippet "L([a-zA-Z]{1,3})" "caption and label (label is as same as caption by default)" "check_key(r'L([a-zA-Z]{1,3})', dic_label)"  ire
+\\caption{$1}\\label{`!p snip.rv = dic_label[match.group(1)]`: ${2:$1}}
+endsnippet
+
 # m: math
 ## special
 priority 1
@@ -617,22 +703,26 @@ snippet m "mathmode (inline)" i
 \$$1\$$0
 endsnippet
 
-# snippet M "mathmode" i
-# \\[ $1 \\]$0
-# endsnippet
-snippet M "math (display style)" i
+priority 2
+snippet mm "math (display, no number)" i
+\\begin{equation*}
+	$1
+\\end{equation*}
+endsnippet
+
+snippet M "math (display style)"
 \\begin{equation}
 	$1
 \\end{equation}
 endsnippet
 
 priority 2
-snippet mf "framed display-style quation" i
-\\FDEq{ $1 }
-endsnippet
-
 snippet mdp "displaystyle" i
 \\displaystyle
+endsnippet
+
+snippet mss "scriptstyle" i
+\\scriptscriptstyle
 endsnippet
 
 snippet mi "math inster text" i
@@ -646,6 +736,7 @@ snippet mca "cases + aligned" i
 endsnippet
 
 ## math font
+priority 3
 snippet "m([a-zA-Z]{1,3})" "check_key(r'm([a-zA-Z]{1,3})', dic_math_font)" ire
 `!p snip.rv = dic_math_font[match.group(1)]`{$1}$0
 endsnippet
@@ -664,6 +755,12 @@ snippet "\bm([a-zA-Z]{1,3})\*" "check_key(r'\bm([a-zA-Z]{1,3})\*', dic_math_env)
 \end{`!p snip.rv = dic_math_env[match.group(1)]`*}$0
 endsnippet
 
+## phantom in math
+context "math()"
+snippet mph "phantom in math" i
+\mathrel{\phantom{$1}}
+endsnippet
+
 # M: matrix
 snippet "\bM([a-zA-Z]{1,3})" "check_key(r'\bM([a-zA-Z]{1,3})', dic_matrix)" re
 \begin{`!p snip.rv = dic_matrix[match.group(1)]`}
@@ -673,26 +770,27 @@ endsnippet
 
 # n: notation
 snippet nli "limit" i
-\\lim_{$1 \\rightarrow $2}
+\\lim_{$1 \\to $2}
 endsnippet
 
-snippet "n([a-zA-Z]{1,3})" "check_key(r'n([a-zA-Z]{1,3})', dic_math_notation)" ire
+priority 3
+snippet "n([a-zA-Z]{1,3})" "notation" "check_key(r'n([a-zA-Z]{1,3})', dic_math_notation)" ire
 `!p snip.rv = dic_math_notation[match.group(1)]`$0
 endsnippet
 
-snippet "n([a-zA-Z]{1,3})(\)|\]|\}|>)" "check_key(r'n([a-zA-Z]{1,3})(\)|\]|\}|>)', dic_math_notation)" irAe
+snippet "n([a-zA-Z]{1,3})(\)|\]|\}|>)" "notation with parenthesis" "check_key(r'n([a-zA-Z]{1,3})(\)|\]|\}|>)', dic_math_notation)" irAe
 `!p snip.rv = dic_math_notation[match.group(1)]``!p snip.rv = dic_par_l[match.group(2)]` $1 `!p snip.rv = dic_par_r[match.group(2)]`$0
 endsnippet
 
 # p: power
-priority 2
+priority 3
 snippet "pp([0-9])" "power" "check_key(r'pp([0-9])', dic_power)"  rei
 ^{`!p snip.rv = dic_power[match.group(1)]`}
 endsnippet
 
 # r: ref
 priority 1
-snippet r "ref" i
+snippet r "ref"
 \\ref{$1}
 endsnippet
 
@@ -710,12 +808,33 @@ snippet rc "cite" i
 endsnippet
 
 # s: script, special, space
+priority 1
 snippet "s([a-z]{1,3})" "check_key(r's([a-z]{1,3})', dic_space)" re
 `!p snip.rv = dic_space[match.group(1)]`$0
 endsnippet
 
 snippet sp "prescript" i
 \\prescript{${1:upper}}{${2:down}}{${3:body}}
+endsnippet
+
+snippet spb "parbox" i
+\\parbox[${1:pos(c,b,t)}]{.$2\\textwidth}{
+	$3
+}
+endsnippet
+
+snippet sm "multicolumn" i
+\\multicolumn{${1:column_num}}{${2:align_method}}{${3:content}}
+endsnippet
+
+snippet sig "includegraphics" i
+\\includegraphics[width=.${1:rate}\\textwidth]{${2:path}}
+endsnippet
+
+snippet sru "toprule and bottomrule" i
+\\toprule
+	$1
+\\bottomrule
 endsnippet
 
 snippet "s(u|d)" "first-order" r
@@ -766,12 +885,12 @@ snippet "t(u|d)(u|d)(u|d)(u|d)" "forth-order tensor" r
 endsnippet
 
 # RE
-priority 1
-snippet "([a-zA-Z\\])(\d+)" "subscript" ir
+context "math()"
+snippet "([a-zA-Z\\{}])(\d+)" "subscript" ir
 `!p snip.rv = match.group(1)`_{`!p snip.rv = match.group(2)`}$0
 endsnippet
 
-priority 1
+context "math()"
 snippet "([\\a-zA-Z0-9{}\[\]()+-_^]+)/" "auto friction" irA
 \\dfrac{`!p snip.rv = match.group(1)`}{$1}$0
 endsnippet
@@ -789,14 +908,17 @@ snippet @@4 "quadruple type 1"
 $2 $1 $3 $1 $4 $1 $5 $1 $6
 endsnippet
 
+context "math()"
 snippet "([a-zA-Z0-9\\{}&_]+)@@2" "double type 2" rA
 $1 `!p snip.rv = match.group(1)` $2 `!p snip.rv = match.group(1)` $3
 endsnippet
 
+context "math()"
 snippet "([a-zA-Z0-9\\{}&_]+)@@3" "treble type 2" rA
 $1 `!p snip.rv = match.group(1)` $2 `!p snip.rv = match.group(1)` $3 `!p snip.rv = match.group(1)` $4
 endsnippet
 
+context "math()"
 snippet "([a-zA-Z0-9\\{}&_]+)@@4" "quadruple type 1" rA
 $1 `!p snip.rv = match.group(1)` $2 `!p snip.rv = match.group(1)` $3 `!p snip.rv = match.group(1)` $4 `!p snip.rv = match.group(1)` $5
 endsnippet
@@ -813,20 +935,24 @@ snippet **4 "quadruple type 4"
 $1 $2 $1 $3 $1 $4 $1 $5
 endsnippet
 
+context "math()"
 snippet "([a-zA-Z0-9\\{}&'_]+)\*\*2" "double type 3" rA
 `!p snip.rv = match.group(1)`$1 `!p snip.rv = match.group(1)`$2
 endsnippet
 
+context "math()"
 snippet "([a-zA-Z0-9\\{}&'_]+)\*\*3" "treble type 3" rA
 `!p snip.rv = match.group(1)`$1 `!p snip.rv = match.group(1)`$2 `!p snip.rv = match.group(1)`$3
 endsnippet
 
+context "math()"
 snippet "([a-zA-Z0-9\\{}&'_]+)\*\*4" "quadruple type 3" rA
 `!p snip.rv = match.group(1)`$1 `!p snip.rv = match.group(1)`$2 `!p snip.rv = match.group(1)`$3 `!p snip.rv = match.group(1)` $4
 endsnippet
 
 # suffix (use capital both)
-snippet "([0-9a-zA-Z\*\\]+)([A-Z]{2})" "check_key(r'([0-9a-zA-Z\*\\]+)([A-Z]{2})', dic_suffix, groupnum = 2, charnum = 15)" Are
+context "math() and check_key(r'([0-9a-zA-Z\*\\]+)([A-Z]{2})', dic_suffix, groupnum = 2, charnum = 15)"
+snippet "([0-9a-zA-Z\*\\]+)([A-Z]{2})" "suffix" Ar
 `!p snip.rv = dic_suffix[match.group(2)]`{`!p snip.rv = match.group(1)`}
 endsnippet
 
@@ -856,5 +982,14 @@ snippet bg-ch "chapter" i
 \\setcounter{subsubsection}{0}
 \\setcounter{paragraph}{0}
 \\setcounter{subparagraph}{0}
+endsnippet
+
+# segment line
+snippet == "segment line"
+% ===========================================================
+endsnippet
+
+snippet -- "segment line"
+% -----------------------------------------------------------
 endsnippet
 
