@@ -1,7 +1,4 @@
 " other plug or setting
-    " cancel delete trivial spaces (to avoid the chaos of type setting)
-        nnoremap <buffer> <F12> <F12>
-        inoremap <buffer> <F12> <F12>
     " buile dictionary to store shortcut list
         let g:which_key_map_Local_Leader.l = {'name' : '{for specific type}',}
 
@@ -12,14 +9,19 @@
         let b:delimitMate_quotes = "\" '" " conceal the auto-complete of `
 
     " open syntax
-        nnoremap <buffer> <F3> <ESC>:vsplit \| execute("edit".g:blade_vim_config_dir."/after/syntax/markdown.vim")<CR>
+        " nnoremap <buffer> <F3> <ESC>:vsplit \| execute("edit".g:blade_vim_config_dir."/after/syntax/markdown.vim")<CR>
 
     " let change line easier
-        inoremap <buffer> <M-CR> <Space><Space><CR>
+        inoremap <buffer> <M-CR> </br><CR>
 
     " open a temporary tex file to input equation ('m' meas 'mathematics')
         nnoremap <buffer> <localleader>lm <C-w><C-s>:edit ~/.vim/.temptex<CR>
         let g:which_key_map_Local_Leader.l.m = "input LaTeX equation"
+
+    " open with MWeb
+        nnoremap <buffer><silent> <localleader>lv :silent ! open -a MWeb\ Pro "%:p"<CR>
+        " nnoremap <buffer><silent> <localleader>lv :! open -a MWeb Pro "%:p"<CR>
+        let g:which_key_map_Local_Leader.l.v = 'T [md] open with MWeb'
 
 " --------------------------------------------------------------------------------
 
@@ -64,12 +66,19 @@
 " --------------------------------------------------------------------------------
 
 " markdown-preview.nvim
+    " use a well-defined port to avoid restart diffcult
+        let g:mkdp_port = ''
+
     " style of markdown preview ('p' means 'appearance')
         let g:markdown_css_dir = expand('~/Documents/my_config/Blade-markdown')
         let g:markdown_preview_style = "github_like"
         let g:mkdp_markdown_css = g:markdown_css_dir."/".g:markdown_preview_style.".css"
 
-        command! -nargs=1 MarkdownStyle call <SID>setMarkdownSytle(<f-args>)
+        command! -complete=custom,s:selectMarkdownSytle -nargs=1 MarkdownStyle call <SID>setMarkdownSytle(<f-args>)
+
+        function! s:selectMarkdownSytle(A, L, P)
+            return "github\ngithub_like\nMWeb"
+        endfunction
 
         function! s:setMarkdownSytle(style)
             let g:markdown_preview_style = a:style
@@ -86,18 +95,14 @@
         nmap <buffer> <localleader>ls <Plug>MarkdownPreviewStop
         let g:which_key_map_Local_Leader.l.s = 'T [md] stop preview markdown file'
 
-    " open with MWeb
-        nmap <buffer><silent> <localleader>lv :silent ! open -a MWeb "%:p"<CR>
-        let g:which_key_map_Local_Leader.l.v = 'T [md] open with MWeb'
-
     " open toc
         nmap <buffer> <localleader>lt <ESC>:Toc<CR>
         let g:which_key_map_Local_Leader.l.t = 'T [md] open markdown TOC'
 
     " switch if enable sync scroll
-        nnoremap <buffer><expr> <localleader>lc execute('let g:mkdp_preview_options["disable_sync_scroll"] = g:Switch_option(g:mkdp_preview_options["disable_sync_scroll"])')
+        nnoremap <buffer><expr> <localleader>lc execute('let g:mkdp_preview_options["disable_sync_scroll"] = <SID>switch_option(g:mkdp_preview_options["disable_sync_scroll"])')
 
-        function g:Switch_option(x)
+        function s:switch_option(x)
             if a:x==1
                 return 0
             elseif a:x==0
