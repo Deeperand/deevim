@@ -97,135 +97,137 @@ let g:blade_vim_config_dir = expand("~/Documents/my_config/Blade-Vim")
 " vim-plug
     " plug manage
          call plug#begin('~/.vim/plugged')
-             " should be loaded earlier
-                 " auto align
-                     Plug 'godlygeek/tabular'
+            " should be loaded earlier
+                " auto align
+                    Plug 'godlygeek/tabular'
 
              " language specific
-                 " LaTeX
-                     Plug 'lervag/vimtex', {'for':['tex', 'temptex']}
-                     Plug 'Deeperand/vim-mdtex', {'for': ['tex', 'markdown']}
-                 " markdown
-                     Plug 'plasticboy/vim-markdown', {'for':'markdown'}
-                     Plug 'iamcco/mathjax-support-for-mkdp', {'for':'markdown'}
-                     Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app & yarn install'}
-                 " c/c++
-                     " enhanced highlight
-                         Plug 'octol/vim-cpp-enhanced-highlight', {'for':'cpp'}
-                 " json
-                     Plug 'elzr/vim-json'
-                 " html
-                     Plug 'gregsexton/MatchTag'
-                 " mathematica
-                     Plug 'voldikss/vim-mma'
-                 " Julia
-                     Plug 'JuliaEditorSupport/julia-vim'
-                 " Lilypond
-                     Plug 'gisraptor/vim-lilypond-integrator', {'for':' '}
+                " Applescript
+                    Plug 'dearrrfish/vim-applescript'
+                " LaTeX
+                    Plug 'lervag/vimtex', {'for':['tex', 'temptex']}
+                    Plug 'Deeperand/vim-mdtex', {'for': ['tex', 'markdown']}
+                " markdown
+                    Plug 'plasticboy/vim-markdown', {'for':'markdown'}
+                    Plug 'iamcco/mathjax-support-for-mkdp', {'for':'markdown'}
+                    Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app & yarn install'}
+                " c/c++
+                    " enhanced highlight
+                        Plug 'octol/vim-cpp-enhanced-highlight', {'for':'cpp'}
+                " json
+                    Plug 'elzr/vim-json'
+                " html
+                    Plug 'gregsexton/MatchTag'
+                " mathematica
+                    Plug 'voldikss/vim-mma'
+                " Julia
+                    Plug 'JuliaEditorSupport/julia-vim'
+                " Lilypond
+                    Plug 'gisraptor/vim-lilypond-integrator', {'for':' '}
 
-             " used generally
-                 " file tree browse
-                     " main plugin
-                         if has('nvim')
-                             Plug 'Shougo/defx.nvim', { 'do': ':UpdateRemotePlugins' }
-                             " set pythondll=/usr/local/Frameworks/Python.framework/Versions/3.7/Python
-                             " set pythonhome=/usr/local/Frameworks/Python.framework/Versions/3.7
-                             " set pythonthreedll=/usr/local/Frameworks/Python.framework/Versions/3.7/Python
-                             " set pythonthreehome=/usr/local/Frameworks/Python.framework/Versions/3.7
-                         else
-                             Plug 'Shougo/defx.nvim'
-                         endif
+            " used generally
+                " file tree browse
+                    " main plugin
+                        if has('nvim')
+                            Plug 'Shougo/defx.nvim', { 'do': ':UpdateRemotePlugins' }
+                            " set pythondll=/usr/local/Frameworks/Python.framework/Versions/3.7/Python
+                            " set pythonhome=/usr/local/Frameworks/Python.framework/Versions/3.7
+                            " set pythonthreedll=/usr/local/Frameworks/Python.framework/Versions/3.7/Python
+                            " set pythonthreehome=/usr/local/Frameworks/Python.framework/Versions/3.7
+                        else
+                            Plug 'Shougo/defx.nvim'
+                        endif
 
-                         Plug 'roxma/nvim-yarp'
-                         Plug 'roxma/vim-hug-neovim-rpc'
+                        Plug 'roxma/nvim-yarp'
+                        Plug 'roxma/vim-hug-neovim-rpc'
 
-                     " icon supoort
-                         " Plug 'Deeperand/defx-icons'
-                         Plug 'kristijanhusak/defx-icons'
-                     " git support
-                         Plug 'kristijanhusak/defx-git'
-                 " git enhancment
-                     " git wrapper
-                         Plug 'tpope/vim-fugitive'
-                     " Show a diff using Vim its sign column
-                         if has('nvim') || has('patch-8.0.902')
-                             Plug 'mhinz/vim-signify'
-                         else
-                             Plug 'mhinz/vim-signify', { 'branch': 'legacy' }
-                         endif
-                 " shortcut management
-                     Plug 'liuchengxu/vim-which-key'
-                 " search
-                     Plug 'Yggdroot/LeaderF', { 'do': './install.sh' }
-                 " power status line
-                     Plug 'vim-airline/vim-airline'
-                     Plug 'vim-airline/vim-airline-themes'
-                 " rainbow parentheses
-                     Plug 'luochen1990/rainbow'
-                 " indent line
-                     Plug 'Yggdroot/indentLine'
-                 " mark trailing whitespace
-                     Plug 'ntpeters/vim-better-whitespace'
-                 " autocomplete
-                     Plug 'neoclide/coc.nvim', {'branch': 'release'}
-                 " snippet
-                     Plug 'sirver/ultisnips'
-                 " autocomplete parenthesis
-                     Plug 'Raimondi/delimitMate'
-                 " multiple-cursors
-                     Plug 'mg979/vim-visual-multi',{'for':''}
-                 " syntax check
-                     Plug 'dense-analysis/ale'
-                 " faster notation
-                     Plug 'tpope/vim-commentary'
-                 " surround
-                     Plug 'tpope/vim-surround'
-                 " faster fold
-                     Plug 'Konfekt/FastFold'
-                 " auto-save
-                     Plug '907th/vim-auto-save'
-                 " auto-update tags
-                     Plug 'ludovicchabant/vim-gutentags'
-                 " run shell commands in background
-                     Plug 'skywind3000/asyncrun.vim'
-                 " text object
-                     " create your own
-                         Plug 'kana/vim-textobj-user'
-                     " some pre-defined text object
-                         Plug 'kana/vim-textobj-entire'
-                         Plug 'kana/vim-textobj-fold'
-                         Plug 'kana/vim-textobj-function',{'for':''}
-                         Plug 'kana/vim-textobj-indent'
-                         Plug 'kana/vim-textobj-line'
-                         Plug 'kana/vim-textobj-syntax'
-                 " some useful key map of vim
-                     Plug 'tpope/vim-unimpaired'
-                 " switch the input way (for MacOS)
-                     if has('mac')
-                         Plug 'lyokha/vim-xkbswitch',{'for':''}
-                     endif
-                 " tmux status bar
-                     Plug 'edkolev/tmuxline.vim',{'for':''}
-                 " quicker jump
-                     Plug 'justinmk/vim-sneak'
-                 " interact with REPL
-                     Plug 'jpalardy/vim-slime'
-                 " better search and substitute
-                     Plug 'tpope/vim-abolish'
-                 " English/Chinese input method changingtest 输入
-                     Plug 'CodeFalling/fcitx-vim-osx', {'for':''}
-                     Plug 'ybian/smartim', {'for':''}
-                 " quick moving
-                     Plug 'rhysd/accelerated-jk'
+                    " icon supoort
+                        " Plug 'Deeperand/defx-icons'
+                        Plug 'kristijanhusak/defx-icons'
+                    " git support
+                        Plug 'kristijanhusak/defx-git'
+                " git enhancment
+                    " git wrapper
+                        Plug 'tpope/vim-fugitive'
+                    " Show a diff using Vim its sign column
+                        if has('nvim') || has('patch-8.0.902')
+                            Plug 'mhinz/vim-signify'
+                        else
+                            Plug 'mhinz/vim-signify', { 'branch': 'legacy' }
+                        endif
+                " shortcut management
+                    Plug 'liuchengxu/vim-which-key'
+                " search
+                    Plug 'Yggdroot/LeaderF', { 'do': './install.sh' }
+                " power status line
+                    Plug 'vim-airline/vim-airline'
+                    Plug 'vim-airline/vim-airline-themes'
+                " rainbow parentheses
+                    Plug 'luochen1990/rainbow'
+                " indent line
+                    Plug 'Yggdroot/indentLine'
+                " mark trailing whitespace
+                    Plug 'ntpeters/vim-better-whitespace'
+                " autocomplete
+                    Plug 'neoclide/coc.nvim', {'branch': 'release'}
+                " snippet
+                    Plug 'sirver/ultisnips'
+                " autocomplete parenthesis
+                    Plug 'Raimondi/delimitMate'
+                " multiple-cursors
+                    Plug 'mg979/vim-visual-multi',{'for':''}
+                " syntax check
+                    Plug 'dense-analysis/ale'
+                " faster notation
+                    Plug 'tpope/vim-commentary'
+                " surround
+                    Plug 'tpope/vim-surround'
+                " faster fold
+                    Plug 'Konfekt/FastFold'
+                " auto-save
+                    Plug '907th/vim-auto-save'
+                " auto-update tags
+                    Plug 'ludovicchabant/vim-gutentags'
+                " run shell commands in background
+                    Plug 'skywind3000/asyncrun.vim'
+                " text object
+                    " create your own
+                        Plug 'kana/vim-textobj-user'
+                    " some pre-defined text object
+                        Plug 'kana/vim-textobj-entire'
+                        Plug 'kana/vim-textobj-fold'
+                        Plug 'kana/vim-textobj-function',{'for':''}
+                        Plug 'kana/vim-textobj-indent'
+                        Plug 'kana/vim-textobj-line'
+                        Plug 'kana/vim-textobj-syntax'
+                " some useful key map of vim
+                    Plug 'tpope/vim-unimpaired'
+                " switch the input way (for MacOS)
+                    if has('mac')
+                        Plug 'lyokha/vim-xkbswitch',{'for':''}
+                    endif
+                " tmux status bar
+                    Plug 'edkolev/tmuxline.vim',{'for':''}
+                " quicker jump
+                    Plug 'justinmk/vim-sneak'
+                " interact with REPL
+                    Plug 'jpalardy/vim-slime'
+                " better search and substitute
+                    Plug 'tpope/vim-abolish'
+                " English/Chinese input method changingtest 输入
+                    Plug 'CodeFalling/fcitx-vim-osx', {'for':''}
+                    Plug 'ybian/smartim', {'for':''}
+                " quick moving
+                    Plug 'rhysd/accelerated-jk'
 
-             " Theme
-                 Plug 'rakr/vim-one'
-                 Plug 'hzchirs/vim-material'
-                 Plug 'ayu-theme/ayu-vim'
-                 Plug 'kaicataldo/material.vim', {'for':''}
-                 Plug 'sainnhe/lightline_foobar.vim',{'for':''}
-                 Plug 'itchyny/lightline.vim',{'for':''}
-         call plug#end()
+            " Theme
+                Plug 'rakr/vim-one'
+                Plug 'hzchirs/vim-material'
+                Plug 'ayu-theme/ayu-vim'
+                Plug 'kaicataldo/material.vim', {'for':''}
+                Plug 'sainnhe/lightline_foobar.vim',{'for':''}
+                Plug 'itchyny/lightline.vim',{'for':''}
+        call plug#end()
 
     " key map ('p' means 'plug')
         " clean plug
@@ -967,7 +969,7 @@ let g:blade_vim_config_dir = expand("~/Documents/my_config/Blade-Vim")
 
         call defx#custom#column('filename', {
             \ 'min_width': 35,
-            \ 'max_width': 45,
+            \ 'max_width': 90,
             \ })
 
         call defx#custom#column('mark', {
