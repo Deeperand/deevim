@@ -4,10 +4,14 @@
     let g:tex_indent_items = 0 " forbid auto-indent of items
     let g:tex_conceal = ""
     let g:tex_fold_enabled = 1 " latex fold set
+    setlocal commentstring=%%s " commentary string
 
     if exists("g:rainbow_active")
         RainbowToggleOff
     end
+
+    " syntax sync fromstart
+    " syntax sync maxlines=1000
 
 " vimtex config
     let g:vimtex_view_method = 'skim'
