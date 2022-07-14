@@ -145,3 +145,6 @@ endfunction
 " vnoremap <buffer> <F3>t "zy<ESC>:call<SPACE>Print(@z)<CR>
 
 command! -nargs=1 Print call Print(<q-args>)
+
+" decrease level
+

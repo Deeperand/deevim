@@ -31,10 +31,11 @@ let g:blade_vim_config_dir = expand("~/Documents/my_config/Blade-Vim")
     " highlight set
         set incsearch                   " Hightlight while searching with / or ?.
         set nohlsearch                    " disable matches highlightes by default
-        set synmaxcol=2000             " Only hightlight the limited column
+        set synmaxcol=2000              " Only hightlight the limited column
 
     " spell check (first turn on as default at Macbook Air)
         set spell
+        set spelllang=en,cjk            " set cjk to forbid cjk char check
 
     " edrawing
         set ttyfast                     " Faster redrawing.
@@ -1369,6 +1370,8 @@ let g:blade_vim_config_dir = expand("~/Documents/my_config/Blade-Vim")
         nnoremap <localleader>as vc[<C-r>"]<ESC>
         vnoremap <localleader>ab c{<C-r>"}<ESC>
         nnoremap <localleader>ab vc{<C-r>"}<ESC>
+        vnoremap <localleader>aa c<<C-r>"><ESC>
+        nnoremap <localleader>aa vc<<C-r>"><ESC>
 
         vnoremap <localleader>Ap c(<space><C-r>"<space>)<ESC>
         nnoremap <localleader>Ap vc(<space><C-r>"<space>)<ESC>
@@ -1376,6 +1379,8 @@ let g:blade_vim_config_dir = expand("~/Documents/my_config/Blade-Vim")
         nnoremap <localleader>As vc[<space><C-r>"<space>]<ESC>
         vnoremap <localleader>Ab c{<space><C-r>"<space>}<ESC>
         nnoremap <localleader>Ab vc{<space><C-r>"<space>}<ESC>
+        vnoremap <localleader>Aa c<<C-r>"><ESC>
+        nnoremap <localleader>Aa vc<<C-r>"><ESC>
 
         let g:which_key_map_Local_Leader.p = 'add space'
         let g:which_key_map_Local_Leader.a = {'name': '{add parenthesis}'}
