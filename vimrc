@@ -30,7 +30,7 @@ let g:blade_vim_config_dir = expand("~/Documents/my_config/Blade-Vim")
 
     " highlight set
         set incsearch                   " Hightlight while searching with / or ?.
-        set nohlsearch                    " disable matches highlightes by default
+        " set nohlsearch                    " enable/disable matches highlightes by default (nohlsearch, hlsearch)
         set synmaxcol=2000              " Only hightlight the limited column
 
     " spell check (first turn on as default at Macbook Air)
@@ -176,9 +176,9 @@ let g:blade_vim_config_dir = expand("~/Documents/my_config/Blade-Vim")
                 " autocomplete parenthesis
                     Plug 'Raimondi/delimitMate'
                 " multiple-cursors
-                    Plug 'mg979/vim-visual-multi',{'for':''}
+                    Plug 'mg979/vim-visual-multi',{'for':' '}
                 " syntax check
-                    Plug 'dense-analysis/ale'
+                Plug 'dense-analysis/ale', {'for': ' '}
                 " faster notation
                     Plug 'tpope/vim-commentary'
                 " surround
@@ -197,7 +197,7 @@ let g:blade_vim_config_dir = expand("~/Documents/my_config/Blade-Vim")
                     " some pre-defined text object
                         Plug 'kana/vim-textobj-entire'
                         Plug 'kana/vim-textobj-fold'
-                        Plug 'kana/vim-textobj-function',{'for':''}
+                        Plug 'kana/vim-textobj-function',{'for':' '}
                         Plug 'kana/vim-textobj-indent'
                         Plug 'kana/vim-textobj-line'
                         Plug 'kana/vim-textobj-syntax'
@@ -205,18 +205,18 @@ let g:blade_vim_config_dir = expand("~/Documents/my_config/Blade-Vim")
                     Plug 'tpope/vim-unimpaired'
                 " switch the input way (for MacOS)
                     if has('mac')
-                        Plug 'lyokha/vim-xkbswitch',{'for':''}
+                        Plug 'lyokha/vim-xkbswitch',{'for':' '}
                     endif
                 " tmux status bar
-                    Plug 'edkolev/tmuxline.vim',{'for':''}
+                    Plug 'edkolev/tmuxline.vim',{'for':' '}
                 " quicker jump
                     Plug 'justinmk/vim-sneak'
                 " interact with REPL
-                    Plug 'jpalardy/vim-slime'
+                   Plug 'jpalardy/vim-slime'
                 " better search and substitute
                     Plug 'tpope/vim-abolish'
                 " English/Chinese input method changingtest 输入
-                    Plug 'CodeFalling/fcitx-vim-osx', {'for':''}
+                    Plug 'CodeFalling/fcitx-vim-osx', {'for':' '}
                     Plug 'ybian/smartim', {'for':''}
                 " quick moving
                     Plug 'rhysd/accelerated-jk'
@@ -225,9 +225,9 @@ let g:blade_vim_config_dir = expand("~/Documents/my_config/Blade-Vim")
                 Plug 'rakr/vim-one'
                 Plug 'hzchirs/vim-material'
                 Plug 'ayu-theme/ayu-vim'
-                Plug 'kaicataldo/material.vim', {'for':''}
-                Plug 'sainnhe/lightline_foobar.vim',{'for':''}
-                Plug 'itchyny/lightline.vim',{'for':''}
+                Plug 'kaicataldo/material.vim', {'for': ''}
+                Plug 'sainnhe/lightline_foobar.vim',{'for':' '}
+                Plug 'itchyny/lightline.vim',{'for':' '}
         call plug#end()
 
     " key map ('p' means 'plug')
@@ -709,7 +709,7 @@ let g:blade_vim_config_dir = expand("~/Documents/my_config/Blade-Vim")
         endif
     " output error message (use command 'messages'. hide the option to avoid
     " unwanted pop message)
-        let g:gutentags_trace = 1
+        let g:gutentags_trace = 0
 
 " --------------------------------------------------------------------------------
 
@@ -840,8 +840,9 @@ let g:blade_vim_config_dir = expand("~/Documents/my_config/Blade-Vim")
 " rainbow parentheses related
     let g:rainbow_active = 1 "0 if you want to enable it later via :RainbowToggle
 	" \	'ctermfgs': ['#ff00ff', '#0000ff', '#3CCB3E', '#FDA428', '#FB4E1E', '#A53134', '#FCD32C'],
+   	" \	'guifgs': ['Magenta', 'Blue', 'LimeGreen', 'Orange', 'OrangeRed', 'Brown', 'Gold'],
     let g:rainbow_conf = {
-   	\	'guifgs': ['Magenta', 'Blue', 'LimeGreen', 'Orange', 'OrangeRed', 'Brown', 'Gold'],
+   	\	'guifgs': ['Magenta', 'Blue', 'LimeGreen', 'Orange', 'OrangeRed', 'Brown'],
 	\	'operators': '_,_',
 	\	'parentheses': ['start=/(/ end=/)/ fold', 'start=/\[/ end=/\]/ fold', 'start=/{/ end=/}/ fold'],
 	\   'separately': {
@@ -995,7 +996,15 @@ let g:blade_vim_config_dir = expand("~/Documents/my_config/Blade-Vim")
             \ })
 
     " key map
-        noremap <silent> <C-M-b> :Defx `expand('%:p:h')` -search=`expand('%:p')`<CR>
+        " noremap <silent> <C-M-b> :Defx `expand('%:p:h')` -search=`expand('%:p')`<CR>
+        function CurrentPath() abort
+            return fnameescape(expand('%:p:h'))
+        endfunction
+
+        function CurrentFile() abort
+            return fnameescape(expand('%:p'))
+        endfunction
+        noremap <silent> <C-M-b> :execute 'Defx ' . CurrentPath() . ' -search=' . CurrentFile()<CR>
 
 " --------------------------------------------------------------------------------
 
@@ -1347,7 +1356,7 @@ let g:blade_vim_config_dir = expand("~/Documents/my_config/Blade-Vim")
         let g:which_key_map_g.k = 'previous actual line'
 
     " copy
-        nnoremap Y y$
+        " nnoremap Y y$
 
     " faster move
         " noremap <C-j> 5j
@@ -1450,31 +1459,31 @@ let g:blade_vim_config_dir = expand("~/Documents/my_config/Blade-Vim")
     " tab and window
         " open current file at new tab
             nnoremap <C-M-t> :tabnew<SPACE>%<CR>
-        " go to next/previous buffer file
-            nnoremap <C-M-k> :bprevious<CR>
-            nnoremap <C-M-j> :bnext<CR>
-        " go to next/previous tab
-            nnoremap <C-M-h> :tabp<CR>
-            nnoremap <C-M-l> :tabn<CR>
-        " change spitted window
-            nnoremap <S-M-h> <ESC><C-w>h
-            nnoremap <S-M-l> <ESC><C-w>l
-            nnoremap <S-M-j> <ESC><C-w>j
-            nnoremap <S-M-k> <ESC><C-w>k
+        " go to next/previous buffer file (would better to use `[b` `]b` provided by `unimpaired`)
+            " nnoremap <C-M-k> :bprevious<CR>
+            " nnoremap <C-M-j> :bnext<CR>
+        " go to next/previous tab (would better to use default key `gt` `gT`)
+            " nnoremap <C-M-h> :tabp<CR>
+            " nnoremap <C-M-l> :tabn<CR>
+        " change spitted window (would better to use default key `<C-w>` + `hjkl`)
+            " nnoremap <S-M-h> <ESC><C-w>h
+            " nnoremap <S-M-l> <ESC><C-w>l
+            " nnoremap <S-M-j> <ESC><C-w>j
+            " nnoremap <S-M-k> <ESC><C-w>k
 
     " close or quit
         " close the current file in buffer (which means 'buffer wipe out')
-            nnoremap <Leader>q <ESC>:bwipeout<CR>
-            let g:which_key_map_Leader.q = 'wipe current buffer'
+            " nnoremap <Leader>q <ESC>:bwipeout<CR>
+            " let g:which_key_map_Leader.q = 'wipe current buffer'
         " quit Vim (which means 'quit all')
-            nnoremap <Leader>Q <ESC>:quitall<CR>
-            let g:which_key_map_Leader.Q = 'quit vim'
+            " nnoremap <Leader>Q <ESC>:quitall<CR>
+            " let g:which_key_map_Leader.Q = 'quit vim'
         " close current tab
-            nnoremap <Leader>w <C-w>q
-            let g:which_key_map_Leader.w = 'close split window'
+            " nnoremap <Leader>w <C-w>q
+            " let g:which_key_map_Leader.w = 'close split window'
         " close current split window
-            nnoremap <Leader>W <ESC>:tabclose<CR>
-            let g:which_key_map_Leader.W = 'close tab'
+            " nnoremap <Leader>W <ESC>:tabclose<CR>
+            " let g:which_key_map_Leader.W = 'close tab'
 
     " set options
         let g:which_key_map_Local_Leader.s = {'name': '{set option}'}
@@ -1515,11 +1524,21 @@ let g:blade_vim_config_dir = expand("~/Documents/my_config/Blade-Vim")
             let g:which_key_map_Local_Leader.s.f.s = 'syntax'
 
     " terminal related (need nvim)
-        if has('nvim')
             " run command in terminal at current file path with a split window
                 nnoremap <localleader>t :split \| terminal cd '%:p:h';
                 let g:which_key_map_Local_Leader.t = 'run at terminal'
 
+        if has('terminal')
+            " statusline support
+                autocmd TerminalOpen * setlocal statusline=%{b:term_title}
+
+            " key map in terminal mod
+                " exit terminal and kill the process
+                    autocmd TerminalOpen * nnoremap <buffer> gq <ESC>:bwipeout!<CR>
+                    autocmd TerminalOpen * nnoremap <buffer> <leader>q <ESC>:bwipeout!<CR>
+       endif
+
+        if has('nvim')
             " statusline support
                 autocmd TermOpen * setlocal statusline=%{b:term_title}
 
@@ -1527,6 +1546,8 @@ let g:blade_vim_config_dir = expand("~/Documents/my_config/Blade-Vim")
                 " exit terminal and kill the process
                     autocmd TermOpen * nnoremap <buffer> gq <ESC>:bwipeout!<CR>
                     autocmd TermOpen * nnoremap <buffer> <leader>q <ESC>:bwipeout!<CR>
+       endif
+
                 " To map <Esc> to exit terminal-mode
                     tnoremap <Esc> <C-\><C-n>
                 " To use `Shift+Meta+{h,j,k,l}` to navigate windows from any mode
@@ -1540,12 +1561,6 @@ let g:blade_vim_config_dir = expand("~/Documents/my_config/Blade-Vim")
                         inoremap <M-S-j> <C-\><C-N><C-w>j
                         inoremap <M-S-k> <C-\><C-N><C-w>k
                         inoremap <M-S-l> <C-\><C-N><C-w>l
-                    " normal mode
-                        nnoremap <M-S-h> <C-w>h
-                        nnoremap <M-S-j> <C-w>j
-                        nnoremap <M-S-k> <C-w>k
-                        nnoremap <M-S-l> <C-w>l
-       endif
 
 " --------------------------------------------------------------------------------
 
