@@ -205,8 +205,10 @@ dic_env = {
 	r'th' : r'Theorem',
 
 # defined by myself
+	r'cm' : r'bladecomment',
 	r'in' : r'bladeindent',
 	r'r' : r'bladeref',
+	r'ri' : r'bladerefindex',
 	r'n' : r'bladenote',
 	r'eg' : r'bladeeg',
 	r'p' : r'Property',
@@ -265,9 +267,10 @@ dic_label = {
 	r'd' : r'df',
 	r'e' : r'eq',
 	r'f' : r'fig',
+	r'i' : r'item',
 	r't' : r'tab',
 	r's' : r'sec',
-	r'ss' : r'subsec',
+	r's2' : r'subsec',
 	r't' : r'thm',
 }
 
@@ -352,7 +355,7 @@ dic_matrix = {
 dic_font = {
 	r'a' : r'\alert',
 	r'b' : r'\textbf',
-	r'c' : r'\Code',
+	r'c' : r'\code',
 	r'e' : r'\emph',
 	r'f' : r'\footnote',
 	r'i' : r'\textsl',
@@ -407,6 +410,7 @@ dic_code_block = {
 	r'cp' : r'C++',
 	r'f' : r'[90]Fortran',
 	r'h' : r'HTML',
+	r'j' : r'java',
 	r'm' : r'Mathematica',
 	r'pe' : r'Perl',
 	r'py' : r'Python',
@@ -486,6 +490,12 @@ context "math()"
 priority 3
 snippet // "displaystyle friction" iA
 \\dfrac{$1}{$2}$0
+endsnippet
+
+context "math()"
+priority 3
+snippet %% "textstyle friction" iA
+\\frac{$1}{$2}$0
 endsnippet
 
 snippet / "split level fractions" i
@@ -607,7 +617,7 @@ endsnippet
 # c: code
 priority 1
 snippet c "code in-line" i
-\Code{$1}
+\code{$1}
 endsnippet
 
 priority 3
@@ -823,7 +833,7 @@ snippet nli "limit" i
 endsnippet
 
 priority 3
-context "math()"
+context "math() and check_key(r'n([a-zA-Z]{1,3})', dic_math_notation)"
 snippet "n([a-zA-Z]{1,3})" "check_key(r'n([a-zA-Z]{1,3})', dic_math_notation)" ire
 `!p snip.rv = dic_math_notation[match.group(1)]`$0
 endsnippet
@@ -850,6 +860,10 @@ endsnippet
 
 snippet "r([a-zA-Z]{1,3})" "check_key(r'r([a-zA-Z]{1,3})', dic_label)" ire
 \\ref{`!p snip.rv = dic_label[match.group(1)]`: $1}
+endsnippet
+
+snippet "rs([a-zA-Z]{1,3})" "check_key(r'rs([a-zA-Z]{1,3})', dic_label)" ire
+\\sref{`!p snip.rv = dic_label[match.group(1)]`: $1}
 endsnippet
 
 snippet "R([a-zA-Z]{1,3})" "check_key(r'R([a-zA-Z]{1,3})', dic_label)" ire
@@ -958,8 +972,13 @@ snippet "([a-zA-Z\\{}])(\d+)" "subscript" ir
 endsnippet
 
 context "math()"
-snippet "([\\a-zA-Z0-9{}\[\]()+-_^]+)/" "auto friction" irA
+snippet "([\\a-zA-Z0-9{}\[\]()+-_^]+)/" "auto friction with displaystyle" irA
 \\dfrac{`!p snip.rv = match.group(1)`}{$1}$0
+endsnippet
+
+context "math()"
+snippet "([\\a-zA-Z0-9{}\[\]()+-_^]+)%" "auto friction with textstyle" irA
+\\frac{`!p snip.rv = match.group(1)`}{$1}$0
 endsnippet
 
 # proliferation
