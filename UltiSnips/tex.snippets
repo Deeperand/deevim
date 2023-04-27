@@ -118,12 +118,13 @@ dic_symbol_b = {
 	r'b' : r'\because',
 	r't' : r'\therefore',
 	r'e' : r'\exists',
+	r'p' : r'\partial',
 	r'v' : r'\nabla',
 	r'd' : r'\mathrm{d}',
-	r'R1' : r'\mathbb{R}',
-	r'R2' : r'\mathbb{R}^2',
-	r'R3' : r'\mathbb{R}^3',
-	r'Rn' : r'\mathbb{R}^n',
+	# r'R1' : r'\mathbb{R}',
+	# r'R2' : r'\mathbb{R}^2',
+	# r'R3' : r'\mathbb{R}^3',
+	# r'Rn' : r'\mathbb{R}^n',
 
 	# arrow and equiv
 	r'->' : r'\longrightarrow',
@@ -142,9 +143,11 @@ dic_symbol_b = {
 # start with "#"
 dic_symbol_c = {
 	r'a' : r'\angle',
+	r'b' : r'\boxed',
 	r'd' : r'\MaD',
 	r't' : r'\item', # means "term"
 	r'*' : r'\otimes',
+	r'==' : r'\simeq',
 	}
 
 # start with "~"
@@ -172,7 +175,7 @@ dic_big_notation = {
 	r'i2' : r'\iint',
 	r'i3' : r'\iiint',
 	r's' : r'\sum',
-	r'p' : r'\prod',
+	r'P' : r'\prod',
 	r'u' : r'\bigcup',
 	r'n' : r'\bigcap'
 }
@@ -238,7 +241,7 @@ dic_suffix = {
 	r'HA' : r'\hat',
 	r'VE' : r'\vec',
 	r'DO' : r'\dot',
-	r'DS' : r'\ddot', # 'S' means 'second'
+	r'DD' : r'\ddot', # 'S' means 'second'
 	r'TI' : r'\tilde',
 	r'BA' : r'\bar',
 	r'LI' : r'\overline',
@@ -249,7 +252,7 @@ dic_suffix = {
 	r'BB' : r'\mathbb',
 	r'BM' : r'\mathbbm',
 	r'CL' : r'\mathcal',
-	r'DD' : r'_',
+	# r'DD' : r'_',
 	r'UU' : r'^'
 }
 
@@ -374,7 +377,7 @@ dic_font_color = {
 }
 
 dic_frac = {
-	r'6' : r'\partial',
+	r'p' : r'\partial',
 	r'd' : r'\mathrm{d}',
 }
 
@@ -387,15 +390,21 @@ dic_longarrow = {
 }
 
 dic_power = {
-	r'0' : r'0',
-	r'1' : r'1',
-	r'2' : r'2',
-	r'3' : r'3',
-	r'4' : r'4',
-	r'5' : r'-1',
-	r'6' : r'-2',
-	r'7' : r'-3',
-	r'8' : r'-4',
+	# r'0' : r'0',
+	# r'1' : r'1',
+	# r'2' : r'2',
+	# r'3' : r'3',
+	# r'4' : r'4',
+	# r'5' : r'-1',
+	# r'6' : r'-2',
+	# r'7' : r'-3',
+	# r'8' : r'-4',
+	r'z' : r'0',
+	r'f' : r'1',
+	r's' : r'2',
+	r'c' : r'3',
+	r'q' : r'4',
+	r'n' : r'n',
 }
 
 dic_space = {
@@ -421,10 +430,11 @@ dic_code_block = {
 endglobal
 
 # `: greek letter, common used symbol and command
+# not add auto-space, since greek letter usuall engaged in auto-frac feature
 priority 2
 context "math() and check_key(r'`([a-zA-Z0-9.,;+\-*<>=|]{1,3})', dic_symbol_a)"
 snippet "`([a-zA-Z0-9.,;+\-*<>=|]{1,3})" "" iAr
-`!p snip.rv = dic_symbol_a[match.group(1)]`
+`!p snip.rv = dic_symbol_a[match.group(1)]`$0
 endsnippet
 
 snippet `2 "sqrt" iA
@@ -437,7 +447,7 @@ snippet "@([a-zA-Z0-9.,;+\-*<>=]{1,3})" "math symbol II" iAr
 `!p snip.rv = dic_symbol_b[match.group(1)]`
 endsnippet
 
-snippet "@f([a-zA-Z0-9])" "check_key(r'@f([a-zA-Z0-9])', dic_frac)" iAre
+snippet "@f([a-zA-Z0-9])" "frac with default symbol" "check_key(r'@f([a-zA-Z0-9])', dic_frac)" iAre
 \\dfrac{`!p snip.rv = dic_frac[match.group(1)]` $1}{`!p snip.rv = dic_frac[match.group(1)]` $2}$0
 endsnippet
 
@@ -545,22 +555,22 @@ endsnippet
 
 # big notation
 context "math()"
-snippet "@(i0|i1|i2|i3|s|p|u|n)" "big notation" iAr
+snippet "@(i0|i1|i2|i3|s|P|u|n)" "big notation" iAr
 `!p snip.rv = dic_big_notation[match.group(1)]`_{$1}$0
 endsnippet
 
 context "math()"
-snippet "#(i0|i1|i2|i3|s|p|u|n)" "big notation" iAr
+snippet "#(i0|i1|i2|i3|s|P|u|n)" "big notation" iAr
 `!p snip.rv = dic_big_notation[match.group(1)]`^{$1}$0
 endsnippet
 
 context "math()"
-snippet "~(i0|i1|i2|i3|s|p|u|n)" "big notation" iAr
+snippet "~(i0|i1|i2|i3|s|P|u|n)" "big notation" iAr
 `!p snip.rv = dic_big_notation[match.group(1)]`_{$1}^{$2}$0
 endsnippet
 
 context "math()"
-snippet "!(i0|i1|i2|i3|s|p|u|n)" "big notation" iAr
+snippet "!(i0|i1|i2|i3|s|P|u|n)" "big notation" iAr
 `!p snip.rv = dic_big_notation[match.group(1)]`$0
 endsnippet
 
@@ -571,6 +581,7 @@ snippet b "new frame"
 \end{frame}
 endsnippet
 
+context "not math()"
 snippet B "new frame with title"
 \begin{frame}{\TitleSection}{\TitleSubSection}
 	$1
@@ -691,6 +702,7 @@ snippet "f([a-zA-Z]{1,3})" "check_key(r'f([a-zA-Z]{1,3})', dic_font)" rei
 `!p snip.rv = dic_font[match.group(1)]`{$1}$0
 endsnippet
 
+context "not math()"
 snippet f "figure"
 \\includegraphics[width=.${1:rate}\\textwidth]{${2:path}}
 endsnippet
@@ -753,6 +765,8 @@ endsnippet
 snippet "L([a-zA-Z]{1,3})" "caption and label (label is as same as caption by default)" "check_key(r'L([a-zA-Z]{1,3})', dic_label)"  ire
 \\caption{$1}\\label{`!p snip.rv = dic_label[match.group(1)]`: ${2:$1}}
 endsnippet
+
+# ============================================================
 
 # m: math
 ## special
@@ -827,32 +841,45 @@ snippet "\bM([a-zA-Z]{1,3})" "check_key(r'\bM([a-zA-Z]{1,3})', dic_matrix)" re
 \end{`!p snip.rv = dic_matrix[match.group(1)]`}$0
 endsnippet
 
+
+# ============================================================
+
 # n: notation
-snippet nli "limit" i
+# where add option 'w' to avoid expand inner word
+
+snippet nli "limit" iwA
 \\lim_{$1 \\to $2}
 endsnippet
 
 priority 3
 context "math() and check_key(r'n([a-zA-Z]{1,3})', dic_math_notation)"
-snippet "n([a-zA-Z]{1,3})" "check_key(r'n([a-zA-Z]{1,3})', dic_math_notation)" ire
+snippet "n([a-zA-Z]{1,3})" "check_key(r'n([a-zA-Z]{1,3})', dic_math_notation)" wreA
 `!p snip.rv = dic_math_notation[match.group(1)]`$0
 endsnippet
 
-# context "math()"
 context "math()"
-snippet "n([a-zA-Z]{1,3})(\)|\]|\}|>)" "check_key(r'n([a-zA-Z]{1,3})(\)|\]|\}|>)', dic_math_notation)" irAe
+snippet "n([a-zA-Z]{1,3})(\)|\]|\}|>)" "check_key(r'n([a-zA-Z]{1,3})(\)|\]|\}|>)', dic_math_notation)" irAew
 `!p snip.rv = dic_math_notation[match.group(1)]``!p snip.rv = dic_par_l[match.group(2)]` $1 `!p snip.rv = dic_par_r[match.group(2)]`$0
 endsnippet
 
-# p: power
+# pp: power
 priority 3
-snippet "pp([0-9])" "power" "check_key(r'pp([0-9])', dic_power)"  rei
+context "math() and check_key(r'pp([a-z])', dic_power)"
+snippet "pp([a-z])" "power"  reiA
 ^{`!p snip.rv = dic_power[match.group(1)]`}
 endsnippet
+
+# ii: inverse power
+context "math() and check_key(r'ii([a-z])', dic_power)"
+snippet "ii([a-z])" "inverse power"  reiA
+^{-`!p snip.rv = dic_power[match.group(1)]`}
+endsnippet
+
 
 # ============================================================
 
 # r: ref
+
 priority 1
 snippet r "ref"
 \\ref{$1}
@@ -917,21 +944,27 @@ snippet sru "toprule and bottomrule" i
 \\bottomrule
 endsnippet
 
-snippet "s(u|d)" "first-order" r
-$1`!p snip.rv = script_judge(match.group(1))`{$2}
-endsnippet
+# single super or lower script expanding can be well replaced by auto-exapnding for `^` and `_`, so this snipt is not necessary any more
+# context "math()"
+# snippet "s(u|d)" "first-order" r
+# $1`!p snip.rv = script_judge(match.group(1))`{$2}
+# endsnippet
 
-snippet "s(u|d)(u|d)" "second-order" r
+context "math()"
+snippet "s(u|d)(u|d)" "second-order" rA
 $1`!p snip.rv = script_judge(match.group(1))`{$2}`!p snip.rv = script_judge(match.group(2))`{$3}
 endsnippet
 
-snippet "s(u|d)(u|d)(u|d)" "third-order" r
-$1`!p snip.rv = script_judge(match.group(1))`{$2}`!p snip.rv = script_judge(match.group(2))`{$3}`!p snip.rv = script_judge(match.group(3))`{$4}
-endsnippet
+# multi ^ or _ is invalid syntax for script, which is different from tensor case, therfore where I comment these old codes
+# context "math()"
+# snippet "s(u|d)(u|d)(u|d)" "third-order" r
+# $1`!p snip.rv = script_judge(match.group(1))`{$2}`!p snip.rv = script_judge(match.group(2))`{$3}`!p snip.rv = script_judge(match.group(3))`{$4}
+# endsnippet
 
-snippet "s(u|d)(u|d)(u|d)(u|d)" "forth-order" r
-$1`!p snip.rv = script_judge(match.group(1))`{$2}`!p snip.rv = script_judge(match.group(2))`{$3}`!p snip.rv = script_judge(match.group(3))`{$4}`!p snip.rv = script_judge(match.group(4))`{$4}
-endsnippet
+# context "math()"
+# snippet "s(u|d)(u|d)(u|d)(u|d)" "forth-order" r
+# $1`!p snip.rv = script_judge(match.group(1))`{$2}`!p snip.rv = script_judge(match.group(2))`{$3}`!p snip.rv = script_judge(match.group(3))`{$4}`!p snip.rv = script_judge(match.group(4))`{$4}
+# endsnippet
 
 snippet slr "left, right" i
 \\left$1 $3 \\right$2
@@ -965,9 +998,9 @@ snippet "t(u|d)(u|d)(u|d)(u|d)" "forth-order tensor" r
 endsnippet
 
 # RE
-priority 2
+priority 1
 context "math()"
-snippet "([a-zA-Z\\{}])(\d+)" "subscript" ir
+snippet "([a-zA-Z\\])(\d+)" "subscript" irA
 `!p snip.rv = match.group(1)`_{`!p snip.rv = match.group(2)`}$0
 endsnippet
 
@@ -1039,7 +1072,7 @@ endsnippet
 # suffix (use capital both)
 context "math() and check_key(r'([0-9a-zA-Z\*\\]+)([A-Z]{2})', dic_suffix, groupnum = 2, charnum = 15)"
 snippet "([0-9a-zA-Z\*\\]+)([A-Z]{2})" "suffix" Ar
-`!p snip.rv = dic_suffix[match.group(2)]`{`!p snip.rv = match.group(1)`}
+`!p snip.rv = dic_suffix[match.group(2)]`{`!p snip.rv = match.group(1)`}$0
 endsnippet
 
 # date
@@ -1097,5 +1130,56 @@ endsnippet
 
 snippet -- "segment line"
 % ------------------------------------------------------------
+endsnippet
+
+# ############################################################
+# IN TESTING
+# new plan based on natural input (inspired by Obsidian plugin `LaTeX Suite`)
+
+snippet "dd([a-zA-Z0-9])" "frac with default symbol" "check_key(r'dd([a-zA-Z0-9])', dic_frac)" iAre
+\\dfrac{`!p snip.rv = dic_frac[match.group(1)]` $1}{`!p snip.rv = dic_frac[match.group(1)]` $2}$0
+endsnippet
+
+snippet intd "integer" A
+\\int $1 \\MaD $2
+endsnippet
+
+# priority 100
+# snippet int "integer" A
+# \\int $0
+# endsnippet
+
+# auto-space
+# snippet "\\int([a-zA-Z`@#+\-*\(\)\[\]])" "integer" Ar
+# \\int `!p snip.rv = match.group(1)`$0
+# endsnippet
+
+context "math()"
+snippet "\\int([^\s])" "integer" Ar
+\\int `!p snip.rv = match.group(1)`$0
+endsnippet
+
+priority 4
+context "math()"
+snippet ee "expnential" Aw
+\\MaE^{ $0 }
+endsnippet
+
+context "math()"
+snippet ^ "superscript" iA
+^{$1}$0
+endsnippet
+
+priority 3 
+context "math()"
+snippet _ "subscript" iA
+_{$1}$0
+endsnippet
+
+# most frequently used command (manually define)
+priority 4
+context "math()"
+snippet "(to|sim|int|ln)" "subscript" Ar
+\\`!p snip.rv = match.group(1)`
 endsnippet
 

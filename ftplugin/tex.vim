@@ -2,24 +2,36 @@
     set foldmethod=syntax " fold-method
     let g:tex_flavor = 'latex'
     let g:tex_indent_items = 0 " forbid auto-indent of items
-    let g:tex_conceal = ""
     let g:tex_fold_enabled = 1 " latex fold set
     setlocal commentstring=%%s " commentary string
 
+    let g:tex_conceal=""
+    " set conceallevel=0
     if exists("g:rainbow_active")
         RainbowToggleOff
     end
 
-    " syntax sync fromstart
-    " syntax sync maxlines=1000
+    syntax sync fromstart
+    syntax sync maxlines=1000
 
+" ######################################################################
+" specify the path of coc-nvim configure file
+    " let b:coc_config_home = expand($XDG_CONFIG_HOME) . "/nvim/tex"
+
+" ######################################################################
 " vimtex config
     let g:vimtex_view_method = 'skim'
+    let g:vimtex_view_skim_active = 1
+    " let g:vimtex_compiler_progname = 'nvim'
+    " let g:vimtex_callback_progpath ='/opt/homebrew/bin/nvim'
+    " let g:vimtex_view_method = 'sioyek'
+    " let g:vimtex_view_syoyek_exe = '/Applications/sioyek.app/Contents/MacOS/sioyek'
     let g:vimtex_quickfix_mode = 0 " didn't show error if you don't use '\le'
     let g:vimtex_view_use_temp_files = 1 " if compile failed, don't change the pdf files compiled at the last times
     let g:vimtex_indent_enabled = 0
     let g:vimtex_imaps_enabled = 0 " disable the default auto-expand snippet
-    " let g:vimtex_syntax_conceal = 1 " enable/disable syntax conceal like '\item --> ○'
+    let g:vimtex_syntax_conceal_disable=1 " enable/disable syntax conceal like '\item --> ○'
+    let g:vimtex_syntax_enabled=0
     " let g:vimtex_mappings_enabled = 1
     " let g:vimtex_compiler_latexmk = {
     "     \ 'executable' : 'latexmk',
@@ -41,18 +53,21 @@
     "     \ 'context (xetex)'  : '-pdf -pdflatex=''texexec --xtx''',
     "     \}
 
-    " text object
-        omap iE <plug>(vimtex-ie)
-        omap aE <plug>(vimtex-ae)
-        omap iC <plug>(vimtex-ic)
-        omap aC <plug>(vimtex-ac)
-        vmap iE <plug>(vimtex-ie)
-        vmap aE <plug>(vimtex-ae)
-        vmap iC <plug>(vimtex-ic)
-        vmap aC <plug>(vimtex-ac)
+" ======================================================================
+" text object
+    omap iE <plug>(vimtex-ie)
+    omap aE <plug>(vimtex-ae)
+    omap iC <plug>(vimtex-ic)
+    omap aC <plug>(vimtex-ac)
+    vmap iE <plug>(vimtex-ie)
+    vmap aE <plug>(vimtex-ae)
+    vmap iC <plug>(vimtex-ic)
+    vmap aC <plug>(vimtex-ac)
 
+
+" ######################################################################
 " airline config
-    " enable/disable vimtex integration
+    " enable/disable vimtex integration (set 1` to enable)
         let g:airline#extensions#vimtex#enabled = 1
 
     " left and right delimiters (shown only when status string is not empty) >
@@ -79,6 +94,9 @@
 
 " delimitMate
     let b:delimitMate_quotes = "\" '" " conceal the auto-complete of `
+
+
+" ######################################################################
 
 " keymap
 " change line
@@ -128,9 +146,9 @@ function! CompileFigure() abort
     endif
 endfunction
 
-command! -nargs=1 Efig call EditFigure(<f-args>)
-command! -nargs=1 Dfig call DeleteFigure(<f-args>)
-command! Cfig call CompileFigure()
+" command! -nargs=1 Efig call EditFigure(<f-args>)
+" command! -nargs=1 Dfig call DeleteFigure(<f-args>)
+" command! Cfig call CompileFigure()
 
 " store the selected at a register first, then input it into function
 " vnoremap <buffer> <F3>e "zy<ESC>:call<SPACE>EditFigure(@z)<CR>
@@ -148,3 +166,30 @@ command! -nargs=1 Print call Print(<q-args>)
 
 " decrease level
 
+" try to action backward research
+" 1
+" function! s:write_server_name() abort
+"   let nvim_server_file = (has('win32') ? $TEMP : '/tmp') . '/vimtexserver.txt'
+"   call writefile([v:servername], nvim_server_file)
+" endfunction
+
+" augroup vimtex_common
+"   autocmd!
+"   autocmd FileType tex call s:write_server_name()
+" augroup END
+"
+" 2
+" function! SetServerName()
+"   if has('win32')
+"     let nvim_server_file = $TEMP . "/curnvimserver.txt"
+"   else
+"     let nvim_server_file = "/tmp/curnvimserver.txt"
+"   endif
+"   let cmd = printf("echo %s > %s", v:servername, nvim_server_file)
+"   call system(cmd)
+" endfunction
+
+" augroup vimtex_common
+"     autocmd!
+"     autocmd FileType tex call SetServerName()
+" augroup END
