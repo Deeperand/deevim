@@ -10,6 +10,188 @@ def check_key(rx, dic, groupnum = 1, charnum = 6): # Check if the string match t
 	else:
 		return 0
 
+# texMathZones = ['texMathZone' + x for x in ['A', 'AS', 'B', 'BS', 'C', 'CS', 'D', 'DS', 'E', 'ES', 'F', 'FS', 'G', 'GS', 'H', 'HS', 'I', 'IS', 'J', 'JS', 'K', 'KS', 'L', 'LS', 'DS', 'V', 'W', 'X', 'Y', 'Z', 'AmsA', 'AmsB', 'AmsC', 'AmsD', 'AmsE', 'AmsF', 'AmsG', 'AmsAS', 'AmsBS', 'AmsCS', 'AmsDS', 'AmsES', 'AmsFS', 'AmsGS' ]]
+texMathZones = ['mkdMath']
+texIgnoreMathZones = ['texMathText']
+texMathZoneIds = vim.eval('map('+str(texMathZones)+", 'hlID(v:val)')")
+texIgnoreMathZoneIds = vim.eval('map('+str(texIgnoreMathZones)+", 'hlID(v:val)')")
+ignore = texIgnoreMathZoneIds[0]
+def math():
+	synstackids = vim.eval("synstack(line('.'), col('.') - (col('.')>=2 ? 1 : 0))")
+	try:
+		first = next(i for i in reversed(synstackids) if i in texIgnoreMathZoneIds or i in texMathZoneIds)
+		return first != ignore
+	except StopIteration:
+		return False
+
+dic_symbol_a = {
+	# greek letter
+	r'a' : r'\alpha',
+	r'b' : r'\beta',
+	r'g' : r'\gamma',
+	r'd' : r'\delta',
+	r'e' : r'\epsilon',
+	r'z' : r'\zeta',
+	r'w' : r'\eta',
+	r'q' : r'\theta',
+	r'i' : r'\iota',
+	r'k' : r'\kappa',
+	r'l' : r'\lambda',
+	r'm' : r'\mu',
+	r'n' : r'\nu',
+	r'x' : r'\xi',
+	r'p' : r'\pi',
+	r'r' : r'\rho',
+	r's' : r'\sigma',
+	r't' : r'\tau',
+	r'u' : r'\ulpsilon',
+	r'f' : r'\phi',
+	r'c' : r'\chi',
+	r'y' : r'\psi',
+	r'o' : r'\omega',
+	r'vD' : r'\varDelta',
+	r've' : r'\varepsilon',
+	r'vf' : r'\varphi',
+	r'vF' : r'\varPhi',
+	r'vG' : r'\varGamma',
+	r'vL' : r'\varLambda',
+	r'vQ' : r'\varTheta',
+	r'vS' : r'\varSigma',
+	r'vP' : r'\varPhi',
+	r'vO' : r'\varOmega',
+	r'vX' : r'\varXi',
+	r'vY' : r'\varPhi',
+	r'vp' : r'\uppi',
+	r'h' : r'\hbar',
+	r'G' : r'\Gamma',
+	r'D' : r'\Delta',
+	r'E' : r'\Epsilon',
+	r'Z' : r'\Zeta',
+	r'W' : r'\Eta',
+	r'Q' : r'\Theta',
+	r'I' : r'\Iota',
+	r'K' : r'\Kappa',
+	r'L' : r'\Lambda',
+	r'M' : r'\Mu',
+	r'N' : r'\Nu',
+	r'X' : r'\Xi',
+	r'P' : r'\Pi',
+	r'S' : r'\Sigma',
+	r'T' : r'\Tau',
+	r'U' : r'\Ulpsilon',
+	r'F' : r'\Phi',
+	r'Y' : r'\Psi',
+	r'O' : r'\Omega',
+
+	# common used symbol
+	r'0' : r'\circ',
+	r'8' : r'\infty',
+	r'7' : r'\propto',
+	r'6' : r'\partial',
+	r'.' : r'\cdot',
+	r'+' : r'\dag',
+	r'*' : r'\bigstar',
+
+	# arrow and equiv
+	r'->' : r'\rightarrow',
+	r'<-' : r'\leftarrow',
+	r'=>' : r'\Rightarrow',
+	r'<=' : r'\Leftarrow',
+	r'<<' : r'\leftrightarrow',
+	r'<>' : r'\Leftrightarrow',
+	r'==' : r'\equiv',
+}
+
+# start with "@"
+dic_symbol_b = {
+	r'a' : r'\forall',
+	r'b' : r'\because',
+	r't' : r'\therefore',
+	r'e' : r'\exists',
+	r'p' : r'\partial',
+	r'v' : r'\nabla',
+	r'd' : r'\mathrm{d}',
+	# r'R1' : r'\mathbb{R}',
+	# r'R2' : r'\mathbb{R}^2',
+	# r'R3' : r'\mathbb{R}^3',
+	# r'Rn' : r'\mathbb{R}^n',
+
+	# arrow and equiv
+	r'->' : r'\longrightarrow',
+	r'<-' : r'\longleftarrow',
+	r'=>' : r'\implies',
+	r'<=' : r'\impliedby',
+	r'<<' : r'\longleftrightarrow',
+	r'<>' : r'\iff',
+	r'==' : r'\approx',
+
+	# other symbols
+	r'*' : r'\times',
+	r'+' : r'\oplus',
+	}
+
+
+dic_frac = {
+	r'p' : r'\partial',
+	r'd' : r'\mathrm{d}',
+}
+
+dic_par_l = {
+	r')' : r'\left(',
+	r']' : r'\left[',
+	r'}' : r'\left\{',
+	r'>' : r'\langle',
+	r'<|' : r'\left<',
+	r'|>' : r'\left|',
+}
+
+dic_par_r = {
+	r')' : r'\right)',
+	r']' : r'\right]',
+	r'}' : r'\right\}',
+	r'>' : r'\rangle',
+	r'<|' : r'\eight|',
+	r'|>' : r'\right>',
+}
+
+dic_suffix = {
+	r'HA' : r'\hat',
+	r'VE' : r'\vec',
+	r'DO' : r'\dot',
+	r'DD' : r'\ddot', # 'S' means 'second'
+	r'TI' : r'\tilde',
+	r'BA' : r'\bar',
+	r'LI' : r'\overline',
+	r'RM' : r'\mathrm',
+	r'SC' : r'\mathscr',
+	r'SL' : r'\slashed',
+	r'BF' : r'\boldsymbol',
+	r'BB' : r'\mathbb',
+	r'BM' : r'\mathbbm',
+	r'CL' : r'\mathcal',
+	# r'DD' : r'_',
+	r'UU' : r'^'
+}
+
+dic_math_env = {
+    r'a' : r'align',
+    r'c' : r'cases',
+    r'd' : r'dcases',
+    r'e' : r'equation',
+    r'g' : r'gather',
+    r's' : r'split',
+    r'ad' : r'aligned',
+}
+
+dic_matrix = {
+	r'm' : r'matrix',
+	r'b' : r'bmatrix',
+	r'B' : r'Bmatrix',
+	r'v' : r'vmatrix',
+	r'V' : r'Vmatrix',
+	r'p' : r'pmatrix',
+}
+
 dic_head_title = {
 	r'1' : r'#',
 	r'2' : r'##',
@@ -65,6 +247,35 @@ dic_word_property = {
 }
 endglobal
 
+# `: greek letter, common used symbol and command
+# not add auto-space, since greek letter usuall engaged in auto-frac feature
+priority 2
+context "math() and check_key(r'`([a-zA-Z0-9.,;+\-*<>=|]{1,3})', dic_symbol_a)"
+snippet "`([a-zA-Z0-9.,;+\-*<>=|]{1,3})" "" iAr
+`!p snip.rv = dic_symbol_a[match.group(1)]`$0
+endsnippet
+
+# @
+context "math() and check_key(r'@([a-zA-Z0-9.,;+\-*<>=]{1,3})', dic_symbol_b)"
+snippet "@([a-zA-Z0-9.,;+\-*<>=]{1,3})" "math symbol II" iAr
+`!p snip.rv = dic_symbol_b[match.group(1)]`
+endsnippet
+
+snippet "@f([a-zA-Z0-9])" "frac with default symbol" "check_key(r'@f([a-zA-Z0-9])', dic_frac)" iAre
+\\dfrac{`!p snip.rv = dic_frac[match.group(1)]` $1}{`!p snip.rv = dic_frac[match.group(1)]` $2}$0
+endsnippet
+
+# math test
+context "math()"
+snippet ee "expnential" Aw
+\\MaE^{ $0 }
+endsnippet
+
+context "math()"
+snippet EE "expnential" Aw
+\\MaE^{ $0 }
+endsnippet
+
 # h: head
 snippet "h([0-9]{1,3})" "check_key(r'h([0-9]{1,3})', dic_head_title)" ire
 `!p snip.rv = dic_head_title[match.group(1)]` $1
@@ -91,6 +302,7 @@ snippet "B([A-Za-z0-9]{1,3})" "check_key(r'B([A-Za-z0-9]{1,3})', dic_bold)" ire
 endsnippet
 
 # i: italic
+context "not math()"
 snippet i "italic" i
 *$1*
 endsnippet
@@ -107,11 +319,14 @@ snippet m "inline maht" i
 \$$1\$
 endsnippet
 
-snippet M "display math" i
+priority 2
+snippet mm "display math" i
 \$\$
 $1
 \$\$
 endsnippet
+
+# ============================================================
 
 # c: code, course
 snippet c "inline code" i
@@ -147,6 +362,25 @@ snippet d "delete line" i
 ~~$1~~
 endsnippet
 
+# ============================================================
+# m: math
+
+## standard env
+snippet "\bm([a-zA-Z]{1,3})" "check_key(r'\bm([a-zA-Z]{1,3})', dic_math_env)" re
+\begin{`!p snip.rv = dic_math_env[match.group(1)]`}
+	$1
+\end{`!p snip.rv = dic_math_env[match.group(1)]`}$0
+endsnippet
+
+## env with star
+snippet "\bm([a-zA-Z]{1,3})\*" "check_key(r'\bm([a-zA-Z]{1,3})\*', dic_math_env)" reA
+\begin{`!p snip.rv = dic_math_env[match.group(1)]`*}
+	$1
+\end{`!p snip.rv = dic_math_env[match.group(1)]`*}$0
+endsnippet
+
+# ============================================================
+
 # f: figure, font matter
 snippet f "describe" option
 ![${1:alt text}](${2:path} "$1")
@@ -179,10 +413,35 @@ snippet fr "font matter for READ"
 > This essay is a reading notes of *$1*, *^2* [^1]
 endsnippet
 
-# p: punctuation
+# ============================================================
+# M: matrix
+# context "math()"
+snippet "\bM([a-zA-Z]{1,3})" "check_key(r'\bM([a-zA-Z]{1,3})', dic_matrix)" re
+\begin{`!p snip.rv = dic_matrix[match.group(1)]`}
+	$1
+\end{`!p snip.rv = dic_matrix[match.group(1)]`}$0
+endsnippet
+
+# ============================================================
+# p: punctuation, power
 snippet pn "name separator" option
 ·
 endsnippet
+
+# pp: power
+priority 3
+context "math() and check_key(r'pp([a-z])', dic_power)"
+snippet "pp([a-z])" "power"  reiA
+^{`!p snip.rv = dic_power[match.group(1)]`}
+endsnippet
+
+# ii: inverse power
+context "math() and check_key(r'ii([a-z])', dic_power)"
+snippet "ii([a-z])" "inverse power"  reiA
+^{-`!p snip.rv = dic_power[match.group(1)]`}
+endsnippet
+
+# ============================================================
 
 # s: space, segment line
 snippet s "segment line (weak)"
@@ -248,4 +507,70 @@ endsnippet
 # u: underline
 snippet u "underline" i
 <u>$1</u>
+endsnippet
+
+# other
+context "math()"
+snippet ^ "superscript" iA
+^{$1}$0
+endsnippet
+
+context "math()"
+snippet _ "subscript" iA
+_{$1}$0
+endsnippet
+
+context "math()"
+priority 3
+snippet // "displaystyle friction" iA
+\\dfrac{$1}{$2}$0
+endsnippet
+
+priority 1
+context "math()"
+snippet <> "angle bracket" iA
+\\braket{$1}
+endsnippet
+
+context "math()"
+snippet <| "bra" iA
+\\bra{$1}
+endsnippet
+
+context "math()"
+snippet |> "ket" iA
+\\ket{$1}
+endsnippet
+
+snippet "dd([a-zA-Z0-9])" "frac with default symbol" "check_key(r'dd([a-zA-Z0-9])', dic_frac)" iAre
+\\dfrac{`!p snip.rv = dic_frac[match.group(1)]` $1}{`!p snip.rv = dic_frac[match.group(1)]` $2}$0
+endsnippet
+
+# parenthesis and long string
+priority 2
+snippet "`(\)|\]|\}|>|\|)" "check_key(r'`(\)|\]|\}|>|\|)', dic_par_r)" iAre
+`!p snip.rv = dic_par_l[match.group(1)]` $1 `!p snip.rv = dic_par_r[match.group(1)]`$0
+endsnippet
+
+# RE
+priority 1
+context "math()"
+snippet "([a-zA-Z\\])(\d)" "subscript" irA
+`!p snip.rv = match.group(1)`_{`!p snip.rv = match.group(2)`}$0
+endsnippet
+
+context "math()"
+snippet "([\\a-zA-Z0-9{}\[\]()+-_^]+)/" "auto friction with displaystyle" irA
+\\dfrac{`!p snip.rv = match.group(1)`}{$1}$0
+endsnippet
+
+## suffix (use capital both)
+context "math() and check_key(r'([0-9a-zA-Z\*\\]+)([A-Z]{2})', dic_suffix, groupnum = 2, charnum = 15)"
+snippet "([0-9a-zA-Z\*\\]+)([A-Z]{2})" "suffix" Ar
+`!p snip.rv = dic_suffix[match.group(2)]`{`!p snip.rv = match.group(1)`}$0
+endsnippet
+
+# segline
+snippet == "segline" w
+==========
 endsnippet
