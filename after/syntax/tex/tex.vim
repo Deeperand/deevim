@@ -70,6 +70,7 @@ hi def link userSubscript userSuperscript
 " highlight user-defined command
 syn region texRefZone		matchgroup=texStatement start="\\v\=sref{"		end="}\|%stopzone\>"	contains=@texRefGroup
 
+
 " inspired by vimtex/autoload/vimtex/syntax/p/listings.vim
 " where `\[]` is used to match command with option like \lstinline[basicstyle=\ttfamily]{test}
 syntax match texZone "\\lstinline\s*\(\[.*\]\)\={.\{-}}"
@@ -78,6 +79,15 @@ syntax match texZone "\\lstinline\s*\(\[.*\]\)\={.\{-}}"
 " advenced version. syntex `\\\@<![{\\]` ('逆序否定环视') can match inverse-brace without backslash
 " i.e., match } but not match \}
 syntax match texZone "\\[Cc]ode\s*\(\[.*\]\)\={.\{-}\\\@<!}"
+
+" ######################################################################
+" Jupyter Notebook Cell
+" NBin, NBout, NBprint
+syn region texZone start="\\begin{NBin}" end="\\end{NBin}"
+syn region texZone	matchgroup=texBeginEnd start="\\begin{NB\(in\|out\|print\)}" matchgroup=texBeginEnd end="\\end{NB\(in\|out\|print\)}\|%stopzone\>"	contains=@Spell
+
+" `A` represent "display math" in built-in highlight file
+call TexNewMathZone("A","NBoutM",0)
 
 " ======================================================================
 " hyperref (copied from vimtex's hyperref.vim)
