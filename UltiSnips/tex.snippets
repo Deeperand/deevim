@@ -10,26 +10,26 @@ def check_key(rx, dic, groupnum = 1, charnum = 6): # Check if the string match t
 	else:
 		return 0
 
+# expand snippet as upper or lower script dependent on use letter `u` or `s`
 def script_judge(string):
 	if string == r'u':
 		return r'^'
 	elif string == r'd':
 		return r'_'
 
-# test
-# texMathZones = ['texMathZone' + x for x in ['A', 'AS', 'B', 'BS', 'C', 'CS', 'D', 'DS', 'E', 'ES', 'F', 'FS', 'G', 'GS', 'H', 'HS', 'I', 'IS', 'J', 'JS', 'K', 'KS', 'L', 'LS', 'N', 'DS', 'V', 'W', 'X', 'Y', 'Z', 'AmsA', 'AmsB', 'AmsC', 'AmsD', 'AmsE', 'AmsF', 'AmsG', 'AmsAS', 'AmsBS', 'AmsCS', 'AmsDS', 'AmsES', 'AmsFS', 'AmsGS' ]]
-
-# original
+# check if in math environment, or if in math environment if it should be excluded
 texMathZones = ['texMathZone' + x for x in ['A', 'AS', 'B', 'BS', 'C', 'CS', 'D', 'DS', 'E', 'ES', 'F', 'FS', 'G', 'GS', 'H', 'HS', 'I', 'IS', 'J', 'JS', 'K', 'KS', 'L', 'LS', 'DS', 'V', 'W', 'X', 'Y', 'Z', 'AmsA', 'AmsB', 'AmsC', 'AmsD', 'AmsE', 'AmsF', 'AmsG', 'AmsAS', 'AmsBS', 'AmsCS', 'AmsDS', 'AmsES', 'AmsFS', 'AmsGS' ]]
-texIgnoreMathZones = ['texMathText']
+texIgnoreMathZones = ['texMathText', 'texRefZone']
 texMathZoneIds = vim.eval('map('+str(texMathZones)+", 'hlID(v:val)')")
 texIgnoreMathZoneIds = vim.eval('map('+str(texIgnoreMathZones)+", 'hlID(v:val)')")
-ignore = texIgnoreMathZoneIds[0]
+ignore_lst = texIgnoreMathZoneIds
 def math():
 	synstackids = vim.eval("synstack(line('.'), col('.') - (col('.')>=2 ? 1 : 0))")
 	try:
+		# `first` highlight group ID inside list `texMathZoneIds` or `texIgnoreMathZoneIds`
 		first = next(i for i in reversed(synstackids) if i in texIgnoreMathZoneIds or i in texMathZoneIds)
-		return first != ignore
+		# check if `first` is a highlight group should be "ignored". Return true if it not in `ignore_lst`
+		return not (first in ignore_lst)
 	except StopIteration:
 		return False
 
@@ -971,7 +971,7 @@ snippet slr "left, right" i
 endsnippet
 
 priority 2
-snippet sr "rule" i
+snippet sR "rule" i
 \\rule[$1]{$2}{$3}
 endsnippet
 
@@ -1136,10 +1136,12 @@ endsnippet
 # IN TESTING
 # new plan based on natural input (inspired by Obsidian plugin `LaTeX Suite`)
 
+# fraction by dd- prefix
 snippet "dd([a-zA-Z0-9])" "frac with default symbol" "check_key(r'dd([a-zA-Z0-9])', dic_frac)" iAre
 \\dfrac{`!p snip.rv = dic_frac[match.group(1)]` $1}{`!p snip.rv = dic_frac[match.group(1)]` $2}$0
 endsnippet
 
+# quick integer
 snippet intd "integer" A
 \\int $1 \\MaD $2
 endsnippet
@@ -1153,11 +1155,6 @@ endsnippet
 # snippet "\\int([a-zA-Z`@#+\-*\(\)\[\]])" "integer" Ar
 # \\int `!p snip.rv = match.group(1)`$0
 # endsnippet
-
-context "math()"
-snippet "\\int([^\s])" "integer" Ar
-\\int `!p snip.rv = match.group(1)`$0
-endsnippet
 
 priority 4
 context "math()"
@@ -1176,10 +1173,18 @@ snippet _ "subscript" iA
 _{$1}$0
 endsnippet
 
+# frequently used power
+snippet sr "square" iA
+^{2}
+endsnippet
+
+snippet cb "square" iA
+^{3}
+endsnippet
+
 # most frequently used command (manually define)
 priority 4
 context "math()"
 snippet "(to|sim|int|ln)" "subscript" Ar
 \\`!p snip.rv = match.group(1)`
 endsnippet
-
