@@ -1,0 +1,84 @@
+*deevim.txt* introduction about configuration info of deevim
+*deevim*
+
+==============================================================================
+CONTENTS                                                      *deevim-contents*
+  Defaut mapping                                |deevim-default-mappings|
+    Default mappings                            |deevim-default-mappings|
+    Options                                     |vimtex-options|
+    Commands                                    |vimtex-commands|
+    Insert mode mappings                        |vimtex-imaps|
+    Events                                      |vimtex-events|
+    Text objects                                |vimtex-text-objects|
+  Plugins                                       |deevim-plugins|
+   |vimspector|                                 |deevim-plugins-vimspector|
+
+
+==============================================================================
+DEFAULT MAPPINGS                                      *deevim-default-mappings*
+
+==============================================================================
+PLUGINS                                                        *deevim-plugins*
+
+------------------------------------------------------------------------------
+VIMSPECTOR                                          *deevim-plugins-vimspector*
+
+Start and quit~
+
+  --------------------------------------------------------------------- ~
+   LHS          RHS                                        MODE ~
+  --------------------------------------------------------------------- ~
+  <leader>dc  |<Plug>VimspectorContinue|                  `n`
+  <leader>d1  :VimspectorReset<CR>                        `n`
+  --------------------------------------------------------------------- ~
+
+Where "q" means "quit".
+
+Play control~
+  --------------------------------------------------------------------- ~
+   LHS          RHS                                          MODE ~
+  --------------------------------------------------------------------- ~
+  <leader>ds  |<plug>VimspectorStop|                        `n`
+  <leader>dr  |<plug>VimspectorRestart|                     `n`
+  <leader>dD  |<plug>VimspectorPause|                       `n`
+  <leader>dn  |<plug>VimspectorStepInto|                    `n`
+  <leader>dp  |<plug>VimspectorStepOut|                     `n`
+  <leader>dN  |<plug>VimspectorStepOver|                    `n`
+  --------------------------------------------------------------------- ~
+
+Break point~
+  --------------------------------------------------------------------- ~
+   LHS          RHS                                          MODE ~
+  --------------------------------------------------------------------- ~
+  <leader>dj  |<plug>VimspectorJumpToNextBreakpoint|         `n`
+  <leader>dk  |<plug>VimspectorJumpToPreviousBreakpoint|     `n`
+  <leader>db  |<plug>VimspectorToggleBreakpoint|             `n`
+  <leader>dB  |<Plug>VimspectorToggleConditionalBreakpoint|  `n`
+  <leader>dC  :call vimspector#ClearBreakpoints()<CR>        `n`
+  <leader>df  |<plug>VimspectorAddFunctionBreakpoint|        `n`
+  --------------------------------------------------------------------- ~
+
+Misc~
+  --------------------------------------------------------------------- ~
+   LHS          RHS                                          MODE ~
+  --------------------------------------------------------------------- ~
+  <leader>da  |<plug>VimspectorDisassemble|                 `n`
+  <leader>di  |<Plug>VimspectorBalloonEval|                 `nx`
+  --------------------------------------------------------------------- ~
+
+where <leader>di is used to trigger "pop up" feature of vimspector
+
+------------------------------------------------------------------------------
+TABULAR                                                 *deevim-plugin-tabular*
+
+tabular~
+  --------------------------------------------------------------------- ~
+   LHS              RHS                               MODE ~
+  --------------------------------------------------------------------- ~
+  <leader>t&        :Tabularize<Space>/&<CR>         `n`
+  <leader>T&        :Tabularize<Space>/&/c1<CR>      `n`
+  <leader>t<space>  :Tabularize multiple_spaces<CR>  `nxs`
+  --------------------------------------------------------------------- ~
+
+
+vim:tw=78:sw=4:ft=help:norl:
