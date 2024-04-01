@@ -1,4 +1,17 @@
-let g:blade_vim_config_dir = expand("~/Documents/my_config/Blade-Vim")
+if !exists("b:deevim_path_loaded") " avoid repeating add path when `:so %` during debugging configuration
+    let g:blade_vim_config_dir = expand("<sfile>:p:h") " root directory of blade-vim
+    " set runtimepath^=~/Documents/my_config/blade-vim
+    " set runtimepath+=~/Documents/my_config/blade-vim/after
+    execute "set runtimepath^=" . g:blade_vim_config_dir
+    execute "set runtimepath+=" . g:blade_vim_config_dir . "/after"
+    let &packpath = &runtimepath
+
+    " use `.vim/vimlocal.vim` for local setting (i.e. project setting)
+    silent! so ./.vim/vimlocal.vim
+
+    let b:deevim_path_loaded=1
+endif
+
 " normal setting
     " most simple setting
         filetype plugin indent on       " Load plugins accroding to detected filetype.
@@ -13,13 +26,13 @@ let g:blade_vim_config_dir = expand("~/Documents/my_config/Blade-Vim")
         " Use spaces instead of tebs.
             set expandtab
         " Number of spaces to use for each step of (auto)indent.  Used for 'cindent', >>, <<, etc.
-            set shiftwidth=4
-        " Number of spaces that a <Tab> in the file counts for.
-            set tabstop=4
+            set shiftwidth=2
+        " Number of spaces that a tab char `\t` display in the file counts for.
+            set tabstop=8
         " Tab key indents by 4 spaces.
             set softtabstop=4
 
-    set backspace =indent,eol,start " Make backspace work as you would expect
+    " set backspace =indent,eol,start " Make backspace work as you would expect
     set hidden                      " Switch between buffers without having to sove first
     set laststatus=2                " Alwayse show statusline.
     set display =lastline           " Show as much as possible of the last line.
@@ -30,12 +43,24 @@ let g:blade_vim_config_dir = expand("~/Documents/my_config/Blade-Vim")
 
     " highlight set
         set incsearch                   " Hightlight while searching with / or ?.
-        " set nohlsearch                    " enable/disable matches highlightes by default (nohlsearch, hlsearch)
+        " set nohlsearch                    " disable matches highlightes by default (nohlsearch, hlsearch)
+        set hlsearch                    " enable matches highlights by default (nohlsearch, hlsearch)
         set synmaxcol=2000              " Only hightlight the limited column
+
+    " search set (use '\c' '\C' to manually ignore/don't ignore case)
+        set ignorecase
+    " Override the 'ignorecase' option if the search pattern contains upper case characters.
+    " Only used when the search pattern is typed and 'ignorecase' option is on.
+        set smartcase
 
     " spell check (first turn on as default at Macbook Air)
         set spell
         set spelllang=en,cjk            " set cjk to forbid cjk char check
+        " turn on spell check in terminal may lead char display issue, so
+        " close it.
+        if has('nvim')
+            au TermOpen * setlocal nospell
+        endif
 
     " edrawing
         set ttyfast                     " Faster redrawing.
@@ -62,6 +87,10 @@ let g:blade_vim_config_dir = expand("~/Documents/my_config/Blade-Vim")
 
     " font (for gui)
         set guifont=Hack_Nerd_Font_Mono:h12,DroidSansMono_Nerd_Font_Mono:h12
+        " for macvim
+        if has('gui')
+            set guifont=Hack_Nerd_Font_Mono:h13,DroidSansMono_Nerd_Font_Mono:h13
+        endif
 
     " coding
         set encoding=utf-8
@@ -93,6 +122,14 @@ let g:blade_vim_config_dir = expand("~/Documents/my_config/Blade-Vim")
             set guicursor+=a:blinkon0
     endif
 
+" ----------------------------------------------------------------------
+"  for macOS
+    if has('mac') && executable('gmake')
+        " macOS's built-in `make` command is old version, and the GNU Make
+        " installed from Homebrew has name `gmake`
+        set makeprg=gmake
+    endif
+
 " ================================================================================ (80 个 '-')
 
 " vim-plug
@@ -103,10 +140,16 @@ let g:blade_vim_config_dir = expand("~/Documents/my_config/Blade-Vim")
                     Plug 'godlygeek/tabular'
 
              " language specific
+                " natural language (such as English)
+                    " syntax check, powered by LanguageTool
+                        Plug 'dpelle/vim-LanguageTool'
+                    " bionic-like reading
+                        " Plug 'JellyApple102/easyread.nvim'
+                        Plug 'nullchilly/fsread.nvim'
                 " Applescript
                     Plug 'dearrrfish/vim-applescript'
                 " LaTeX
-                    Plug 'lervag/vimtex', {'for':['tex', 'temptex']}
+                    Plug 'lervag/vimtex'
                     Plug 'Deeperand/vim-mdtex', {'for': ['tex', 'markdown']}
                 " markdown
                     Plug 'plasticboy/vim-markdown', {'for':'markdown'}
@@ -115,8 +158,6 @@ let g:blade_vim_config_dir = expand("~/Documents/my_config/Blade-Vim")
                 " c/c++
                     " enhanced highlight
                         Plug 'octol/vim-cpp-enhanced-highlight', {'for':'cpp'}
-                " json
-                    Plug 'elzr/vim-json'
                 " html
                     Plug 'gregsexton/MatchTag'
                 " mathematica
@@ -125,6 +166,12 @@ let g:blade_vim_config_dir = expand("~/Documents/my_config/Blade-Vim")
                     Plug 'JuliaEditorSupport/julia-vim'
                 " Lilypond
                     Plug 'gisraptor/vim-lilypond-integrator', {'for':' '}
+                " Sagemath
+                    " Plug 'petRUShka/vim-sage'
+                    Plug 'Deeperand/vim-sage'
+                " Lisp
+                    Plug 'kovisoft/slimv'
+                    " Plug 'UltiRequiem/coc-cl', {'do': 'yarn install --frozen-lockfile && yarn build'}
 
             " used generally
                 " file tree browse
@@ -137,16 +184,17 @@ let g:blade_vim_config_dir = expand("~/Documents/my_config/Blade-Vim")
                             " set pythonthreehome=/usr/local/Frameworks/Python.framework/Versions/3.7
                         else
                             Plug 'Shougo/defx.nvim'
+                            Plug 'roxma/nvim-yarp'
+                            Plug 'roxma/vim-hug-neovim-rpc'
                         endif
 
-                        Plug 'roxma/nvim-yarp'
-                        Plug 'roxma/vim-hug-neovim-rpc'
-
                     " icon supoort
-                        " Plug 'Deeperand/defx-icons'
+                        Plug 'Deeperand/defx-icons'
                         Plug 'kristijanhusak/defx-icons'
                     " git support
                         Plug 'kristijanhusak/defx-git'
+                " debugger interface
+                    Plug 'puremourning/vimspector'
                 " git enhancment
                     " git wrapper
                         Plug 'tpope/vim-fugitive'
@@ -160,9 +208,14 @@ let g:blade_vim_config_dir = expand("~/Documents/my_config/Blade-Vim")
                     Plug 'liuchengxu/vim-which-key'
                 " search
                     Plug 'Yggdroot/LeaderF', { 'do': './install.sh' }
+                    " Plug '/opt/homebrew/opt/fzf' " point to fzf's built-in script
+                    " Plug 'junegunn/fzf.vim'
                 " power status line
                     Plug 'vim-airline/vim-airline'
                     Plug 'vim-airline/vim-airline-themes'
+                " allow quickly rename tab label, very lightweight plugin
+                " (around 300 lines)
+                    Plug 'gcmt/taboo.vim'
                 " rainbow parentheses
                     Plug 'luochen1990/rainbow'
                 " indent line
@@ -178,7 +231,7 @@ let g:blade_vim_config_dir = expand("~/Documents/my_config/Blade-Vim")
                 " multiple-cursors
                     Plug 'mg979/vim-visual-multi',{'for':' '}
                 " syntax check
-                Plug 'dense-analysis/ale', {'for': ' '}
+                    " Plug 'dense-analysis/ale', {'for': ' '}
                 " faster notation
                     Plug 'tpope/vim-commentary'
                 " surround
@@ -217,15 +270,20 @@ let g:blade_vim_config_dir = expand("~/Documents/my_config/Blade-Vim")
                     Plug 'tpope/vim-abolish'
                 " English/Chinese input method changingtest 输入
                     Plug 'CodeFalling/fcitx-vim-osx', {'for':' '}
-                    Plug 'ybian/smartim', {'for':''}
+                    Plug 'ybian/smartim', {'for':' '}
                 " quick moving
                     Plug 'rhysd/accelerated-jk'
+                " visualize undo tree
+                    Plug 'mbbill/undotree'
+
+            " advanced tool
+                Plug 'github/copilot.vim'
 
             " Theme
                 Plug 'rakr/vim-one'
                 Plug 'hzchirs/vim-material'
                 Plug 'ayu-theme/ayu-vim'
-                Plug 'kaicataldo/material.vim', {'for': ''}
+                Plug 'kaicataldo/material.vim', {'for': ' '}
                 Plug 'sainnhe/lightline_foobar.vim',{'for':' '}
                 Plug 'itchyny/lightline.vim',{'for':' '}
         call plug#end()
@@ -258,6 +316,10 @@ let g:blade_vim_config_dir = expand("~/Documents/my_config/Blade-Vim")
         " colorscheme material
         " let g:airline_theme='material'
     " some fine tuning
+        " display tab char
+            set list
+            set listchars=tab:>-,nbsp:+
+            highlight Whitespace guifg=#BFBFBF
         " background of current line
             highlight CursorLine guibg=#eeeeee
         " color of search highlight
@@ -269,20 +331,116 @@ let g:blade_vim_config_dir = expand("~/Documents/my_config/Blade-Vim")
         " color of pup namu's scroll bar and thumb
             highlight PmenuSbar guibg=#dae3f6
             highlight PmenuThumb guibg=#6c727b
+        " copilot
+            highlight CopilotSuggestion guifg=#C0BDDE ctermfg=8
     " for nvim
         " if has('nvim')
         "     highlight NormalNC guibg = '#dddddd'
         "     highlight MsgArea guibg = '#c8c1a1'
         " endif
 
+    " terminal color
+        " let g:terminal_color_0  = '#073642'
+        " let g:terminal_color_1  = '#dc322f'
+        " let g:terminal_color_2  = '#859900'
+        " let g:terminal_color_3  = '#cfad00'
+        " let g:terminal_color_4  = '#1268d2'
+        " let g:terminal_color_5  = '#d33682'
+        " let g:terminal_color_6  = '#2aa198'
+        " let g:terminal_color_7  = '#eee8d5'
+        " let g:terminal_color_8  = '#b2b2b2'
+        " let g:terminal_color_9  = '#cb4b16'
+        " let g:terminal_color_10 = '#586e75'
+        " let g:terminal_color_11 = '#657b83'
+        " let g:terminal_color_12 = '#839496'
+        " let g:terminal_color_13 = '#6c71c4'
+        " let g:terminal_color_14 = '#93a1a1'
+        " let g:terminal_color_15 = '#fdf6e3'
+
+" ######################################################################
+" taboo
+nnoremap <leader>tr :TabooRename<space>
+
+" ######################################################################
+
+" ----------------------------------------------------------------------
+
+" netrw
+" solve can't move file
+    let g:netrw_keepdir=0
+
+" ----------------------------------------------------------------------
+" undotree
+    nnoremap <Leader>u :UndotreeToggle<CR>
+
+" ----------------------------------------------------------------------
+"  vimspector
+" let g:vimspector_enable_mappings = 'VISUAL_STUDIO'
+
+" start and quit
+nmap <leader>dc <plug>VimspectorContinue
+nnoremap <leader>dq :VimspectorReset<CR>
+
+" play control
+nmap <leader>ds <plug>VimspectorStop
+nmap <leader>dr <plug>VimspectorRestart
+nmap <leader>dD <plug>VimspectorPause
+nmap <leader>di <plug>VimspectorStepInto
+nmap <leader>do <plug>VimspectorStepOut
+nmap <leader>dn <plug>VimspectorStepOver
+
+" break point
+nmap <leader>dj <plug>VimspectorJumpToNextBreakpoint
+nmap <leader>dk <plug>VimspectorJumpToPreviousBreakpoint
+nmap <leader>db <plug>VimspectorToggleBreakpoint
+nmap <leader>dB <Plug>VimspectorToggleConditionalBreakpoint
+nmap <leader>dC :call vimspector#ClearBreakpoints()<CR>
+nmap <leader>df <plug>VimspectorAddFunctionBreakpoint
+
+" disassemble
+nmap <leader>da <plug>VimspectorDisassemble
+
+" evaluate expression under cursor
+nmap <leader>de <Plug>VimspectorBalloonEval
+xmap <leader>de <Plug>VimspectorBalloonEval
+
+" ----------------------------------------------------------------------
+" slimv (first record from: 20231026)
+    if has('nvim')
+        let g:slimv_swank_cmd = "call jobstart(\"ros -e '(ql:quickload :swank) (swank:create-server)' wait\")"
+    else
+        let g:slimv_swank_cmd = "!ros -e '(ql:quickload :swank) (swank:create-server)' wait &"
+    endif
+    let g:slimv_lisp = 'ros run'
+    let g:slimv_impl = 'sbcl'
+
+    let g:slimv_unmap_tab=1
+    " inoremap <silent> <buffer> <s-Tab> <C-R>=SlimvHandleTab()<CR>
+    " let g:slimv_keybindings=2
+    " let g:slimv_leader = '\'
+    " set guioptions+=m
+    " set showtabline=2
+
+" LanguageTool
+    let g:languagetool_jar = '/Applications/LanguageTool-5.9/languagetool-commandline.jar'
+
 " --------------------------------------------------------------------------------
+" copilot
+
+    let g:copilot_proxy = '127.0.0.1:7890'
+    let g:copilot_filetypes = {
+        \ 'tex': v:false,
+        \ }
+    let g:copilot_enabled=v:false
+
+" ----------------------------------------------------------------------
 
 " lilypond
     " let g:did_ftplugin=1
 
 " --------------------------------------------------------------------------------
 
-" accelerated jk
+" " accelerated jk
     nmap j <Plug>(accelerated_jk_gj)
     nmap k <Plug>(accelerated_jk_gk)
     nmap <C-j> 5j
@@ -291,12 +449,15 @@ let g:blade_vim_config_dir = expand("~/Documents/my_config/Blade-Vim")
     let g:accelerated_jk_acceleration_limit = 100
     let g:accelerated_jk_acceleration_table = [2,3,6,9,11,13,15,17]
 
+        \al
 " --------------------------------------------------------------------------------
 
 " vim-julia
     " use <F2> to convert UTF-8 text (to avoid the collision with auto-complete)
+    " by default, `<tab>` key is used to expand
         imap <F2> <left><right><tab>
     " let other filetypes can convert string to UTF-8 (the value is a regular expression)
+    " more info see :h julia-vim-L2U
         let g:latex_to_unicode_file_types = '.*'
 
 " --------------------------------------------------------------------------------
@@ -308,6 +469,8 @@ let g:blade_vim_config_dir = expand("~/Documents/my_config/Blade-Vim")
         let g:slime_target = "vimterminal"
     endif
 
+    let g:slime_python_ipython = 1
+
 " --------------------------------------------------------------------------------
 
 " airline
@@ -317,6 +480,8 @@ let g:blade_vim_config_dir = expand("~/Documents/my_config/Blade-Vim")
         let g:airline_exclude_preview = 1
     " cache the changes to the highlighting groups, should therefore be faster
         let g:airline_highlighting_cache = 0
+    "
+        " let g:airline#extensions#vimtex#enabled = 1
 
   " built-in extensions
     " quickfix
@@ -347,7 +512,7 @@ let g:blade_vim_config_dir = expand("~/Documents/my_config/Blade-Vim")
         " enable/disable display preview window buffer in the tabline.
             let g:airline#extensions#tabline#exclude_preview = 1
         " configure how numbers are displayed in tab mode. 0: # of split; 1: tab number; 2 split and tab number
-            let g:airline#extensions#tabline#tab_nr_type = 0
+            let g:airline#extensions#tabline#tab_nr_type = 1
         " specify a different formatter for displaying the numbers, check documentation for detiles
             " let g:airline#extensions#tabline#tabnr_formatter = 'tabnr' " default?
         " style of tab style
@@ -503,6 +668,9 @@ let g:blade_vim_config_dir = expand("~/Documents/my_config/Blade-Vim")
             \ 's' : ':AsyncStop',
             \ 'c' : 'AsyncRun at current dir',
             \ }
+    " make file
+        nnoremap <leader>mm :AsyncRun! make<CR>
+        nnoremap <leader>mt :AsyncRun! make test<CR>
 
 " --------------------------------------------------------------------------------
 
@@ -695,18 +863,21 @@ let g:blade_vim_config_dir = expand("~/Documents/my_config/Blade-Vim")
     " coorperate with airline
         let g:airline#extensions#grepper#enabled = 1
     " name of the tags file
-        set tags=./.tags;,.tags
+        set tags=./.tags,.tags
     " gutentags 搜索工程目录的标志，碰到这些文件/目录名就停止向上一级目录递归
         let g:gutentags_project_root = ['.root', '.svn', '.git', '.hg', '.project']
     " 所生成的数据文件的名称
         let g:gutentags_ctags_tagfile = '.tags'
     " 将自动生成的 tags 文件全部放入 ~/.cache/tags 目录中，避免污染工程目录
-        let s:vim_tags = expand('~/.cache/tags')
+        let s:vim_tags = expand('~/.cache/vim/tags')
         let g:gutentags_cache_dir = s:vim_tags
     " 检测 ~/.cache/tags 不存在就新建
         if !isdirectory(s:vim_tags)
             silent! call mkdir(s:vim_tags, 'p')
         endif
+    " avoid generate large `opt-homebrew-.tags` file, where `/usr/local` is
+    " default value
+        let g:gutentags_exclude_project_root = ['/usr/local', "/opt/homebrew"]
     " output error message (use command 'messages'. hide the option to avoid
     " unwanted pop message)
         let g:gutentags_trace = 0
@@ -744,10 +915,11 @@ let g:blade_vim_config_dir = expand("~/Documents/my_config/Blade-Vim")
             noremap <leader>t" :Tabularize<Space>/"<CR>
             noremap <leader>T" :Tabularize<Space>/"/c1<CR>
 
-    " most general command
-        noremap <leader>ta :Tabularize<Space>/
-    " repeat previous behavior
-        noremap <leader>TA :Tabularize<Space><CR>
+        " multiple spaces
+        " most general command
+            noremap <leader>t<space> :Tabularize multiple_spaces<CR>
+        " repeat previous behavior
+            noremap <leader>tt :Tabularize<Space><CR>
 
     " key map manage
         let g:which_key_map_Leader.t = {
@@ -789,6 +961,7 @@ let g:blade_vim_config_dir = expand("~/Documents/my_config/Blade-Vim")
 " --------------------------------------------------------------------------------
 
 " fast folding
+    set foldlevelstart=99                   " will automatically set &foldlevel to 99 when open a new file
     set sessionoptions-=folds
     let g:fastfold_savehook = 1
     let g:fastfold_fold_command_suffixes =  ['x','X','a','A','o','O','c','C']
@@ -802,12 +975,16 @@ let g:blade_vim_config_dir = expand("~/Documents/my_config/Blade-Vim")
 " --------------------------------------------------------------------------------
 
 " delimitMate related
-    " forbid auto-delete pair parenthesis
+    " forbid auto-delete paired parenthesis
         inoremap <BS> <BS>
     " jump out form a delimiter
         " imap <M-Tab> <Plug>delimitMateS-Tab
         inoremap <M-tab> <right>
-        inoremap <S-tab> <left>
+        " inoremap <S-tab> <left>
+    " allow work in all the region (default value is "Comment")
+        let g:delimitMate_excluded_regions = ""
+    " auto expand `{}` block when press `<CR>`
+        " let g:delimitMate_expand_cr=1
 
 " --------------------------------------------------------------------------------
 
@@ -819,7 +996,7 @@ let g:blade_vim_config_dir = expand("~/Documents/my_config/Blade-Vim")
     " Jump Backword
         let g:UltiSnipsJumpBackwardTrigger = '<M-k>'
     " List Snippets
-        let g:UltiSnipsListSnippets='<c-e>'
+        " let g:UltiSnipsListSnippets='<c-e>' (don't use `<c-e>`), which conflict with Vim built-in command
     " Python version used
         let g:UltiSnipsUsePythonVersion=3
     " Split way of edic snippets file
@@ -863,8 +1040,9 @@ let g:blade_vim_config_dir = expand("~/Documents/my_config/Blade-Vim")
 	\	}
 	\}
 
-    " forbid if use mathematica file
+    " forbid in mathematica file
         autocmd BufEnter *.w,*wls,*.nb,*.m RainbowToggleOff
+        autocmd BufEnter CMakeLists.txt,*.cmake RainbowToggleOff
 
 " --------------------------------------------------------------------------------
 
@@ -875,6 +1053,14 @@ let g:blade_vim_config_dir = expand("~/Documents/my_config/Blade-Vim")
         nnoremap <F12> :StripWhitespace<CR>
         inoremap <F12> <ESC>:StripWhitespace<CR>a
 
+        " override default keymap (when user set keymap for `<leader>s`,
+        " vim-bettwer-whitespace will stop using this keymap)
+        nnoremap <leader>s <leader>s
+    " auto disable whitespace when open terminal
+    if has('nvim')
+        au TermOpen * DisableWhitespace
+    endif
+
 " --------------------------------------------------------------------------------
 
 " defx (file tree) related
@@ -884,17 +1070,18 @@ let g:blade_vim_config_dir = expand("~/Documents/my_config/Blade-Vim")
     " key map (in file tree mode)
         autocmd FileType defx call s:defx_my_settings()
         function! s:defx_my_settings() abort
-            " Define mappings
+            " nnoremap <silent><buffer><expr> <CR>
+            " \ defx#do_action('drop')
             nnoremap <silent><buffer><expr> <CR>
-            \ defx#do_action('drop')
+            \ defx#do_action('open')
             nnoremap <silent><buffer><expr> c
             \ defx#do_action('copy')
             nnoremap <silent><buffer><expr> m
             \ defx#do_action('move')
             nnoremap <silent><buffer><expr> p
             \ defx#do_action('paste')
-            nnoremap <silent><buffer><expr> l
-            \ defx#do_action('open')
+            " nnoremap <silent><buffer><expr> l
+            " \ defx#do_action('open')
             nnoremap <silent><buffer><expr> E
             \ defx#do_action('open', 'vsplit')
             nnoremap <silent><buffer><expr> P
@@ -912,7 +1099,10 @@ let g:blade_vim_config_dir = expand("~/Documents/my_config/Blade-Vim")
             \                'mark:indent:icon:filename:type:size:time')
             nnoremap <silent><buffer><expr> S
             \ defx#do_action('toggle_sort', 'time')
-            nnoremap <silent><buffer><expr> d
+            " use upper case `D` can avoid conflict with `vim-surround`'s
+            " `nmap ds <plug>Dsurround`, and also agree with convention used
+            " by `netrw`
+            nnoremap <silent><buffer><expr> D
             \ defx#do_action('remove_trash')
             nnoremap <silent><buffer><expr> r
             \ defx#do_action('rename')
@@ -926,14 +1116,16 @@ let g:blade_vim_config_dir = expand("~/Documents/my_config/Blade-Vim")
             \ defx#do_action('toggle_ignored_files')
             nnoremap <silent><buffer><expr> ;
             \ defx#do_action('repeat')
-            nnoremap <silent><buffer><expr> h
-            \ defx#do_action('cd', ['..']) " jump to upper path
+            " nnoremap <silent><buffer><expr> h
+            " \ defx#do_action('cd', ['..']) " jump to parent dir
+            nnoremap <silent><buffer><expr> -
+            \ defx#do_action('cd', ['..']) " jump to parent dir
             nnoremap <silent><buffer><expr> ~
-            \ defx#do_action('cd') " jump to user path
+            \ defx#do_action('cd') " jump to home dir
             nnoremap <silent><buffer><expr> q
             \ defx#do_action('quit')
             nnoremap <silent><buffer><expr> <space><space>
-            \ defx#do_action('toggle_select') . 'j'
+            \ defx#do_action('toggle_select')
             nnoremap <silent><buffer><expr> *
             \ defx#do_action('toggle_select_all')
             nnoremap <silent><buffer><expr> j
@@ -984,6 +1176,9 @@ let g:blade_vim_config_dir = expand("~/Documents/my_config/Blade-Vim")
         "     \ 'indent': '✗',
         "     \ })
 
+        " 'new': 1
+        " Create new defx buffer, which will allow open several defx at
+        " different window at same time (simulate behavior of `netrw`)
         call defx#custom#option('_', {
             \ 'winwidth':40,
             \ 'split': 'vertical',
@@ -991,6 +1186,7 @@ let g:blade_vim_config_dir = expand("~/Documents/my_config/Blade-Vim")
             \ 'show_ignored_files': 1,
             \ 'buffer_name': 'FileTree',
             \ 'toggle': 1,
+            \ 'new': 1,
             \ 'resume': 1,
             \ 'columns': 'indent:git:icon:icons:space:filename'
             \ })
@@ -1004,7 +1200,11 @@ let g:blade_vim_config_dir = expand("~/Documents/my_config/Blade-Vim")
         function CurrentFile() abort
             return fnameescape(expand('%:p'))
         endfunction
-        noremap <silent> <C-M-b> :execute 'Defx ' . CurrentPath() . ' -search=' . CurrentFile()<CR>
+
+        " noremap <silent> <C-M-b> :execute 'Defx ' . CurrentPath() . ' -search=' . CurrentFile()<CR>
+
+        " use no-split Defx to override built-in `:Explore` (netrw)
+        command! E execute 'Defx -split=no ' . CurrentPath()
 
 " --------------------------------------------------------------------------------
 
@@ -1014,11 +1214,42 @@ let g:blade_vim_config_dir = expand("~/Documents/my_config/Blade-Vim")
     " nmap <M-C-LeftMouse> <Plug>(VM-Mouse-Column)
     " nmap <M-LeftMouse>   <Plug>(VM-Mouse-Cursor)
 
+" fzf
+let g:deeplugin_fzf = 0
+
+if g:deeplugin_fzf == 1
+    command! FZFMru call fzf#run({
+    \ 'source':  reverse(s:all_files()),
+    \ 'sink':    'edit',
+    \ 'options': '-m -x +s',
+    \ 'down':    '40%' })
+
+    function! s:all_files()
+    return extend(
+    \ filter(copy(v:oldfiles),
+    \        "v:val !~ 'fugitive:\\|NERD_tree\\|^/tmp/\\|.git/'"),
+    \ map(filter(range(1, bufnr('$')), 'buflisted(v:val)'), 'bufname(v:val)'))
+    endfunction
+
+    " fzf.vim
+    nnoremap <leader>fb :Buffers<CR>
+    nnoremap <leader>ff :Files<CR>
+    nnoremap <leader>fh :Helptags<CR>
+    nnoremap <leader>fl :BLines<CR>
+    nnoremap <leader>fr :History<CR>
+    nnoremap <leader>fw :Windows<CR>
+endif
+
 " --------------------------------------------------------------------------------
 
 " LeaderF
+    let g:deevim_load_leaderf = 1
+
+    if g:deevim_load_leaderf == 1
     " default mode
         let g:LfDefaultMode='Fuzzy'
+    " if file is open, jump to it or open it at current window
+        let g:Lf_JumpToExistingWindow=0
     " show hiden content
         " let g:Lf_ShowHidden = 1
     " remeber last search
@@ -1048,17 +1279,16 @@ let g:blade_vim_config_dir = expand("~/Documents/my_config/Blade-Vim")
     " key map
         " history command ('c' means 'command')
             nnoremap <Leader>sc :LeaderfHistoryCmd<CR>
-        " search code in current buffer file ('f' mans 'file')
-            nnoremap <Leader>sf :LeaderfLine<CR>
-            nnoremap <F11> :LeaderfLine<CR>
+        " search code in current buffer file line ('l' mans 'line')
+            nnoremap <Leader>sl :LeaderfLine<CR>
         " search code in all buffer (capital letter means search all)
-            nnoremap <Leader>sF :LeaderfLineAll<CR>
+            nnoremap <Leader>sL :LeaderfLineAll<CR>
         " search help document of vim
             nnoremap <Leader>sh :LeaderfHelp<CR>
-        " search function in current buffer ('m' means 'map', since function is just a map)
-            nnoremap <Leader>sm :LeaderfFunction<CR>
+        " search function in current buffer
+            nnoremap <Leader>sf :LeaderfFunction<CR>
         " search function in all listed buffers
-            nnoremap <Leader>sM :LeaderfFunctionAll<CR>
+            nnoremap <Leader>sF :LeaderfFunctionAll<CR>
         " recent opened file ('r' means 'recent')
             nnoremap <Leader>sr :LeaderfMru<CR>
         " recent opened file in current working directory
@@ -1085,72 +1315,7 @@ let g:blade_vim_config_dir = expand("~/Documents/my_config/Blade-Vim")
             \ }
         let g:which_key_map_Leader.s = {'name': '{search with LeaderF}'}
         call extend(g:which_key_map_Leader.s, g:which_key_map_LeaderF)
-
-" --------------------------------------------------------------------------------
-
-" ALE related
-    " coherent with airline
-        " enable/disable ale integration
-            let g:airline#extensions#ale#enabled = 1
-        " ale error_symbol
-            let airline#extensions#ale#error_symbol = 'E:'
-        " ale warning
-            let airline#extensions#ale#warning_symbol = 'W:'
-        " ale show_line_numbers
-            let airline#extensions#ale#show_line_numbers = 1
-        " ale open_lnum_symbol
-            let airline#extensions#ale#open_lnum_symbol = '(L'
-        " ale close_lnum_symbol
-            let airline#extensions#ale#close_lnum_symbol = ')'
-
-    " Set this. Airline will handle the rest.
-        let g:airline#extensions#ale#enabled = 1 " let airline work well with ALE
-        let g:ale_sign_column_always = 1 "始终开启标志列
-        let g:ale_change_sign_column_color = 1 " set different highlights for the sign column itself
-        let g:ale_sign_highlight_linenrs = 1 " allowed highlight of line number
-        let g:ale_lint_on_text_changed = 'normal' " 'normal' check buffers if text changed (both normal and insert)
-        let g:ale_hover_to_preview = 1
-
-    " error, warning and info
-        let ale_sign_error = '✗'
-        highlight ALEError gui=undercurl guisp=#ff0000 guibg=#87d7ff
-        highlight ALEErrorSign guifg=#ff0000
-        " seems useless for vim, but the help said noevim was supported
-        let ale_sign_warning = '⚡'
-        highlight ALEWarning gui=undercurl guisp=#5f87ff guibg=#ffd787
-        highlight ALEWarningSign guifg=#ff8700
-        " seems useless for vim, but the help said noevim was supported
-        let ale_sign_info = '?'
-        highlight ALEInfo gui=bold guifg=#00d700
-        highlight ALEInfoSign gui=undercurl guisp=#ff8700 guibg=#5fff5f
-
-        " highlight of column ralated column number (seems useless for vim, but the help said noevim was supported)
-            " highlight ALEErrorSignLineNr guifg=#ff0000
-            " highlight ALEWarningSignLineNr guibg=#ffaf00
-            " highlight ALEInfoSignLineNr guifg=#00d700
-
-    " key map
-        " nevigate between diagnostic
-            nmap <silent> <M-p> <Plug>(ale_previous_wrap)
-            nmap <silent> <M-n> <Plug>(ale_next_wrap)
-            " let g:which_key_map_LeftSqureBracket.g = 'ale: previous diagnostic'
-            " let g:which_key_map_RightSqureBracket.g = 'ale: next diagnostic'
-        " toggle and detail
-            nnoremap <Leader>et :ALEToggle<CR>
-            nnoremap <Leader>ed :ALEDetail<CR>
-            let g:which_key_map_Leader.e = {
-                \ 'name': '{ALE}',
-                \ 't': 'toggle',
-                \ 'd': 'detail',
-                \ }
-
-    " linter choose
-        let g:ale_linters = {
-        \ 'cpp': [''],
-        \ 'c': [''],
-        \ 'python': [''],
-        \ 'tex' : [''],
-        \}
+    endif
 
 " --------------------------------------------------------------------------------
 
@@ -1171,6 +1336,9 @@ let g:blade_vim_config_dir = expand("~/Documents/my_config/Blade-Vim")
     " background of current words
         highlight CocHighlightText guibg=#cfe3ff
 
+    " root marker for workspace
+        let b:coc_root_patterns = ['.root', '.svn', '.git', '.hg', '.project']
+
     " use with 'vim-airline'
         " enable/disable coc integration
             let g:airline#extensions#coc#enabled = 1
@@ -1179,21 +1347,36 @@ let g:blade_vim_config_dir = expand("~/Documents/my_config/Blade-Vim")
         " Change warning symbol:
             let airline#extensions#coc#warning_symbol = 'Warning:'
         " Change error format:
-            let airline#extensions#coc#stl_format_err = '%E{[%e(#%fe)]}'
+            " let airline#extensions#coc#stl_format_err = '%E{[%e(#%fe)]}'
+            let airline#extensions#coc#stl_format_err = '%C(L%L)'
         " Change warning format:
             let airline#extensions#coc#stl_format_warn = '%W{[%w(#%fw)]}'
+            let airline#extensions#coc#stl_format_warn = '%C(L%L)'
 
     " key map
         let g:which_key_map_coc = {'name': '{coc.nvim}'} " to record the key map of coc.nvim
 
         " Use <c-space> to trigger completion.
             inoremap <silent><expr> <c-space> coc#refresh()
+
+        " scroll in float windows
+        if has('nvim-0.4.0') || has('patch-8.2.0750')
+            nnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
+            nnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
+            inoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
+            inoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
+            vnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
+            vnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
+        endif
+
         " coc command
-            nnoremap <leader>cm :CocCommand<Space>
-            let g:which_key_map_coc.m = 'coc command'
+            " nnoremap <leader>cm :CocCommand<Space>
+            " let g:which_key_map_coc.m = 'coc command'
+
         " Use <cr> to confirm completion, `<C-g>u` means break undo chain at current position.
         " Coc only does snippet and additional edit on confirm.
-            inoremap <expr> <CR> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+            inoremap <expr> <CR> pumvisible() ? "\<C-y>" : "\<C-g>u\<Plug>delimitMateCR"
+            " let g:delimitMate_expand_cr = 1
 
         " Use K to show documentation in preview window
             nnoremap <silent> K :call <SID>show_documentation()<CR>
@@ -1227,32 +1410,36 @@ let g:blade_vim_config_dir = expand("~/Documents/my_config/Blade-Vim")
             let g:which_key_map_g['name'] = 'go to'
             call extend(g:which_key_map_g, g:which_key_map_coc_goto)
 
+        " rename symbol, check changes
+            nnoremap <leader>r <Plug>(coc-rename)
+            nnoremap <leader>R :CocCommand workspace.inspectEdit<CR>
+
         " navigate diagnostics
             nmap <silent> <M-k> <Plug>(coc-diagnostic-prev)
             nmap <silent> <M-j> <Plug>(coc-diagnostic-next)
 
         " Use <TAB> for select selections ranges, needs server support, like: coc-tsserver, coc-python
         " since the map is in the normal mode, it won't infect the expand of snippet
-            nmap <silent> <TAB> <Plug>(coc-range-select)
-            xmap <silent> <TAB> <Plug>(coc-range-select)
+            nmap <silent> <S-tab> <Plug>(coc-range-select)
+            xmap <silent> <S-tab> <Plug>(coc-range-select)
 
         " pick color ('c' means 'coc'; the second 'c' means 'color')
             nnoremap <Leader>cc :call CocAction('pickColor')<CR>
             let g:which_key_map_coc.c = 'pick color'
         " open configure .json file ('j' means 'json')
-            nnoremap <Leader>cj :CocConfig<CR>
-            let g:which_key_map_coc.j = 'edit json file'
+            " nnoremap <Leader>cj :CocConfig<CR>
+            " let g:which_key_map_coc.j = 'edit json file'
         " check diagnostic ('d' means 'diagnostic')
-            nnoremap <Leader>cd :CocList diagnostic<CR>
-            let g:which_key_map_coc.d = 'coc diagnostic'
+            " nnoremap <Leader>cd :CocList diagnostic<CR>
+            " let g:which_key_map_coc.d = 'coc diagnostic'
 
         " extension manage ('e' means 'extension')
             " list extensions ('l' means list)
-                nnoremap <Leader>cel :CocList extensions<CR>
+                " nnoremap <Leader>cel :CocList extensions<CR>
             " install extension ('i' means 'install')
-                nnoremap <Leader>cei :CocInstall<Space>
+                " nnoremap <Leader>cei :CocInstall<Space>
             " uninstall extensions ('u' means 'uninstall')
-                nnoremap <Leader>ceu :CocUninstall<Space>
+                " nnoremap <Leader>ceu :CocUninstall<Space>
 
             " key map manage
                 let g:which_key_map_coc.e = {
@@ -1280,7 +1467,7 @@ let g:blade_vim_config_dir = expand("~/Documents/my_config/Blade-Vim")
 
                 " add current word range to cursors
                     " add current words ('m' means 'multi')
-                        nmap <Leader>m <Plug>(coc-cursors-word)
+                        nmap <Leader>MM <Plug>(coc-cursors-word)
                         let g:which_key_map_Leader.m = 'add current words to multicursor'
                     " add and jump to next same words (since the behavior like normal command 'n', so use key 'n')
                         nmap <Leader>n <Plug>(coc-cursors-word)*
@@ -1297,26 +1484,54 @@ let g:blade_vim_config_dir = expand("~/Documents/my_config/Blade-Vim")
                 " use operator for add range to cursors. Use normal command like `<leader>xi(` ('t' means 'text object')
                     nmap <leader>Mt <Plug>(coc-cursors-operator)
                     let g:which_key_map_Leader.M.t = 'add textobj to multicursor'
+        " code actions
+        nmap <leader>cf <Plug>(coc-fix-current)
+        nmap <leader>cc <Plug>(coc-codeaction-line)
+
+        " code format
+        xmap <leader>F  <Plug>(coc-format-selected)
+        nmap <leader>F  <Plug>(coc-format-selected)
 
         " coc list
-            nnoremap <Leader>cl :CocList<CR>
-            nnoremap <Leader>Sb :CocList buffer<CR>
-            nnoremap <Leader>Sc :CocList cmdhistory<CR>
-            nnoremap <Leader>Se :CocList extensions<CR>
-            nnoremap <Leader>Sf :CocList file<CR>
-            nnoremap <Leader>Sg :CocList grep<CR>
-            nnoremap <Leader>Sh :CocList help<CR>
-            nnoremap <Leader>Sk :CocList marks<CR>
-            nnoremap <Leader>Sl :CocList line<CR>
-            nnoremap <Leader>Sm :CocList maps<CR>
-            nnoremap <Leader>So :CocList outline<CR>
-            nnoremap <Leader>Sp :CocList output<CR>
-            nnoremap <Leader>Sq :CocList quickfix<CR>
-            nnoremap <Leader>Sr :CocList mru<CR>
-            nnoremap <Leader>Ss :CocList servers<CR>
-            nnoremap <Leader>St :CocList tags<CR>
-            nnoremap <Leader>Sv :CocList vimcommands<CR>
+        " built-in (full built-in list see :h coc-list-sources)
+        nnoremap <leader>la :CocList<CR>
+        nnoremap <leader>lc :CocList commands<CR>
+        nnoremap <leader>ls :CocList symbols<CR>
+        nnoremap <leader>lt :CocList outline<CR>
 
+        " provided by `coc-lists`, supported list include
+        " (ref: https://github.com/neoclide/coc-lists )
+        " `buffers`: current buffer list.
+        " `changes`: changes list.
+        " `cmdhistory`: history of commands.
+        " `colors`: colors schemes.
+        " `files`: search files from current cwd.
+        " `filetypes`: file types.
+        " `grep`: grep text from current cwd.
+        " `helptags`: helptags of vim.
+        " `lines`: search lines by regex patterns.
+        " `locationlist`: items from vim's location list.
+        " `maps`: key mappings.
+        " `marks`: marks of vim.
+        " `mru`: most recent used files.
+        " `quickfix`: items from vim's quickfix list.
+        " `registers`: registers of vim.
+        " `searchhistory`: history of search.
+        " `sessions`: session list.
+        " `tags`: search tag files.
+        " `vimcommands`: available vim commands.
+        " `windows`: windows of vim.
+        " `words`: search word in current buffer.
+        " `functions`: available vim functions.
+        nnoremap <leader>lb :CocList buffers<CR>
+        nnoremap <leader>lf :CocList files<CR>
+        nnoremap <leader>lg :CocList grep<CR>
+        nnoremap <leader>lh :CocList helptags<CR>
+        nnoremap <leader>ll :CocList lines<CR>
+        nnoremap <leader>lm :CocList maps<CR>
+        nnoremap <leader>lr :CocList mru<CR>
+
+        highlight CocInlayHint guifg=#C0BDDE
             " key map manage
                 let g:which_key_map_Leader.S = {
                     \ 'name': '{search with CocList}',
@@ -1370,9 +1585,10 @@ let g:blade_vim_config_dir = expand("~/Documents/my_config/Blade-Vim")
         xnoremap $ $<left>
         xnoremap g$ $
 
-    " add parenthesis/space ('a' means 'add', 'parenthesis')
+    " add parenthesis/space ('a' means 'add', 'A' will inster extra space at
+    " both side)
         vnoremap <localleader>p c<space><C-r>"<space>
-        nnoremap <localleader>p vc<space><C-r>"<space>
+        nnoremap <localleader>p vc<space><C-r>"<space><ESC>
         vnoremap <localleader>ap c(<C-r>")<ESC>
         nnoremap <localleader>ap vc(<C-r>")<ESC>
         vnoremap <localleader>as c[<C-r>"]<ESC>
@@ -1381,6 +1597,8 @@ let g:blade_vim_config_dir = expand("~/Documents/my_config/Blade-Vim")
         nnoremap <localleader>ab vc{<C-r>"}<ESC>
         vnoremap <localleader>aa c<<C-r>"><ESC>
         nnoremap <localleader>aa vc<<C-r>"><ESC>
+        vnoremap <localleader>a` c`<C-r>"`<ESC>
+        nnoremap <localleader>a` vc`<C-r>"`<ESC>
 
         vnoremap <localleader>Ap c(<space><C-r>"<space>)<ESC>
         nnoremap <localleader>Ap vc(<space><C-r>"<space>)<ESC>
@@ -1399,13 +1617,13 @@ let g:blade_vim_config_dir = expand("~/Documents/my_config/Blade-Vim")
 
     " faster substitute ('r' means 'replace')
         " substitute current line (pattern is form last search)
-            nnoremap <leader>r V:s/<C-r>//
-        " substitute current line (input pattern by keybord)
-            nnoremap <leader>R V:s/
+            " nnoremap <leader>r V:s/<C-r>//
+        " substitute current line (input pattern by keyboard)
+            " nnoremap <leader>R V:s/
         " substitute selected (pattern is form last search)
-            xnoremap <leader>r :s/<C-r>//
+            " xnoremap <leader>r :s/<C-r>//
         " substitute selected (input pattern)
-            xnoremap <leader>R :s/
+            " xnoremap <leader>R :s/
 
         " keymap manage
             let g:which_key_map_Leader.r = 'replace (with default pattern)'
@@ -1420,7 +1638,7 @@ let g:blade_vim_config_dir = expand("~/Documents/my_config/Blade-Vim")
         inoremap <M-"> <ESC>:let @" = "<left>"
         vnoremap <M-"> c<ESC>:let @" = "<left>"
 
-    " enhanced search with '*' (can search selected content now)
+    " enhanced search with '*' (can search selected content now, see [2015, Neil, Practical Vim, Tip 87] )
         xnoremap * :<C-u>call <SID>VSetSearch('/')<CR>/<C-R>=@/<CR><CR>
         xnoremap # :<C-u>call <SID>VSetSearch('?')<CR>?<C-R>=@/<CR><CR>
 
@@ -1440,8 +1658,9 @@ let g:blade_vim_config_dir = expand("~/Documents/my_config/Blade-Vim")
             nnoremap <silent><C-M-o> :silent !open -a Finder "%:p:h"<CR>
         end
 
-    " check vimrc
-        nnoremap <silent> <Leader>C :execute("edit".g:blade_vim_config_dir."/vimrc")<CR>
+    " check vimrc and help doc
+        nnoremap <silent> <leader>C :execute("edit".g:blade_vim_config_dir."/vimrc")<CR>
+        nnoremap <silent> <leader>H :execute("split".g:blade_vim_config_dir."/doc/deevim.txt")<CR>
         let g:which_key_map_Leader.C = 'open vimrc'
 
     " check ftplugin file respective
@@ -1524,9 +1743,12 @@ let g:blade_vim_config_dir = expand("~/Documents/my_config/Blade-Vim")
             let g:which_key_map_Local_Leader.s.f.s = 'syntax'
 
     " terminal related (need nvim)
-            " run command in terminal at current file path with a split window
-                nnoremap <localleader>t :split \| terminal cd '%:p:h';
-                let g:which_key_map_Local_Leader.t = 'run at terminal'
+        " run command in terminal at current file path with a split window
+            " nnoremap <localleader>t :split \| terminal cd '%:p:h';
+            " let g:which_key_map_Local_Leader.t = 'run at terminal'
+            nnoremap <leader>tT :split \| terminal<CR><C-w>k
+            nnoremap <leader>tt :vsplit \| terminal<CR><C-w>h
+            command Terminalcd execute 'SlimeSend1 cd '.expand("%:p:h")
 
         if has('terminal')
             " statusline support
@@ -1548,19 +1770,19 @@ let g:blade_vim_config_dir = expand("~/Documents/my_config/Blade-Vim")
                     autocmd TermOpen * nnoremap <buffer> <leader>q <ESC>:bwipeout!<CR>
        endif
 
-                " To map <Esc> to exit terminal-mode
-                    tnoremap <Esc> <C-\><C-n>
-                " To use `Shift+Meta+{h,j,k,l}` to navigate windows from any mode
-                    " terminal mode
-                        tnoremap <M-S-h> <C-\><C-N><C-w>h
-                        tnoremap <M-S-j> <C-\><C-N><C-w>j
-                        tnoremap <M-S-k> <C-\><C-N><C-w>k
-                        tnoremap <M-S-l> <C-\><C-N><C-w>l
-                    " insert mod
-                        inoremap <M-S-h> <C-\><C-N><C-w>h
-                        inoremap <M-S-j> <C-\><C-N><C-w>j
-                        inoremap <M-S-k> <C-\><C-N><C-w>k
-                        inoremap <M-S-l> <C-\><C-N><C-w>l
+        " To map <Esc> to exit terminal-mode
+            tnoremap <Esc> <C-\><C-n>
+        " To use `Shift+Meta+{h,j,k,l}` to navigate windows from any mode
+            " terminal mode
+                tnoremap <M-S-h> <C-\><C-N><C-w>h
+                tnoremap <M-S-j> <C-\><C-N><C-w>j
+                tnoremap <M-S-k> <C-\><C-N><C-w>k
+                tnoremap <M-S-l> <C-\><C-N><C-w>l
+            " insert mod
+                inoremap <M-S-h> <C-\><C-N><C-w>h
+                inoremap <M-S-j> <C-\><C-N><C-w>j
+                inoremap <M-S-k> <C-\><C-N><C-w>k
+                inoremap <M-S-l> <C-\><C-N><C-w>l
 
 " --------------------------------------------------------------------------------
 
@@ -1575,3 +1797,12 @@ let g:blade_vim_config_dir = expand("~/Documents/my_config/Blade-Vim")
     autocmd BufNewFile,BufRead *.ins setlocal filetype=tex
     autocmd BufNewFile,BufRead *.temptex setlocal filetype=temptex
     autocmd BufNewFile,BufRead *.tmux setlocal filetype=tmux
+    autocmd BufNewFile,BufRead *.red setlocal filetype=reduce
+    autocmd BufNewFile,BufRead zsh.snippets setlocal filetype=snippets " solve zsh.snippets will be detected as `zsh` filetype
+    autocmd BufNewFile,BufRead *.sage setlocal filetype=pythoh.sage
+
+    " solve the following problems:
+    " 1. by default `*.gp` will be detected as filetype `gp` rather than `gnuplot`
+    "    (so need `filetype=...` instead of `setfiletype`)
+    " 2. by default `*.gnuplot` and `*.plt` cannot be detected as filetype `gnuplot`
+    autocmd! BufRead,BufNewFile *.gp,*.gnuplot setlocal filetype=gnuplot
