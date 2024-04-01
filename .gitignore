@@ -21,3 +21,6 @@ temp/
 
 # ignore help tag
 doc/tags
+
+# ignore pdf
+*.pdf
