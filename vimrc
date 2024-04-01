@@ -1,13 +1,13 @@
 if !exists("b:deevim_path_loaded") " avoid repeating add path when `:so %` during debugging configuration
-    let g:blade_vim_config_dir = expand("<sfile>:p:h") " root directory of blade-vim
+    let g:deevim_root_dir = expand("<sfile>:p:h") " root directory of blade-vim
     " set runtimepath^=~/Documents/my_config/blade-vim
     " set runtimepath+=~/Documents/my_config/blade-vim/after
-    execute "set runtimepath^=" . g:blade_vim_config_dir
-    execute "set runtimepath+=" . g:blade_vim_config_dir . "/after"
+    execute "set runtimepath^=" . g:deevim_root_dir
+    execute "set runtimepath+=" . g:deevim_root_dir . "/after"
     let &packpath = &runtimepath
 
     " use `.vim/vimlocal.vim` for local setting (i.e. project setting)
-    silent! so ./.vim/vimlocal.vim
+    silent! source ./.vim/vimlocal.vim
 
     let b:deevim_path_loaded=1
 endif
@@ -449,7 +449,6 @@ xmap <leader>de <Plug>VimspectorBalloonEval
     let g:accelerated_jk_acceleration_limit = 100
     let g:accelerated_jk_acceleration_table = [2,3,6,9,11,13,15,17]
 
-        \al
 " --------------------------------------------------------------------------------
 
 " vim-julia
@@ -1002,8 +1001,8 @@ xmap <leader>de <Plug>VimspectorBalloonEval
     " Split way of edic snippets file
         let g:UltiSnipsEditSplit ="vertical"
     " snippets file dirctory
-        let g:UltiSnipsSnippetDirectories = [g:blade_vim_config_dir.'/UltiSnips']
-        let g:UltiSnipsSnippetDir = [g:blade_vim_config_dir.'/UltiSnips']
+        let g:UltiSnipsSnippetDirectories = [g:deevim_root_dir.'/UltiSnips']
+        let g:UltiSnipsSnippetDir = [g:deevim_root_dir.'/UltiSnips']
     " check the snippet setting
         nnoremap <C-M-s> :UltiSnipsEdit<CR>
 
@@ -1062,149 +1061,10 @@ xmap <leader>de <Plug>VimspectorBalloonEval
     endif
 
 " --------------------------------------------------------------------------------
+" defx (file tree)
 
-" defx (file tree) related
-    " Avoid the white space highting issue
-        autocmd FileType defx match ExtraWhitespace /^^/
-
-    " key map (in file tree mode)
-        autocmd FileType defx call s:defx_my_settings()
-        function! s:defx_my_settings() abort
-            " nnoremap <silent><buffer><expr> <CR>
-            " \ defx#do_action('drop')
-            nnoremap <silent><buffer><expr> <CR>
-            \ defx#do_action('open')
-            nnoremap <silent><buffer><expr> c
-            \ defx#do_action('copy')
-            nnoremap <silent><buffer><expr> m
-            \ defx#do_action('move')
-            nnoremap <silent><buffer><expr> p
-            \ defx#do_action('paste')
-            " nnoremap <silent><buffer><expr> l
-            " \ defx#do_action('open')
-            nnoremap <silent><buffer><expr> E
-            \ defx#do_action('open', 'vsplit')
-            nnoremap <silent><buffer><expr> P
-            \ defx#do_action('open', 'pedit')
-            nnoremap <silent><buffer><expr> o
-            \ defx#do_action('open_or_close_tree')
-            nnoremap <silent><buffer><expr> K
-            \ defx#do_action('new_directory')
-            nnoremap <silent><buffer><expr> N
-            \ defx#do_action('new_file')
-            nnoremap <silent><buffer><expr> M
-            \ defx#do_action('new_multiple_files')
-            nnoremap <silent><buffer><expr> C
-            \ defx#do_action('toggle_columns',
-            \                'mark:indent:icon:filename:type:size:time')
-            nnoremap <silent><buffer><expr> S
-            \ defx#do_action('toggle_sort', 'time')
-            " use upper case `D` can avoid conflict with `vim-surround`'s
-            " `nmap ds <plug>Dsurround`, and also agree with convention used
-            " by `netrw`
-            nnoremap <silent><buffer><expr> D
-            \ defx#do_action('remove_trash')
-            nnoremap <silent><buffer><expr> r
-            \ defx#do_action('rename')
-            nnoremap <silent><buffer><expr> !
-            \ defx#do_action('execute_command')
-            nnoremap <silent><buffer><expr> x
-            \ defx#do_action('execute_system')
-            nnoremap <silent><buffer><expr> yy
-            \ defx#do_action('yank_path')
-            nnoremap <silent><buffer><expr> .
-            \ defx#do_action('toggle_ignored_files')
-            nnoremap <silent><buffer><expr> ;
-            \ defx#do_action('repeat')
-            " nnoremap <silent><buffer><expr> h
-            " \ defx#do_action('cd', ['..']) " jump to parent dir
-            nnoremap <silent><buffer><expr> -
-            \ defx#do_action('cd', ['..']) " jump to parent dir
-            nnoremap <silent><buffer><expr> ~
-            \ defx#do_action('cd') " jump to home dir
-            nnoremap <silent><buffer><expr> q
-            \ defx#do_action('quit')
-            nnoremap <silent><buffer><expr> <space><space>
-            \ defx#do_action('toggle_select')
-            nnoremap <silent><buffer><expr> *
-            \ defx#do_action('toggle_select_all')
-            nnoremap <silent><buffer><expr> j
-            \ line('.') == line('$') ? 'gg' : 'j'
-            nnoremap <silent><buffer><expr> k
-            \ line('.') == 1 ? 'G' : 'k'
-            nnoremap <silent><buffer><expr> <C-l>
-            \ defx#do_action('redraw')
-            nnoremap <silent><buffer><expr> <C-g>
-            \ defx#do_action('print')
-            nnoremap <silent><buffer><expr> cd
-            \ defx#do_action('change_vim_cwd')
-        endfunction
-
-    " for git
-        let g:defx_git#indicators = {
-            \ 'Modified'  : '✹',
-            \ 'Staged'    : '✚',
-            \ 'Untracked' : '✭',
-            \ 'Renamed'   : '➜',
-            \ 'Unmerged'  : '═',
-            \ 'Ignored'   : '☒',
-            \ 'Deleted'   : '✖',
-            \ 'Unknown'   : '?'
-            \ }
-
-    " appearance
-        let g:defx_icons_enable_syntax_highlight = 1
-
-        call defx#custom#column('icon', {
-            \ 'directory_icon': ' ▸',
-            \ 'opened_icon': ' ▾',
-            \ 'root_icon': ' ',
-            \ })
-
-        call defx#custom#column('filename', {
-            \ 'min_width': 35,
-            \ 'max_width': 90,
-            \ })
-
-        call defx#custom#column('mark', {
-            \ 'readonly_icon': '✗',
-            \ 'selected_icon': '✓',
-            \ })
-
-        " test position of indent
-        " call defx#custom#column('indent', {
-        "     \ 'indent': '✗',
-        "     \ })
-
-        " 'new': 1
-        " Create new defx buffer, which will allow open several defx at
-        " different window at same time (simulate behavior of `netrw`)
-        call defx#custom#option('_', {
-            \ 'winwidth':40,
-            \ 'split': 'vertical',
-            \ 'direction': 'topleft',
-            \ 'show_ignored_files': 1,
-            \ 'buffer_name': 'FileTree',
-            \ 'toggle': 1,
-            \ 'new': 1,
-            \ 'resume': 1,
-            \ 'columns': 'indent:git:icon:icons:space:filename'
-            \ })
-
-    " key map
-        " noremap <silent> <C-M-b> :Defx `expand('%:p:h')` -search=`expand('%:p')`<CR>
-        function CurrentPath() abort
-            return fnameescape(expand('%:p:h'))
-        endfunction
-
-        function CurrentFile() abort
-            return fnameescape(expand('%:p'))
-        endfunction
-
-        " noremap <silent> <C-M-b> :execute 'Defx ' . CurrentPath() . ' -search=' . CurrentFile()<CR>
-
-        " use no-split Defx to override built-in `:Explore` (netrw)
-        command! E execute 'Defx -split=no ' . CurrentPath()
+let g:deevim_load_defx = 1
+execute "source " . g:deevim_root_dir . "/config/defx.vim"
 
 " --------------------------------------------------------------------------------
 
@@ -1659,12 +1519,12 @@ endif
         end
 
     " check vimrc and help doc
-        nnoremap <silent> <leader>C :execute("edit".g:blade_vim_config_dir."/vimrc")<CR>
-        nnoremap <silent> <leader>H :execute("split".g:blade_vim_config_dir."/doc/deevim.txt")<CR>
+        nnoremap <silent> <leader>C :execute("edit".g:deevim_root_dir."/vimrc")<CR>
+        nnoremap <silent> <leader>H :execute("split".g:deevim_root_dir."/doc/deevim.txt")<CR>
         let g:which_key_map_Leader.C = 'open vimrc'
 
     " check ftplugin file respective
-        nnoremap <silent> <F2> :vsplit \| call execute("edit ".g:blade_vim_config_dir."/ftplugin/".&filetype.".vim")<CR>
+        nnoremap <silent> <F2> :vsplit \| call execute("edit ".g:deevim_root_dir."/ftplugin/".&filetype.".vim")<CR>
 
     " open current file with Macvim
         nnoremap <silent> <F3> :silent ! mvim "%:p"<CR>
