@@ -35,18 +35,22 @@ Start and quit~
 Where "q" means "quit".
 
 Play control~
+
   --------------------------------------------------------------------- ~
-   LHS          RHS                                          MODE ~
+   MODE    LHS                    RHS~
   --------------------------------------------------------------------- ~
-  <leader>ds  |<plug>VimspectorStop|                        `n`
-  <leader>dr  |<plug>VimspectorRestart|                     `n`
-  <leader>dD  |<plug>VimspectorPause|                       `n`
-  <leader>dn  |<plug>VimspectorStepInto|                    `n`
-  <leader>dp  |<plug>VimspectorStepOut|                     `n`
-  <leader>dN  |<plug>VimspectorStepOver|                    `n`
+  `n`  <leader>ds  |<plug>VimspectorStop|
+  `n`  <leader>dr  |<plug>VimspectorRestart|
+  `n`  <leader>dD  |<plug>VimspectorPause|
+  `n`  <leader>di  |<plug>VimspectorStepInto|
+  `n`  <leader>do  |<plug>VimspectorStepOut|
+  `n`  <leader>dn  |<plug>VimspectorStepOver|
   --------------------------------------------------------------------- ~
 
+  where "step over" can be understood as "execute next line"
+
 Break point~
+
   --------------------------------------------------------------------- ~
    LHS          RHS                                          MODE ~
   --------------------------------------------------------------------- ~
@@ -63,10 +67,11 @@ Misc~
    LHS          RHS                                          MODE ~
   --------------------------------------------------------------------- ~
   <leader>da  |<plug>VimspectorDisassemble|                 `n`
-  <leader>di  |<Plug>VimspectorBalloonEval|                 `nx`
+  <leader>de  |<Plug>VimspectorBalloonEval|                 `nx`
   --------------------------------------------------------------------- ~
 
-where <leader>di is used to trigger "pop up" feature of vimspector
+where <leader>de is used to trigger "pop up" feature of vimspector, which
+can evaluate expression under cursor.
 
 ------------------------------------------------------------------------------
 TABULAR                                                 *deevim-plugin-tabular*
