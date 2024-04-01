@@ -1,0 +1,89 @@
+# segment lines
+snippet ## "segment line"
+# ############################################################
+endsnippet
+
+snippet @@ "segment line"
+# @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+endsnippet
+
+snippet == "segment line"
+# ============================================================
+endsnippet
+
+snippet ** "segment line"
+# ************************************************************
+endsnippet
+
+snippet ++ "segment line"
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+endsnippet
+
+snippet ~~ "segment line"
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+endsnippet
+
+snippet -- "segment line"
+# ------------------------------------------------------------
+endsnippet
+
+snippet cmake "template for cmake project"
+.PHONY: gen build test temptest dbtmp \
+	rgen rtest rtemptest \
+	clean
+
+THREAD_NUM=4
+
+# ############################################################
+
+# cmake
+CMAKE_GENERAL_CONFIG=-DCMAKE_CXX_COMPILER=clang++  -DCMAKE_EXPORT_COMPILE_COMMANDS=1 -DCMAKE_CXX_FLAGS="-fopenmp"
+CMAKE_DEBUG_CONFIG=$(CMAKE_GENERAL_CONFIG) -DCMAKE_BUILD_TYPE=Debug
+CMAKE_RELEASE_CONFIG=$(CMAKE_GENERAL_CONFIG) -DCMAKE_BUILD_TYPE=Release
+
+# cmake --build
+CMAKE_BUILD_OPTIONS=--parallel ${THREAD_NUM}
+
+# ctest
+CTEST_OPTIONS=--verbose --output-log test_log.txt
+CMAKE_RUN_TEST_COMMAND=ctest ${CTEST_OPTIONS}
+
+# ############################################################
+# debug mode
+
+gen:
+	cmake -S . -B build $(CMAKE_DEBUG_CONFIG)
+
+build:
+	cmake --build build ${CMAKE_BUILD_OPTIONS}
+
+test: gen build
+	# ctest --build-and-test . build --build-generator "Unix Makefiles" --build-run-dir test --build-options $(CMAKE_DEBUG_CONFIG) --build build ${CMAKE_BUILD_OPTIONS} --test-command $(CMAKE_RUN_TEST_COMMAND)
+	OMP_NUM_THREADS=$(THREAD_NUM) ctest --test-dir build/test ${CTEST_OPTIONS}
+
+temptest: gen build
+	date +"TEST START TIME: %Y-%m-%d %H:%M:%S"
+	OMP_NUM_THREADS=$(THREAD_NUM) cd ./build/test && time ./temp_test
+
+dbtemp:
+	lldb ./build/test/temp_test
+
+# ############################################################
+# debug mode
+
+rgen:
+	cmake -S . -B build $(CMAKE_RELEASE_CONFIG)
+
+rtest: rgen build
+	OMP_NUM_THREADS=$(THREAD_NUM) ctest --test-dir build/test ${CTEST_OPTIONS}
+
+rtemptest: rgen build
+	date +"TEST START TIME: %Y-%m-%d %H:%M:%S"
+	OMP_NUM_THREADS=$(THREAD_NUM) cd ./build/test && time ./temp_test
+
+# ############################################################
+# clean
+
+clean:
+	rm -rf build release
+endsnippet
