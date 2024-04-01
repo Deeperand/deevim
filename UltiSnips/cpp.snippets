@@ -1,0 +1,139 @@
+global !p
+
+# corresponding highlight group of vimtex (note there no counterpart of `texMathText` in vimtex)
+CommentZones = ['cCommentL', 'cComment']
+IgnoreZones = []
+CommentZoneIds = vim.eval('map('+str(CommentZones)+", 'hlID(v:val)')")
+IgnoreZoneIds = vim.eval('map('+str(IgnoreZones)+", 'hlID(v:val)')")
+
+def comment():
+	try:
+		synstackids = vim.eval("synstack(line('.'), col('.') - (col('.')>=2 ? 1 : 0))")
+		# `first` highlight group ID inside list `texMathZoneIds` or `texIgnoreMathZoneIds`
+		# first = next(i for i in reversed(synstackids) if i in CommentZoneIds)
+		first = next(i for i in reversed(synstackids) if i in CommentZoneIds)
+		return not (first in IgnoreZoneIds)
+	except StopIteration:
+		return False
+
+def always_true():
+    return True
+
+endglobal
+
+# ############################################################
+# segment lines
+
+snippet ## "segment line"
+// ############################################################
+endsnippet
+
+snippet @@ "segment line"
+// @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+endsnippet
+
+snippet == "segment line"
+// ============================================================
+endsnippet
+
+snippet ** "segment line"
+// ************************************************************
+endsnippet
+
+snippet ++ "segment line"
+// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+endsnippet
+
+snippet ~~ "segment line"
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+endsnippet
+
+snippet -- "segment line"
+// ------------------------------------------------------------
+endsnippet
+
+snippet h1 "head level 1"
+// ==========
+// ${1:head}
+endsnippet
+
+snippet h2 "head level 2"
+// ----------
+// ${1:head}
+endsnippet
+
+# ############################################################
+# code snippets
+
+snippet except "throw except"
+string err_msg {};
+err_msg = err_msg
+	+ std::format( "Error: {}: in function {} at line {}\n", __FILE__, __func__, __LINE__)
+	+ "${1:description}\n";
+	throw std::runtime_error(err_msg);
+endsnippet
+
+snippet br "break point"
+throw std::runtime_error("break point");
+endsnippet
+
+snippet p "print"
+std::cout
+<< $1
+<< std::endl;
+endsnippet
+
+snippet ode "solve ode"
+using StateType = Eigen::Vector2cd;
+StateType state_vec = {DimLessNeBD(), dDimLessNeBD(k, Ne_ini)};
+
+// derivative of state vector
+auto f = [this](const StateType& y, double k, double time)
+{
+	StateType dydx;
+	Complex _Ak = y(0);
+	Complex _dAk = y(1);
+	dydx(0) = _dAk;
+	dydx(1) = ddAk(_Ak, _dAk, k, time);
+	return dydx;
+};
+
+double t = 0.0;
+for (int i = 0; i < i_end; i++)
+{
+
+	Ak_sol_lst(i) = state_vec(0);
+	dAk_sol_lst(i) = state_vec(1);
+	state_vec += utils::Rk45Stepper(f, state_vec, k, t, time_grid_.Interval());
+	t += time_grid_.Interval();
+}
+endsnippet
+
+# ############################################################
+# comment (markdown format)
+snippet doc "special comment block for doxygen" i
+/**
+	$1
+*/
+endsnippet
+
+context comment()
+snippet i "italic" i
+*$1*
+endsnippet
+
+context comment()
+snippet b "bold" i
+**$1**
+endsnippet
+
+context comment()
+snippet c "inline code" i
+\`$1\`
+endsnippet
+
+context comment()
+snippet m "inline math" i
+\$$1\$
+endsnippet
+
