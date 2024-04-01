@@ -20,16 +20,21 @@ def script_judge(string):
 # check if in math environment, or if in math environment if it should be excluded
 texMathZones = ['texMathZone' + x for x in ['A', 'AS', 'B', 'BS', 'C', 'CS', 'D', 'DS', 'E', 'ES', 'F', 'FS', 'G', 'GS', 'H', 'HS', 'I', 'IS', 'J', 'JS', 'K', 'KS', 'L', 'LS', 'DS', 'V', 'W', 'X', 'Y', 'Z', 'AmsA', 'AmsB', 'AmsC', 'AmsD', 'AmsE', 'AmsF', 'AmsG', 'AmsAS', 'AmsBS', 'AmsCS', 'AmsDS', 'AmsES', 'AmsFS', 'AmsGS' ]]
 texIgnoreMathZones = ['texMathText', 'texRefZone']
+
+# corresponding highlight group of vimtex (note there no counterpart of `texMathText` in vimtex)
+texMathZones = texMathZones + ['texMathZone' + x for x in ['Env', 'LI', 'LD', 'TI', 'TD']]
+texIgnoreMathZones = texIgnoreMathZones + ['texRefArg']
+
 texMathZoneIds = vim.eval('map('+str(texMathZones)+", 'hlID(v:val)')")
+
 texIgnoreMathZoneIds = vim.eval('map('+str(texIgnoreMathZones)+", 'hlID(v:val)')")
-ignore_lst = texIgnoreMathZoneIds
 def math():
 	synstackids = vim.eval("synstack(line('.'), col('.') - (col('.')>=2 ? 1 : 0))")
 	try:
 		# `first` highlight group ID inside list `texMathZoneIds` or `texIgnoreMathZoneIds`
 		first = next(i for i in reversed(synstackids) if i in texIgnoreMathZoneIds or i in texMathZoneIds)
-		# check if `first` is a highlight group should be "ignored". Return true if it not in `ignore_lst`
-		return not (first in ignore_lst)
+		# check if `first` is a highlight group should be "ignored". Return true if it not in `texIgnoreMathZoneIds` (where check `texIgnoreMathZoneIds` rather than `texMathZoneIds` because it's shorter)
+		return not (first in texIgnoreMathZoneIds)
 	except StopIteration:
 		return False
 
@@ -114,6 +119,7 @@ dic_symbol_a = {
 
 # start with "@"
 dic_symbol_b = {
+	r'0' : r'\varnothing',
 	r'a' : r'\forall',
 	r'b' : r'\because',
 	r't' : r'\therefore',
@@ -183,7 +189,8 @@ dic_big_notation = {
 dic_env = {
 # normal env.
 	r'c' : r'center',
-	r'd' : r'document',
+	r'dt' : r'details',
+	r'dc' : r'document',
 	r'e' : r'enumerate',
 	r'i' : r'itemize',
 	r'tb' : r'table',
@@ -208,12 +215,11 @@ dic_env = {
 	r'th' : r'Theorem',
 
 # defined by myself
-	r'cm' : r'bladecomment',
-	r'in' : r'bladeindent',
-	r'r' : r'bladeref',
-	r'ri' : r'bladerefindex',
-	r'n' : r'bladenote',
-	r'eg' : r'bladeeg',
+	r'cm' : r'deecomment',
+	r'in' : r'deeindent',
+	r'r' : r'deeref',
+	r'n' : r'deenote',
+	r'eg' : r'deeexample',
 	r'p' : r'Property',
 	r'q' : r'Question',
 	r's' : r'Solve',
@@ -262,6 +268,7 @@ dic_hierachy = {
 	r'2' : r'\subsection',
 	r'3' : r'\subsubsection',
 	r'c' : r'\chapter',
+	r'd' : r'\Day',
 	r'h' : r'\subparagraph',
 	r'p' : r'\paragraph',
 }
@@ -298,7 +305,7 @@ dic_math_notation = {
     r'di' : r'\dim',
     r'ho' : r'\hom',
 	r'd' : r'\MaD',
-    r'e' : r'\MaE',
+    # r'e' : r'\MaE',
     r'i' : r'\MaI',
     r'p' : r'\MaPI',
     r'ex' : r'\exp',
@@ -319,12 +326,12 @@ dic_math_notation = {
 
 dic_math_env = {
     r'a' : r'align',
+    r'ad' : r'aligned',
     r'c' : r'cases',
     r'd' : r'dcases',
     r'e' : r'equation',
     r'g' : r'gather',
     r's' : r'split',
-    r'ad' : r'aligned',
 }
 
 dic_math_font = {
@@ -379,6 +386,7 @@ dic_font_color = {
 dic_frac = {
 	r'p' : r'\partial',
 	r'd' : r'\mathrm{d}',
+	r't' : r'\delta',
 }
 
 dic_longarrow = {
@@ -400,7 +408,7 @@ dic_power = {
 	# r'7' : r'-3',
 	# r'8' : r'-4',
 	r'z' : r'0',
-	r'f' : r'1',
+	r'i' : r'1',
 	r's' : r'2',
 	r'c' : r'3',
 	r'q' : r'4',
@@ -420,7 +428,8 @@ dic_code_block = {
 	r'f' : r'[90]Fortran',
 	r'h' : r'HTML',
 	r'j' : r'java',
-	r'm' : r'Mathematica',
+	r'mm' : r'Mathematica',
+	r'ma' : r'make',
 	r'pe' : r'Perl',
 	r'py' : r'Python',
 	r's' : r'bash',
@@ -499,13 +508,13 @@ endsnippet
 context "math()"
 priority 3
 snippet // "displaystyle friction" iA
-\\dfrac{$1}{$2}$0
+\\frac{$1}{$2}$0
 endsnippet
 
 context "math()"
 priority 3
 snippet %% "textstyle friction" iA
-\\frac{$1}{$2}$0
+\\dfrac{$1}{$2}$0
 endsnippet
 
 snippet / "split level fractions" i
@@ -647,7 +656,8 @@ snippet C "code block" i
 endsnippet
 
 priority 2
-snippet "c([a-zA-Z]{1,3})" "code block" "check_key(r'c([a-zA-Z]{1,3})', dic_code_block)" ire
+context "(not math()) and check_key(r'c([a-zA-Z]{1,3})', dic_code_block)"
+snippet "c([a-zA-Z]{1,3})" "code block" ire
 \begin{lstlisting}[language = {`!p snip.rv = dic_code_block[match.group(1)]`}, gobble = ${1:8}]
 	$2
 \end{lstlisting}
@@ -769,6 +779,8 @@ endsnippet
 # ============================================================
 
 # m: math
+
+# ------------------------------------------------------------
 ## special
 priority 1
 snippet m "mathmode (inline)" i
@@ -777,15 +789,15 @@ endsnippet
 
 priority 2
 snippet mm "math (display, no number)" i
-\\begin{equation*}
-	$1
-\\end{equation*}
-endsnippet
-
-snippet M "math (display style)"
 \\begin{equation}
 	$1
 \\end{equation}
+endsnippet
+
+snippet M "math (display style)"
+\\begin{equation*}
+	$1
+\\end{equation*}
 endsnippet
 
 priority 2
@@ -801,18 +813,21 @@ snippet mi "math inster text" i
 \\intertext[${1:0em}]{$2}
 endsnippet
 
-snippet mca "cases + aligned" i
+snippet mcc "cases + aligned" i
 \\left\\{ \\begin{aligned}
 	$1
 \\end{aligned} \\right.
 endsnippet
 
+# ------------------------------------------------------------
 ## math font
 priority 3
-snippet "m([a-zA-Z]{1,3})" "check_key(r'm([a-zA-Z]{1,3})', dic_math_font)" ire
+context "math() and check_key(r'm([a-zA-Z]{1,3})', dic_math_font)"
+snippet "m([a-zA-Z]{1,3})" "math font" ire
 `!p snip.rv = dic_math_font[match.group(1)]`{$1}$0
 endsnippet
 
+# ------------------------------------------------------------
 ## standard env
 snippet "\bm([a-zA-Z]{1,3})" "check_key(r'\bm([a-zA-Z]{1,3})', dic_math_env)" re
 \begin{`!p snip.rv = dic_math_env[match.group(1)]`}
@@ -820,6 +835,26 @@ snippet "\bm([a-zA-Z]{1,3})" "check_key(r'\bm([a-zA-Z]{1,3})', dic_math_env)" re
 \end{`!p snip.rv = dic_math_env[match.group(1)]`}$0
 endsnippet
 
+snippet mse "subequations" i
+\\begin{subequations} \\begin{equation}
+	$1
+\\end{equation} \\end{subequations}
+endsnippet
+
+snippet msa "subequations with align" i
+\\begin{subequations} \\begin{align}
+	$1
+\\end{align} \\end{subequations}
+endsnippet
+
+snippet mnc "numcases" i
+\\begin{subequations} \\begin{numcases}{}
+	$1
+\\end{numcases} \\end{subequations}
+endsnippet
+
+
+# ------------------------------------------------------------
 ## env with star
 snippet "\bm([a-zA-Z]{1,3})\*" "check_key(r'\bm([a-zA-Z]{1,3})\*', dic_math_env)" reA
 \begin{`!p snip.rv = dic_math_env[match.group(1)]`*}
@@ -827,15 +862,17 @@ snippet "\bm([a-zA-Z]{1,3})\*" "check_key(r'\bm([a-zA-Z]{1,3})\*', dic_math_env)
 \end{`!p snip.rv = dic_math_env[match.group(1)]`*}$0
 endsnippet
 
+# ------------------------------------------------------------
 ## phantom in math
 context "math()"
 snippet mph "phantom in math" i
 \mathrel{\phantom{$1}}
 endsnippet
 
+# ------------------------------------------------------------
 # M: matrix
-# context "math()"
-snippet "\bM([a-zA-Z]{1,3})" "check_key(r'\bM([a-zA-Z]{1,3})', dic_matrix)" re
+context "math() and check_key(r'\bM([a-zA-Z]{1,3})', dic_matrix)"
+snippet "\bM([a-zA-Z]{1,3})" "matrix" re
 \begin{`!p snip.rv = dic_matrix[match.group(1)]`}
 	$1
 \end{`!p snip.rv = dic_matrix[match.group(1)]`}$0
@@ -847,18 +884,24 @@ endsnippet
 # n: notation
 # where add option 'w' to avoid expand inner word
 
+context "math()"
 snippet nli "limit" iwA
 \\lim_{$1 \\to $2}
 endsnippet
 
+context "math()"
+snippet ne "math e" iwe
+\\MaE
+endsnippet
+
 priority 3
 context "math() and check_key(r'n([a-zA-Z]{1,3})', dic_math_notation)"
-snippet "n([a-zA-Z]{1,3})" "check_key(r'n([a-zA-Z]{1,3})', dic_math_notation)" wreA
+snippet "n([a-zA-Z]{1,3})" "math notations" wre
 `!p snip.rv = dic_math_notation[match.group(1)]`$0
 endsnippet
 
-context "math()"
-snippet "n([a-zA-Z]{1,3})(\)|\]|\}|>)" "check_key(r'n([a-zA-Z]{1,3})(\)|\]|\}|>)', dic_math_notation)" irAew
+context "math() and check_key(r'n([a-zA-Z]{1,3})(\)|\]|\}|>)', dic_math_notation)"
+snippet "n([a-zA-Z]{1,3})(\)|\]|\}|>)" "math notations with parenthesis" irAew
 `!p snip.rv = dic_math_notation[match.group(1)]``!p snip.rv = dic_par_l[match.group(2)]` $1 `!p snip.rv = dic_par_r[match.group(2)]`$0
 endsnippet
 
@@ -870,6 +913,7 @@ snippet "pp([a-z])" "power"  reiA
 endsnippet
 
 # ii: inverse power
+priority 5
 context "math() and check_key(r'ii([a-z])', dic_power)"
 snippet "ii([a-z])" "inverse power"  reiA
 ^{-`!p snip.rv = dic_power[match.group(1)]`}
@@ -955,7 +999,7 @@ snippet "s(u|d)(u|d)" "second-order" rA
 $1`!p snip.rv = script_judge(match.group(1))`{$2}`!p snip.rv = script_judge(match.group(2))`{$3}
 endsnippet
 
-# multi ^ or _ is invalid syntax for script, which is different from tensor case, therfore where I comment these old codes
+# multi ^ or _ is invalid LaTeX syntax for normal script, which is different from tensor case, therfore where I comment these old codes
 # context "math()"
 # snippet "s(u|d)(u|d)(u|d)" "third-order" r
 # $1`!p snip.rv = script_judge(match.group(1))`{$2}`!p snip.rv = script_judge(match.group(2))`{$3}`!p snip.rv = script_judge(match.group(3))`{$4}
@@ -981,18 +1025,22 @@ $1
 endsnippet
 
 # t: tensor
+context "math()"
 snippet "t(u|d)" "vector" r
 \\tensor{{$1}}{`!p snip.rv = script_judge(match.group(1))`{$2}}
 endsnippet
 
-snippet "t(u|d)(u|d)" "second-order tensor" r
+context "math()"
+snippet "t(u|d)(u|d)" "second-order tensor" rA
 \\tensor{{$1}}{`!p snip.rv = script_judge(match.group(1))`{$2}`!p snip.rv = script_judge(match.group(2))`{$3}}
 endsnippet
 
+context "math()"
 snippet "t(u|d)(u|d)(u|d)" "third-order tensor" r
 \\tensor{{$1}}{`!p snip.rv = script_judge(match.group(1))`{$2}`!p snip.rv = script_judge(match.group(2))`{$3}`!p snip.rv = script_judge(match.group(3))`{$4}}
 endsnippet
 
+context "math()"
 snippet "t(u|d)(u|d)(u|d)(u|d)" "forth-order tensor" r
 \\tensor{{$1}}{`!p snip.rv = script_judge(match.group(1))`{$2}`!p snip.rv = script_judge(match.group(2))`{$3}`!p snip.rv = script_judge(match.group(3))`{$5}`!p snip.rv = script_judge(match.group(4))`{$6}}
 endsnippet
@@ -1000,13 +1048,14 @@ endsnippet
 # RE
 priority 1
 context "math()"
-snippet "([a-zA-Z\\])(\d+)" "subscript" irA
+# snippet "([a-zA-Z\\])(\d+)" "auto subscript number" irA
+snippet "(\\partial|x)([ijk\d]+)" "auto subscript number" irA
 `!p snip.rv = match.group(1)`_{`!p snip.rv = match.group(2)`}$0
 endsnippet
 
 context "math()"
 snippet "([\\a-zA-Z0-9{}\[\]()+-_^]+)/" "auto friction with displaystyle" irA
-\\dfrac{`!p snip.rv = match.group(1)`}{$1}$0
+\\frac{`!p snip.rv = match.group(1)`}{$1}$0
 endsnippet
 
 context "math()"
@@ -1162,29 +1211,42 @@ snippet ee "expnential" Aw
 \\MaE^{ $0 }
 endsnippet
 
+priority 4
+context "math()"
+snippet EE "expnential" Aw
+\\exp{ $0 }
+endsnippet
+
 context "math()"
 snippet ^ "superscript" iA
 ^{$1}$0
 endsnippet
 
-priority 3 
+priority 3
 context "math()"
 snippet _ "subscript" iA
 _{$1}$0
 endsnippet
 
 # frequently used power
+context "math()"
 snippet sr "square" iA
 ^{2}
 endsnippet
 
-snippet cb "square" iA
+context "math()"
+snippet cb "cubic" iA
 ^{3}
+endsnippet
+
+context "math()"
+snippet qd "quadric" iA
+^{4}
 endsnippet
 
 # most frequently used command (manually define)
 priority 4
 context "math()"
-snippet "(to|sim|int|ln)" "subscript" Ar
+snippet "(int|ln)" "subscript" Ar
 \\`!p snip.rv = match.group(1)`
 endsnippet
