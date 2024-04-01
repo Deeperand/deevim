@@ -1,0 +1,37 @@
+digraph G
+{
+
+plugin_sys [label="plugin system"];
+plugin_sys -> filetree;
+plugin_sys -> fuzzy_search;
+plugin_sys -> language
+
+filetree [label = <<FONT FACE='MesloLGS NF'>defx.vim</FONT> ? <FONT FACE='MesloLGS NF'>netrw</FONT> ?>];
+fuzzy_search [label = <<FONT FACE='MesloLGS NF'>LeaderF</FONT>>];
+
+language [label = <language-specific>];
+language -> tex;
+language -> julia;
+language -> graphviz;
+
+tex [label = <LaTeX>];
+tex -> vimtex;
+
+vimtex[label = <<FONT FACE='MesloLGS NF'>vimtex</FONT>>];
+
+julia [label = <Julia>];
+julia -> julia_vim;
+
+julia_vim [label = <<FONT FACE='MesloLGS NF'>julia-vim</FONT>>];
+julia_vim -> L2U [label = < provide>];
+
+L2U [label = <<FONT FACE='MesloLGS NF'>julia-vim-L2U</FONT>>];
+
+graphviz [label = <Graphviz (<FONT FACE='MesloLGS NF'>dot</FONT>)>];
+graphviz -> L2U
+[
+  label = < Unicode input support<br align="left"/> (required when input math formula)>,
+  style = dashed
+];
+
+}
