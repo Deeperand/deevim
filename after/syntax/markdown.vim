@@ -100,6 +100,9 @@ syn region userSubscript	matchgroup=Delimiter start='_{'		skip="\\\\\|\\[{}]" en
 hi def link userSuperscript texSpecialChar
 hi def link userSubscript userSuperscript
 
+" enable highlight wiki link
+syntax match mkdLink "\[\[.*\]\]"
+
 " ######################################################################
 " in testing
 syn clear htmlH1
