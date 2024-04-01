@@ -1,14 +1,20 @@
 " general setting
-    set foldmethod=syntax " fold-method
     let g:tex_flavor = 'latex'
     let g:tex_indent_items = 0 " forbid auto-indent of items
-    let g:tex_fold_enabled = 1 " latex fold set
+    " let g:tex_fold_enabled = 1 " latex fold set
+    " setlocal foldmethod=syntax " fold-method
     setlocal commentstring=%%s " commentary string
 
+    setlocal shiftwidth=2
+
+    " disable conceal symble
     let g:tex_conceal=""
     " set conceallevel=0
+
+    " turn off rainbow-parenthesis plugin
     if exists("g:rainbow_active")
         RainbowToggleOff
+        let g:flag_tex_rainbow_off = 1 " used to check if this `if` statement is really executed
     end
 
     syntax sync fromstart
@@ -27,11 +33,10 @@
     " let g:vimtex_view_method = 'sioyek'
     " let g:vimtex_view_syoyek_exe = '/Applications/sioyek.app/Contents/MacOS/sioyek'
     let g:vimtex_quickfix_mode = 0 " didn't show error if you don't use '\le'
-    let g:vimtex_view_use_temp_files = 1 " if compile failed, don't change the pdf files compiled at the last times
     let g:vimtex_indent_enabled = 0
     let g:vimtex_imaps_enabled = 0 " disable the default auto-expand snippet
     let g:vimtex_syntax_conceal_disable=1 " enable/disable syntax conceal like '\item --> ○'
-    let g:vimtex_syntax_enabled=0
+    " let g:vimtex_syntax_enabled=0
     " let g:vimtex_mappings_enabled = 1
     " let g:vimtex_compiler_latexmk = {
     "     \ 'executable' : 'latexmk',
@@ -53,16 +58,64 @@
     "     \ 'context (xetex)'  : '-pdf -pdflatex=''texexec --xtx''',
     "     \}
 
+" enable fold (disabled by defult), from `:h vimtex-folding` :
+"
+" VimTeX can fold documents according to the LaTeX structure (part, chapter,
+" section and subsection).  Folding in tex files is turned off by default, but
+" can be enabled if desired, either through the option |g:vimtex_fold_enabled|,
+" or manually with >vim
+
+"   set foldmethod=expr
+"   set foldexpr=vimtex#fold#level(v:lnum)
+"   set foldtext=vimtex#fold#text()
+
+" The folding is mainly configured through the dictionary option
+" g:vimtex_fold_types.
+let g:vimtex_fold_enabled=1
+
+" ``When enabled, this option specifies to copy the `.pdf` and `.synctex.gz`
+" files after successful compilation.''
+"
+" ``The viewer will use the copies, which helps to avoid issues such that as the
+" pdf becoming unavailable during compilation.''
+"
+" ``The copies are named similar to the original files with a `_`
+" prefix.''
+"
+" (?) Due to the viewer use `_` file, it will meet ``double flick'' rather
+" than ``singel flick''. I suspect the first flick is due to compile, the
+" second flick is due to copy. If only wish to see the double flick, use
+" system viewer to open no-underscore version .pdf file
+let g:vimtex_view_use_temp_files = 1
+
+" by default `<localleader>ll` is bind to `<plug>(vimtex-compile)`
+" (`:VimtexCompile`), which will automatically compile when detected file
+" change (assuming use `latexmk` to compile; note `latexmk` is used by
+" default), and execute `:VimtexCompile` can toggle the auto-compile mode.
+" However, with the practical use, I found it's a bit annoying, so I decide to
+" use `<plug>(vimtex-compile-ss)` (`:VimtexCompileSS`), which only compile
+" one times at each execution.
+nmap <localleader>ll <plug>(vimtex-compile-ss)
+
 " ======================================================================
 " text object
-    omap iE <plug>(vimtex-ie)
-    omap aE <plug>(vimtex-ae)
-    omap iC <plug>(vimtex-ic)
-    omap aC <plug>(vimtex-ac)
-    vmap iE <plug>(vimtex-ie)
-    vmap aE <plug>(vimtex-ae)
-    vmap iC <plug>(vimtex-ic)
-    vmap aC <plug>(vimtex-ac)
+
+" `<plug>(vimtex-ie)` and `<plug>(vimtex-ae)` is used to select content inside
+" environment default setting is `ie` and `ae`, but which conflict with
+" `kana/vim-textobj-entire`, which use `ie` and `ae` to select entire file
+omap <buffer> iE <plug>(vimtex-ie)
+omap <buffer> aE <plug>(vimtex-ae)
+vmap <buffer> iE <plug>(vimtex-ie)
+vmap <buffer> aE <plug>(vimtex-ae)
+
+" `<plug>(vimtex-ic)` and `<plug>(vimtex-ac)` is used to select content inside
+" commands. default setting is `ie` and `ae`, but looks it is occupied by
+" `<Plug>(signify-motion-inner-pending)` in my vim, so I use capital `C`
+" instead
+omap <buffer> iC <plug>(vimtex-ic)
+omap <buffer> aC <plug>(vimtex-ac)
+vmap <buffer> iC <plug>(vimtex-ic)
+vmap <buffer> aC <plug>(vimtex-ac)
 
 
 " ######################################################################
@@ -97,6 +150,7 @@
 
 
 " ######################################################################
+" custom command
 
 " keymap
 " change line
@@ -112,6 +166,10 @@
     let b:draft_tex_dir = '~/Documents/LaTeX/formula_draft/formula_draft.tex'
     nnoremap <buffer><silent> <localleader>lm :execute 'silent ! open -a Texpad ' . b:draft_tex_dir<CR> <C-w><C-s>:execute 'edit' . b:draft_tex_dir<CR> zR/{equation}<CR>j^
 
+" delete private info (TODO)
+command! -range=% TexDeletePrivate silent! <line1>,<line2>substitute/\v\s*\\code\{(canvas|DB\d).{-1,}\}\s*(and)?//g
+
+" ======================================================================
 " inkscape related
 " only cancel the code, the inverse search of LaTeX with MacVim can work well
     " if empty(v:servername) && exists('*remote_startserver')
@@ -166,6 +224,7 @@ command! -nargs=1 Print call Print(<q-args>)
 
 " decrease level
 
+" ======================================================================
 " try to action backward research
 " 1
 " function! s:write_server_name() abort
