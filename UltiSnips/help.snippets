@@ -1,7 +1,43 @@
+# ############################################################ modifier
+
+snippet i "create start modifier *text*" i
+*$1*
+endsnippet
+
+snippet p "creat pip modifier |text|" i
+|$1|
+endsnippet
+
+# ############################################################
+# segment line (conventionally, width of vim help doc's segment line is 78)
+
 snippet s "segment line (weak)" i
 ------------------------------------------------------------------------------
 endsnippet
 
 snippet S "segment (strong)" i
 ==============================================================================
+endsnippet
+
+snippet h1 "head level 1" i
+==============================================================================
+${1:HEAD LEVEL 1}                                        *${2:deevim-contents}*
+endsnippet
+
+snippet h2 "head level 2" i
+------------------------------------------------------------------------------
+${1:HEAD LEVEL 2}                                         *${2:deevim-features}*
+endsnippet
+
+snippet h3 "head level 3" i
+----------
+HEAD LEVEL 3
+endsnippet
+
+snippet hp "paragraph" i
+content~
+endsnippet
+
+snippet t "tag" i
+OPTIONAL                                                      *vimtex-features*
 endsnippet
