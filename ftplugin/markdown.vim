@@ -36,8 +36,9 @@
         let g:vim_markdown_conceal = 0
 
     " To disable math conceal with LaTeX math syntax enabled
-        let g:tex_conceal = ""
         let g:vim_markdown_math = 1 " Used as $x^2$, $$x^2$$, escapable as \$x\$ and \$\$x\$\$.
+        let g:tex_conceal = "" " disable syntax conceal for LaTeX formula (for vim built-in syntax highlight)
+        let g:vimtex_syntax_conceal_disable = 1 " disable syntax conceal for LaTeX formula (for vimtex's syntax highlight)
 
     " solve the problem that auto-indent in list
         let g:vim_markdown_new_list_item_indent = 0
@@ -62,6 +63,11 @@
 
     " let '[c' work with `fugitive`
         nmap <buffer> [c <plug>(signify-prev-hunk)
+
+" ----------------------------------------------------------------------
+"  vim-markdown
+" disable syntax concealing
+    let g:vim_markdown_conceal = 0
 
 " --------------------------------------------------------------------------------
 
