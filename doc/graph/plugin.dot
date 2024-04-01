@@ -13,6 +13,7 @@ language [label = <language-specific>];
 language -> tex;
 language -> julia;
 language -> graphviz;
+language -> lisp;
 
 tex [label = <LaTeX>];
 tex -> vimtex;
@@ -33,5 +34,17 @@ graphviz -> L2U
   label = < Unicode input support<br align="left"/> (required when input math formula)>,
   style = dashed
 ];
+
+lisp [label = <Lisp>];
+lisp -> slimv
+[
+  label = <>,
+  style = dashed
+];
+slimv [style = dashed, label = <<FONT FACE='MesloLGS NF'>slimv</FONT><br/>
+  (now replaced by<br align="left"/><FONT FACE='MesloLGS NF'>vim-slime</FONT>)>];
+
+lisp -> vim_slime;
+vim_slime [label = <<FONT FACE='MesloLGS NF'>vim-slime</FONT>>];
 
 }
