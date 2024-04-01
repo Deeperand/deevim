@@ -1,0 +1,89 @@
+# segment lines
+snippet ## "segment line"
+# ############################################################
+endsnippet
+
+snippet @@ "segment line"
+# @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+endsnippet
+
+snippet == "segment line"
+# ============================================================
+endsnippet
+
+snippet ** "segment line"
+# ************************************************************
+endsnippet
+
+snippet ++ "segment line"
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+endsnippet
+
+snippet ~~ "segment line"
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+endsnippet
+
+snippet -- "segment line"
+# ------------------------------------------------------------
+endsnippet
+
+# ############################################################
+# template
+
+snippet proj "basic template of new project"
+# ############################################################
+# project info
+cmake_minimum_required(VERSION 3.20)
+project(AxionInflation CXX)
+
+# forbid in-source build
+if(PROJECT_SOURCE_DIR STREQUAL PROJECT_BINARY_DIR)
+	message(FATAL_ERROR "In-source builds are not allowed")
+endif()
+
+# C++ standard
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+# ############################################################
+# libraries
+find_package(Eigen3 REQUIRED)
+find_package(Boost REQUIRED COMPONENTS
+	iostreams filesystem system)
+
+# ############################################################
+# directory of head file (internal)
+set(AxionInflation_INCLUDE_DIRS "${CMAKE_SOURCE_DIR}/src/include")
+
+# directory of head file (external)
+set(EXTERN_INCLUDE_DIRS "${CMAKE_SOURCE_DIR}/extern")
+
+# ############################################################
+# subdirectory
+add_subdirectory(src bin)
+add_subdirectory(test)
+endsnippet
+
+snippet addlib "add static lib"
+add_library(file_name STATIC file_name.cpp)
+target_include_directories(file_name PUBLIC ${PROJECT_INCLUDE_DIRS} ${EXTERN_INCLUDE_DIRS})
+target_link_libraries(file_name PUBLIC
+	Eigen3::Eigen
+	Boost::headers Boost::iostreams Boost::system Boost::filesystem)
+endsnippet
+
+snippet addexe "add executable"
+add_executable(file_name file_name.cpp)
+target_include_directories(file_name PUBLIC ${PROJECT_INCLUDE_DIRS} ${EXTERN_INCLUDE_DIRS})
+target_link_libraries(file_name PRIVATE
+	Eigen3::Eigen
+	Boost::headers Boost::iostreams Boost::system Boost::filesystem
+	)
+endsnippet
+
+snippet addtest "add test"
+add_executable(file_name file_name.cpp)
+target_link_libraries(file_name PRIVATE GTest::Main)
+gtest_discover_tests(file_name EXTRA_ARGS --gtest_brief=1)
+endsnippet
