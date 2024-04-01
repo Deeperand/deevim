@@ -29,15 +29,33 @@ snippet p "print" i
 println($1)
 endsnippet
 
-# s: seg
-snippet s "segment (weak)"
-# --------------------$1--------------------
+# segment line
+snippet ## "segment line"
+# ############################################################
 endsnippet
 
-snippet ss "segment (mid)"
-# ********************$1********************
+snippet @@ "segment line"
+# @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 endsnippet
 
-snippet S "segment (strong)"
-# =========================$1=========================
+snippet == "segment line"
+# ============================================================
 endsnippet
+
+snippet ** "segment line"
+# ************************************************************
+endsnippet
+
+snippet ++ "segment line"
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+endsnippet
+
+snippet ~~ "segment line"
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+endsnippet
+
+
+snippet -- "segment line"
+# ------------------------------------------------------------
+endsnippet
+
