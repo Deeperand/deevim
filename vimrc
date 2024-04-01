@@ -1,17 +1,22 @@
-if !exists("b:deevim_path_loaded") " avoid repeating add path when `:so %` during debugging configuration
-    let g:deevim_root_dir = expand("<sfile>:p:h") " root directory of blade-vim
-    " set runtimepath^=~/Documents/my_config/blade-vim
-    " set runtimepath+=~/Documents/my_config/blade-vim/after
-    execute "set runtimepath^=" . g:deevim_root_dir
-    execute "set runtimepath+=" . g:deevim_root_dir . "/after"
-    let &packpath = &runtimepath
+" ######################################################################
+" use directory of this file as root directory of `deevim`, where use flag
+" `deevim_path_loaded` to avoid repeating add path when `:so %` during
+" debugging configuration
 
-    " use `.vim/vimlocal.vim` for local setting (i.e. project setting)
-    silent! source ./.vim/vimlocal.vim
+if !exists("g:deevim_loaded")
 
-    let b:deevim_path_loaded=1
+  let g:deevim_root_dir = expand("<sfile>:p:h") " root directory of blade-vim
+  execute "set runtimepath^=" . g:deevim_root_dir
+  execute "set runtimepath+=" . g:deevim_root_dir . "/after"
+  let &packpath = &runtimepath
+
+  " use `.vim/vimlocal.vim` for local setting (i.e. project setting)
+  silent! source ./.vim/vimlocal.vim
+
+  let g:deevim_loaded=1
 endif
 
+" ######################################################################
 " normal setting
     " most simple setting
         filetype plugin indent on       " Load plugins accroding to detected filetype.
