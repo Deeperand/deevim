@@ -2,8 +2,13 @@
 " use directory of this file as root directory of `deevim`, where use flag
 " `deevim_path_loaded` to avoid repeating add path when `:so %` during
 " debugging configuration
+"
+" NOTE: this block only used to check if path is correctly added to `&rtp`,
+" not a real "load guard", therefore I didn't name it as `g:deevim_loaded`,
+" also didn't use `finish` because I wish when run `:so %` it can source the
+" rest code inside this file.
 
-if !exists("g:deevim_loaded")
+if !exists("g:deevim_path_loaded")
 
   let g:deevim_root_dir = expand("<sfile>:p:h") " root directory of blade-vim
   execute "set runtimepath^=" . g:deevim_root_dir
@@ -13,7 +18,7 @@ if !exists("g:deevim_loaded")
   " use `.vim/vimlocal.vim` for local setting (i.e. project setting)
   silent! source ./.vim/vimlocal.vim
 
-  let g:deevim_loaded=1
+  let g:deevim_path_loaded=1
 endif
 
 " ######################################################################
