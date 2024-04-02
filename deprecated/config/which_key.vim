@@ -158,12 +158,8 @@ let g:which_key_map_Local_Leader.s.f.s = 'syntax'
 " run command in terminal at current file path with a split window
 let g:which_key_map_Local_Leader.t = 'run at terminal'
 
-
-
-
-
 " ######################################################################
-" set for other plugins
+" SET FOR OTHER PLUGINS
 
 " ======================================================================
 " * vim-plug
@@ -611,3 +607,48 @@ let which_key_map_RightAngle['P'] = 'paste before & increase indent'
 " equal
 let which_key_map_Equal['p'] = 'paste after & re-indent'
 let which_key_map_Equal['P'] = 'paster before & re-indent'
+
+" ######################################################################
+" FTPLUGINS
+
+" ======================================================================
+" Markdown
+
+" ==========
+" BASIC SETTINGS
+
+" declare dictionary
+let g:which_key_map_Local_Leader.l = {'name' : '{for specific type}',}
+
+" open a temporary tex file to input equation ('m' meas 'mathematics')
+let g:which_key_map_Local_Leader.l.m = "input LaTeX equation"
+
+" open with MWeb
+let g:which_key_map_Local_Leader.l.v = 'T [md] open with MWeb'
+
+" ==========
+" vim-markdown
+
+" remap how to go to current header to avoid the conflict with 'fugitive' and 'signify'
+let g:which_key_map_g.h = 'T [md] goto current header'
+
+" remap how to go to upper header
+let g:which_key_map_g.u = 'T [md] goto upper header'
+
+" ==========
+" markdown-preview.nvim
+
+" start preview
+let g:which_key_map_Local_Leader.l.l = 'T [md] preview markdown file'
+
+" end preview
+let g:which_key_map_Local_Leader.l.s = 'T [md] stop preview markdown file'
+
+" open toc
+let g:which_key_map_Local_Leader.l.t = 'T [md] open markdown TOC'
+
+" switch if enable sync scroll
+let g:which_key_map_Local_Leader.l.c = 'T [md] switch sync scroll state'
+
+" table format
+let g:which_key_map_Local_Leader.l.a = 'T [md] table format'

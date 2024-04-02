@@ -1,6 +1,6 @@
+" ######################################################################
+" BASIC SETTINGS
 " other plug or setting
-    " buile dictionary to store shortcut list
-        let g:which_key_map_Local_Leader.l = {'name' : '{for specific type}',}
 
     " unlet g:tex_fold_enabled
         let g:markdown_folding = 1 " let markdown fold
@@ -16,16 +16,14 @@
 
     " open a temporary tex file to input equation ('m' meas 'mathematics')
         nnoremap <buffer> <localleader>lm <C-w><C-s>:edit ~/.vim/.temptex<CR>
-        let g:which_key_map_Local_Leader.l.m = "input LaTeX equation"
 
     " open with MWeb
         nnoremap <buffer><silent> <localleader>lv :silent ! open -a MWeb\ Pro "%:p"<CR>
         " nnoremap <buffer><silent> <localleader>lv :! open -a MWeb Pro "%:p"<CR>
-        let g:which_key_map_Local_Leader.l.v = 'T [md] open with MWeb'
 
-" --------------------------------------------------------------------------------
-
+" ######################################################################
 " vim-markdown
+
     " control if folding by the plugin 'vim-markdown'. Disable it to use 'fastfold' to increase the speed.
         let g:vim_markdown_folding_disabled = 1
 
@@ -55,23 +53,20 @@
 
     " remap how to go to current header to avoid the conflict with 'fugitive' and 'signify'
         nmap <buffer> gh <Plug>Markdown_MoveToCurHeader
-        let g:which_key_map_g.h = 'T [md] goto current header'
 
     " remap how to go to upper header
         nmap <buffer> gu <Plug>Markdown_MoveToParentHeader
-        let g:which_key_map_g.u = 'T [md] goto upper header'
 
     " let '[c' work with `fugitive`
         nmap <buffer> [c <plug>(signify-prev-hunk)
 
-" ----------------------------------------------------------------------
 "  vim-markdown
 " disable syntax concealing
     let g:vim_markdown_conceal = 0
 
-" --------------------------------------------------------------------------------
-
+" ######################################################################
 " markdown-preview.nvim
+
     " use a well-defined port to avoid restart diffcult
         let g:mkdp_port = ''
 
@@ -95,15 +90,12 @@
 
     " start preview
         nmap <buffer> <localleader>ll <Plug>MarkdownPreview
-        let g:which_key_map_Local_Leader.l.l = 'T [md] preview markdown file'
 
     " end preview
         nmap <buffer> <localleader>ls <Plug>MarkdownPreviewStop
-        let g:which_key_map_Local_Leader.l.s = 'T [md] stop preview markdown file'
 
     " open toc
         nmap <buffer> <localleader>lt <ESC>:Toc<CR>
-        let g:which_key_map_Local_Leader.l.t = 'T [md] open markdown TOC'
 
     " switch if enable sync scroll
         nnoremap <buffer><expr> <localleader>lc execute('let g:mkdp_preview_options["disable_sync_scroll"] = <SID>switch_option(g:mkdp_preview_options["disable_sync_scroll"])')
@@ -116,11 +108,9 @@
             endif
         endfunction
 
-        let g:which_key_map_Local_Leader.l.c = 'T [md] switch sync scroll state'
 
     " table format
         nnoremap <buffer> <localleader>la <ESC>:TableFormat<CR><ESC>
-        let g:which_key_map_Local_Leader.l.a = 'T [md] table format'
 
     " browse setting
         let g:mkdp_auto_close = 0 " don't auto-close the window
